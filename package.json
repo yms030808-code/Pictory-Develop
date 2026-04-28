@@ -1,0 +1,19 @@
+{
+  "name": "picory-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pictory static site + OpenAI checklist API",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node scripts/build-static-bundles.cjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^16.4.5",
+    "exifr": "^7.1.3",
+    "openai": "^4.76.0"
+  }
+}

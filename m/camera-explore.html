@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 카메라 탐색</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mobile.css">
+  <style>
+    .camera-explore-section {
+      padding-top: 68px;
+    }
+    .camera-explore-section .container {
+      text-align: center;
+    }
+    .camera-explore-section .section__header {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .camera-explore-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .camera-explore-grid .landing-card {
+      text-align: left;
+    }
+  </style>
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script src="../picory-nav-badges-pre.js"></script>
+</head>
+<body class="page-mobile page-camera-explore">
+  <header class="m-topbar">
+    <div class="m-topbar__inner">
+      <a href="index.html" class="m-topbar__brand" aria-label="Pictory 홈">
+        <img class="m-topbar__logo" src="../images/pictory-logo-mark.svg" alt="">
+      </a>
+      <div class="nav__actions m-topbar__actions">
+        <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button" aria-label="북마크">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
+      </div>
+      <button class="nav__hamburger m-topbar__hamburger" id="hamburgerBtn" type="button" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="m-topbar__search-row">
+      <form class="m-topbar__search-form" action="products.html" method="get" role="search">
+        <label class="m-topbar__search-wrap">
+          <span class="m-topbar__search-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.2-4.2"/></svg>
+          </span>
+          <input type="search" name="q" class="m-topbar__search-input" placeholder="상품, 브랜드 검색" autocomplete="off" enterkeyhint="search">
+        </label>
+      </form>
+    </div>
+  </header>
+
+  <nav class="m-subnav" aria-label="빠른 이동">
+    <div class="m-subnav__scroll">
+      <a href="index.html" class="m-subnav__link">홈</a>
+      <a href="products.html" class="m-subnav__link">상품</a>
+      <a href="camera-explore.html" class="m-subnav__link m-subnav__link--active">카메라 탐색</a>
+      <a href="community.html" class="m-subnav__link">커뮤니티</a>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="#" class="mobile-menu__link" data-bookmark-nav>북마크</a></li>
+    </ul>
+  </div>
+
+  <section class="section landing-section camera-explore-section">
+    <div class="container">
+      <div class="section__header">
+        <h1 class="section__title">카메라 탐색</h1>
+        <p class="section__desc">탐색 핵심 기능을 한 번에 이동할 수 있어요.</p>
+      </div>
+      <div class="camera-explore-grid">
+        <a href="recommend.html" class="landing-card card">
+          <span class="landing-card__label">AI 추천</span>
+          <h3>사진 업로드 추천</h3>
+          <p>이미지 무드 기반 추천 결과를 빠르게 확인해 보세요.</p>
+        </a>
+        <a href="price.html" class="landing-card card">
+          <span class="landing-card__label">시세 비교</span>
+          <h3>가격 흐름 비교</h3>
+          <p>플랫폼별 현재가와 흐름을 확인할 수 있습니다.</p>
+        </a>
+        <a href="checklist.html" class="landing-card card">
+          <span class="landing-card__label">나에게 맞는 카메라 찾기</span>
+          <h3>체크리스트 추천</h3>
+          <p>예산/목적 기반으로 후보를 압축해 보여줍니다.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="m-bookmark-dock">
+    <aside class="bookmark-sidebar" id="bookmarkSidebar">
+      <div class="bookmark-sidebar__header">
+        <h3>내 북마크</h3>
+        <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="bookmark-sidebar__body" id="bookmarkBody">
+        <div class="bookmark-empty" id="bookmarkEmpty">
+          <p>아직 북마크한 카메라가 없어요.</p>
+        </div>
+        <div class="bookmark-list hidden" id="bookmarkList"></div>
+      </div>
+      <div class="bookmark-sidebar__footer hidden" id="bookmarkFooter">
+        <button class="btn btn--primary" style="width: 100%;" id="compareBtn" type="button">선택한 카메라 비교하기</button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="../js/theme.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>

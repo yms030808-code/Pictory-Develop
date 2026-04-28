@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 홈</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="mobile.css">
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script src="../picory-nav-badges-pre.js"></script>
+  <script>
+    (function () {
+      window.__picoryMobileIsReload = function () {
+        try {
+          var n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+          if (n && n.type === 'reload') return true;
+        } catch (e) {}
+        try {
+          if (typeof performance !== 'undefined' && performance.navigation && performance.navigation.type === 1) {
+            return true;
+          }
+        } catch (e) {}
+        return false;
+      };
+    })();
+  </script>
+  <script>
+    try {
+      var q = new URLSearchParams(window.location.search);
+      /* replaySplash=1 등: 기록 삭제 후 스플래시 재생 */
+      if (q.get('replaySplash') === '1' || q.get('firstVisit') === '1') {
+        try {
+          localStorage.removeItem('picoryMobileSplashSeen');
+          localStorage.removeItem('picoryMobileSplash_v2');
+          sessionStorage.removeItem('picorySplashThisTab');
+        } catch (e) {}
+      }
+    } catch (e) {}
+  </script>
+  <script>
+    try {
+      var _keySplash = 'picoryMobileSplash_v2';
+      var _sk = localStorage.getItem(_keySplash) || sessionStorage.getItem('picorySplashThisTab');
+      var _reload = window.__picoryMobileIsReload && window.__picoryMobileIsReload();
+      /* 새로고침(reload)이면 스플래시 표시. 홈 등 링크로 들어온 경우(navigate)만 이미 본 기록으로 생략 */
+      if (_reload || !_sk) {
+        document.documentElement.classList.add('m-splash-pending');
+      }
+    } catch (e) {
+      document.documentElement.classList.add('m-splash-pending');
+    }
+  </script>
+</head>
+<body class="page-mobile page-landing">
+  <div id="mSplashOverlay" class="m-splash" hidden aria-modal="true" role="dialog" aria-label="Pictory 시작 화면">
+    <div class="m-splash__inner">
+      <img class="m-splash__logo" src="../images/pictory-logo-mark.svg" alt="Pictory">
+      <div class="m-splash__welcome" hidden>
+        <p class="m-splash__greeting">Pictory에 오신 것을 환영합니다</p>
+        <p class="m-splash__sub">맞춤 카메라 추천과 시세를 Pictory에서 함께 시작해요.</p>
+        <button type="button" class="btn btn--ghost btn--sm m-splash__skip">둘러보기</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var KEY = 'picoryMobileSplash_v2';
+      try {
+        var isReload = window.__picoryMobileIsReload && window.__picoryMobileIsReload();
+        /* 새로고침이 아니고, 이미 본 기록이 있으면 스킵(다른 페이지에서 홈으로 올 때 등) */
+        if (!isReload && (localStorage.getItem(KEY) || sessionStorage.getItem('picorySplashThisTab'))) return;
+      } catch (e) {
+        /* localStorage 불가여도 스플래시는 재생 */
+      }
+      var overlay = document.getElementById('mSplashOverlay');
+      if (!overlay) return;
+      overlay.removeAttribute('hidden');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('m-splash-active');
+      var welcome = overlay.querySelector('.m-splash__welcome');
+      var skip = overlay.querySelector('.m-splash__skip');
+      var t1;
+      var t2;
+
+      function stripReplayParamsFromUrl() {
+        try {
+          var u = new URL(window.location.href);
+          if (u.searchParams.get('replaySplash') !== '1' && u.searchParams.get('firstVisit') !== '1') return;
+          u.searchParams.delete('replaySplash');
+          u.searchParams.delete('firstVisit');
+          var next = u.pathname + (u.search || '') + u.hash;
+          history.replaceState({}, '', next);
+        } catch (e) {}
+      }
+
+      function finishSplash(goHome) {
+        window.clearTimeout(t1);
+        window.clearTimeout(t2);
+        stripReplayParamsFromUrl();
+        try {
+          localStorage.setItem(KEY, '1');
+          sessionStorage.setItem('picorySplashThisTab', '1');
+        } catch (e) {}
+        document.documentElement.classList.remove('m-splash-pending');
+        document.body.classList.remove('m-splash-active');
+        overlay.setAttribute('hidden', '');
+        overlay.setAttribute('aria-hidden', 'true');
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        if (!goHome) {
+          window.location.href = 'auth.html?welcome=1';
+        }
+      }
+
+      if (skip) {
+        skip.addEventListener('click', function () {
+          finishSplash(true);
+        });
+      }
+
+      t1 = window.setTimeout(function () {
+        if (welcome) welcome.removeAttribute('hidden');
+        overlay.classList.add('m-splash--welcome');
+      }, 2800);
+
+      t2 = window.setTimeout(function () {
+        finishSplash(false);
+      }, 5200);
+    })();
+  </script>
+    <header class="m-topbar">
+  <div class="m-topbar__inner">
+
+    <a href="index.html" class="m-topbar__brand" aria-label="Pictory 홈">
+      <img class="m-topbar__logo" src="../images/pictory-logo-mark.svg" alt="">
+    </a>
+    <div class="nav__actions m-topbar__actions">
+      <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button" aria-label="북마크">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
+    </div>
+    <button class="nav__hamburger m-topbar__hamburger" id="hamburgerBtn" type="button" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  
+  </div>
+  <div class="m-topbar__search-row">
+    <form class="m-topbar__search-form" action="products.html" method="get" role="search">
+      <label class="m-topbar__search-wrap">
+        <span class="m-topbar__search-icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.2-4.2"/></svg>
+        </span>
+        <input type="search" name="q" class="m-topbar__search-input" placeholder="상품, 브랜드 검색" autocomplete="off" enterkeyhint="search">
+      </label>
+    </form>
+  </div>
+</header>
+
+  <nav class="m-subnav" aria-label="빠른 이동">
+    <div class="m-subnav__scroll">
+      <a href="index.html" class="m-subnav__link m-subnav__link--active">홈</a>
+      <a href="products.html" class="m-subnav__link">상품</a>
+      <a href="camera-explore.html" class="m-subnav__link">카메라 탐색</a>
+      <a href="community.html" class="m-subnav__link">커뮤니티</a>
+    </div>
+  </nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+    </ul>
+  </div>
+
+  <section class="landing-hero">
+    <div class="container">
+      <div class="landing-banner" data-banner-slider>
+        <button class="landing-banner__arrow landing-banner__arrow--prev" type="button" data-banner-prev aria-label="이전 배너">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+
+        <div class="landing-banner__viewport">
+          <div class="landing-banner__track">
+            <article class="landing-banner__slide landing-banner__slide--photo">
+              <div class="landing-banner__visual landing-banner__visual--sony">
+                <img class="landing-banner__photo" src="../images/home-banner-1.png" alt="배너 카메라 이미지 1">
+              </div>
+              <div class="landing-banner__copy">
+                <p class="landing-banner__eyebrow">TREND CAMERA</p>
+                <h1 class="landing-banner__title">Sony A7C II</h1>
+                <p class="landing-banner__desc">작고 가벼운 풀프레임 바디로 일상, 인물, 브이로그까지 균형이 좋은 모델입니다.</p>
+              </div>
+            </article>
+
+            <article class="landing-banner__slide landing-banner__slide--photo">
+              <div class="landing-banner__visual landing-banner__visual--fuji">
+                <img class="landing-banner__photo" src="../images/home-banner-2.png" alt="배너 카메라 이미지 2">
+              </div>
+              <div class="landing-banner__copy">
+                <p class="landing-banner__eyebrow">TREND CAMERA</p>
+                <h2 class="landing-banner__title">Fujifilm X100V</h2>
+                <p class="landing-banner__desc">감성 색감과 휴대성이 강점인 스냅 카메라로 여행과 일상 기록용으로 특히 인기 있습니다.</p>
+              </div>
+            </article>
+
+            <article class="landing-banner__slide landing-banner__slide--photo">
+              <div class="landing-banner__visual landing-banner__visual--canon">
+                <img class="landing-banner__photo" src="../images/home-banner-3.png" alt="배너 카메라 이미지 3">
+              </div>
+              <div class="landing-banner__copy">
+                <p class="landing-banner__eyebrow">TREND CAMERA</p>
+                <h2 class="landing-banner__title">Canon EOS R50 V</h2>
+                <p class="landing-banner__desc">가볍고 직관적인 조작이 강점이라 입문용 사진과 영상 촬영 모두 시작하기 편한 모델입니다.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <button class="landing-banner__arrow landing-banner__arrow--next" type="button" data-banner-next aria-label="다음 배너">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <div class="landing-banner__dots">
+          <button class="landing-banner__dot is-active" type="button" data-banner-dot="0" aria-label="첫 번째 배너"></button>
+          <button class="landing-banner__dot" type="button" data-banner-dot="1" aria-label="두 번째 배너"></button>
+          <button class="landing-banner__dot" type="button" data-banner-dot="2" aria-label="세 번째 배너"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landing-category-strip">
+    <div class="container">
+      <div class="landing-category-strip__header">
+        <h2 class="landing-category-strip__title">상황별 추천 카메라</h2>
+        <p class="landing-category-strip__desc">지금 인기부터 빈티지 감성까지, 원하는 촬영 스타일에 맞춰 바로 둘러보세요.</p>
+      </div>
+
+      <div class="category-strip-grid" aria-label="추천 카테고리">
+        <a href="products.html#trending" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--popular" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-1.png" alt="">
+          </div>
+          <strong class="category-tile__title">지금 인기</strong>
+          <p class="category-tile__desc">가장 많이 찾는 베스트 모델</p>
+        </a>
+
+        <a href="products.html#beginner" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--beginner" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-2.png" alt="">
+          </div>
+          <strong class="category-tile__title">입문 추천</strong>
+          <p class="category-tile__desc">처음 시작하기 쉬운 조합</p>
+        </a>
+
+        <a href="products.html#emotional" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--mood" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-3.png" alt="">
+          </div>
+          <strong class="category-tile__title">감성 사진</strong>
+          <p class="category-tile__desc">색감과 무드가 살아있는 픽</p>
+        </a>
+
+        <a href="products.html#travel" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--travel" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-4.png" alt="">
+          </div>
+          <strong class="category-tile__title">여행용</strong>
+          <p class="category-tile__desc">가볍고 휴대성 좋은 모델</p>
+        </a>
+
+        <a href="products.html#vlog" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--vlog" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-5.png" alt="">
+          </div>
+          <strong class="category-tile__title">브이로그</strong>
+          <p class="category-tile__desc">영상 촬영에 강한 카메라</p>
+        </a>
+
+        <a href="products.html#value" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--value" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-6.png" alt="">
+          </div>
+          <strong class="category-tile__title">가성비</strong>
+          <p class="category-tile__desc">가격 대비 만족도가 높은 선택</p>
+        </a>
+
+        <a href="products.html#vintage" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--vintage" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-7.png" alt="">
+          </div>
+          <strong class="category-tile__title">빈티지/CCD</strong>
+          <p class="category-tile__desc">레트로 결과물이 매력적인 타입</p>
+        </a>
+
+        <a href="products.html#community-picks" class="category-tile">
+          <div class="category-tile__thumb category-tile__thumb--community" aria-hidden="true">
+            <img class="category-tile__image" src="../images/home-category-8.png" alt="">
+          </div>
+          <strong class="category-tile__title">많이 고른 카메라</strong>
+          <p class="category-tile__desc">실사용 후기가 좋은 인기 기종</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section landing-section">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">지금 많이 보는 메뉴</h2>
+        <p class="section__desc">홈에서 바로 탐색할 수 있도록 핵심 기능을 검은 테마 카드로 정리했습니다.</p>
+      </div>
+
+      <div class="landing-grid">
+        <a href="recommend.html" class="landing-card card">
+          <span class="landing-card__label">AI 추천</span>
+          <h3>사진 업로드로 딱 맞는 카메라 찾기</h3>
+          <p>원하는 분위기의 사진을 올리면 카메라와 렌즈 조합을 바로 추천해 드려요.</p>
+        </a>
+        <a href="price.html" class="landing-card card">
+          <span class="landing-card__label">시세 비교</span>
+          <h3>중고/신품 가격 흐름 빠르게 확인</h3>
+          <p>플랫폼별 가격과 최근 추이를 한 화면에서 비교할 수 있습니다.</p>
+        </a>
+        <a href="checklist.html" class="landing-card card">
+          <span class="landing-card__label">나에게 맞는 카메라 찾기</span>
+          <h3>나에게 맞는 카메라 후보 좁히기</h3>
+          <p>예산, 스타일, 휴대성 기준으로 적합한 모델을 압축해 보여줍니다.</p>
+        </a>
+        <a href="community.html" class="landing-card card">
+          <span class="landing-card__label">커뮤니티</span>
+          <h3>실사용 작례와 촬영 설정 보기</h3>
+          <p>광고보다 실제 유저 경험 중심으로 카메라 결과물을 확인하세요.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="m-bookmark-dock">
+  <aside class="bookmark-sidebar" id="bookmarkSidebar">
+    <div class="bookmark-sidebar__header">
+      <h3>내 북마크</h3>
+      <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="bookmark-sidebar__body" id="bookmarkBody">
+      <div class="bookmark-empty" id="bookmarkEmpty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <p>아직 북마크한 카메라가 없어요.</p>
+        <p class="text-sm text-muted">마음에 드는 카메라의 북마크 버튼을 눌러보세요.</p>
+      </div>
+      <div class="bookmark-list hidden" id="bookmarkList"></div>
+    </div>
+    <div class="bookmark-sidebar__footer hidden" id="bookmarkFooter">
+      <button class="btn btn--primary" style="width: 100%;" id="compareBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        선택한 카메라 비교하기
+      </button>
+    </div>
+  </aside>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__logo footer__logo">
+            <img class="nav__logo-image" src="../images/pictory-logo-mark.svg" alt="Pictory">
+          </a>
+          <p class="footer__tagline">카메라 탐색의 새로운 기준</p>
+        </div>
+        <div class="footer__links">
+          <span class="footer__muted footer__muted--mobile-note">모바일 전용 화면</span>
+          <a href="../index.html">PC 버전</a>
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">고객센터</a>
+        </div>
+        <div class="footer__theme" role="group" aria-label="화면 테마">
+          <span class="footer__theme-label">테마</span>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
+        </div>
+        <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/theme.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>
