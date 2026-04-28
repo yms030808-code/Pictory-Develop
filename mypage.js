@@ -126,19 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
     archiveGridEl.innerHTML = items
       .slice()
       .reverse()
-      .map((item, reversedIdx, arr) => {
-        const originalIndex = arr.length - 1 - reversedIdx;
-        const id = String(item.id || '').trim();
-        const safeId = escapeHtml(id);
+      .map((item) => {
         const model = escapeHtml(item.cameraModel || '업로드 이미지');
         const category = escapeHtml(item.categoryLabel || '');
         const imageSrc = String(item.imageDataUrl || '');
         return `
-          <article class="mypage-archive-card card" data-archive-id="${safeId}" data-archive-index="${originalIndex}">
-            <div class="mypage-archive-card__actions">
-              <button type="button" class="btn btn--outline btn--xs" data-archive-edit="${safeId}" data-archive-index="${originalIndex}">수정</button>
-              <button type="button" class="btn btn--danger btn--xs" data-archive-delete="${safeId}" data-archive-index="${originalIndex}">삭제</button>
-            </div>
+          <article class="mypage-archive-card card">
             <img src="${imageSrc}" alt="${model}">
             <p><strong>${model}</strong>${category ? ` · ${category}` : ''}</p>
           </article>
@@ -311,72 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     archiveEditOverlay = overlay;
     return overlay;
   }
-
-  archiveGridEl?.addEventListener('click', (e) => {
-    const editBtn = e.target.closest('[data-archive-edit]');
-    const delBtn = e.target.closest('[data-archive-delete]');
-
-    if (delBtn) {
-      const id = String(delBtn.getAttribute('data-archive-delete') || '').trim();
-      const indexRaw = delBtn.getAttribute('data-archive-index');
-      const index = Number.parseInt(String(indexRaw ?? ''), 10);
-      const list = readArchiveList();
-      const item = id
-        ? list.find((x) => x && x.id === id)
-        : (Number.isInteger(index) ? list[index] : null);
-      if (!item) return;
-      const name = String(item?.cameraModel || '이 항목');
-      if (!confirm('이 사진을 삭제하시겠습니까?')) return;
-      const next = list.filter((x, i) => {
-        if (!x) return false;
-        if (id && String(x.id || '').trim()) return x.id !== id;
-        return i !== index;
-      });
-      writeArchiveList(next);
-
-      // 커뮤니티에 같은 id가 있으면 같이 삭제
-      if (id) {
-        const cList = readCommunityList();
-        const cNext = cList.filter((x) => x && x.id !== id);
-        if (cNext.length !== cList.length) writeCommunityList(cNext);
-      }
-
-      addActivityLog(`${name} 아카이브 항목을 삭제했어요.`);
-      renderArchive();
-      return;
-    }
-
-    if (editBtn) {
-      const id = String(editBtn.getAttribute('data-archive-edit') || '').trim();
-      const indexRaw = editBtn.getAttribute('data-archive-index');
-      const index = Number.parseInt(String(indexRaw ?? ''), 10);
-      const list = readArchiveList();
-      const item = id
-        ? list.find((x) => x && x.id === id)
-        : (Number.isInteger(index) ? list[index] : null);
-      if (!item) return;
-
-      const overlay = ensureArchiveEditOverlay();
-      // 예전 데이터(id 없음)도 수정 가능하도록 임시 id 부여 후 저장
-      if (id) {
-        archiveEditingId = id;
-      } else if (Number.isInteger(index) && list[index]) {
-        const fallbackId = `archive-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-        list[index] = { ...list[index], id: fallbackId };
-        writeArchiveList(list);
-        archiveEditingId = fallbackId;
-      } else {
-        return;
-      }
-      archiveEditImageDataUrl = '';
-      const zone = overlay.querySelector('#archiveEditUploadZone');
-      zone.innerHTML = `<img src="${String(item.imageDataUrl || '')}" alt="현재 사진" style="width: 100%; max-height: 240px; object-fit: cover; border-radius: 12px;">`;
-      overlay.querySelector('#archiveEditModelInput').value = String(item.cameraModel || '');
-      overlay.querySelector('#archiveEditCategorySelect').value = String(item.categoryLabel || '일상');
-      overlay.classList.remove('hidden');
-      return;
-    }
-  });
 
   renderArchive();
 
