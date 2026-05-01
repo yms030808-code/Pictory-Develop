@@ -360,25 +360,25 @@
   }
   var W = 600;
   var H = 200;
-  var PAD_T = 18;
-  var PAD_B = 22;
+  var PAD_T = 24;
+  var PAD_B = 28;
   var X0 = 36;
   var X1 = 564;
   var N = 7;
-  var CHART_REF_DATE = new Date(2026, 3, 17);
+  var CHART_REF_DATE = new Date(2026, 3, 28);
   function monthLabelsRolling7(reference = CHART_REF_DATE) {
     const labels = [];
     for (let i = N - 1; i >= 0; i -= 1) {
-      const d = new Date(reference.getFullYear(), reference.getMonth() - i, 1);
-      labels.push(`${d.getMonth() + 1}\uC6D4`);
+      const d = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate() - i * 10);
+      labels.push(`${String(d.getMonth() + 1).padStart(2, "0")}/${String(d.getDate()).padStart(2, "0")}`);
     }
     return labels;
   }
   function fullMonthLabels(reference = CHART_REF_DATE) {
     const labels = [];
     for (let i = N - 1; i >= 0; i -= 1) {
-      const d = new Date(reference.getFullYear(), reference.getMonth() - i, 1);
-      labels.push(`${d.getFullYear()}\uB144 ${d.getMonth() + 1}\uC6D4`);
+      const d = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate() - i * 10);
+      labels.push(`${d.getFullYear()}\uB144 ${d.getMonth() + 1}\uC6D4 ${d.getDate()}\uC77C`);
     }
     return labels;
   }
@@ -439,78 +439,88 @@
   function xAt(i) {
     return X0 + i / (N - 1) * (X1 - X0);
   }
+  function buildHighLowSeries(avgValues, currentLow, currentHigh, query) {
+    const seed = hashString2(`${query}|${currentLow}|${currentHigh}|range`);
+    const lowStart = Math.round(currentLow * (1.035 + seed % 8 / 500));
+    const highStart = Math.round(currentHigh * (1.02 + seed % 7 / 500));
+    const lowValues = [];
+    const highValues = [];
+    for (let i = 0; i < N; i += 1) {
+      const t = i / (N - 1);
+      const flatStep = i < 2 ? 0 : i < 3 ? 0.55 : 1;
+      const lowBase = lowStart + (currentLow - lowStart) * flatStep;
+      const highBase = highStart + (currentHigh - highStart) * flatStep;
+      const lowWobble = 1 + ((seed >> i * 2 & 7) - 3) / 900;
+      const highWobble = 1 + ((seed >> i * 3 & 7) - 3) / 900;
+      lowValues.push(Math.round(lowBase * lowWobble));
+      highValues.push(Math.round(highBase * highWobble));
+      if (t > 0.55) {
+        lowValues[i] = Math.round(currentLow * (1 + ((seed >> i & 3) - 1) / 1200));
+        highValues[i] = Math.round(currentHigh * (1 + ((seed >> i + 1 & 3) - 1) / 1200));
+      }
+    }
+    lowValues[N - 1] = currentLow;
+    highValues[N - 1] = currentHigh;
+    return {
+      lowValues,
+      highValues: highValues.map((v, i) => Math.max(v, lowValues[i] + Math.max(5e4, avgValues[i] * 0.035)))
+    };
+  }
   function renderPriceChart(mount, filteredListings, query, options = {}) {
     if (!mount) return { values: [], anchorAvg: 0 };
     const { catalogProducts = [] } = options;
     const used = (filteredListings || []).filter((r) => r.conditionKey !== "new");
     const anchorAvg = used.length ? Math.round(used.reduce((s, r) => s + r.priceValue, 0) / used.length) : fallbackAnchorAvg(query);
-    const values = catalogProducts.length > 0 ? buildMonthlySeriesFromCatalog(anchorAvg, catalogProducts, query) : buildMonthlyAverages(anchorAvg, query);
-    const minV = Math.min(...values);
-    const maxV = Math.max(...values);
-    const minIdx = values.indexOf(minV);
-    const maxIdx = values.indexOf(maxV);
-    const { ticks, lo, hi } = yTicks(minV, maxV, 5);
-    const points = values.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
-    const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
-    const areaPath = `M${points[0].x} ${points[0].y} L${points.slice(1).map((p) => `${p.x} ${p.y}`).join(" ")} L${points[N - 1].x} ${H} L${points[0].x} ${H} Z`;
+    const avgValues = catalogProducts.length > 0 ? buildMonthlySeriesFromCatalog(anchorAvg, catalogProducts, query) : buildMonthlyAverages(anchorAvg, query);
+    const usedPrices = used.map((r) => Number(r.priceValue)).filter(Number.isFinite);
+    const currentLow = usedPrices.length ? Math.min(...usedPrices) : Math.round(anchorAvg * 0.92);
+    const currentHigh = usedPrices.length ? Math.max(...usedPrices) : Math.round(anchorAvg * 1.08);
+    const currentAvg = usedPrices.length ? Math.round(usedPrices.reduce((s, n) => s + n, 0) / usedPrices.length) : anchorAvg;
+    const { lowValues, highValues } = buildHighLowSeries(avgValues, currentLow, currentHigh, query);
+    const minV = Math.min(...lowValues);
+    const maxV = Math.max(...highValues);
+    const { ticks, lo, hi } = yTicks(minV, maxV, 4);
+    const lowPoints = lowValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
+    const highPoints = highValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
+    const lowPolyline = lowPoints.map((p) => `${p.x},${p.y}`).join(" ");
+    const highPolyline = highPoints.map((p) => `${p.x},${p.y}`).join(" ");
     const monthShort = monthLabelsRolling7();
     const monthFull = fullMonthLabels();
-    const gradId = `chartGrad_${hashString2(query + String(anchorAvg))}`;
     const yAxisHtml = ticks.slice().reverse().map((t) => `<span>${formatWonMan(t)}</span>`).join("");
     const xAxisHtml = monthShort.map((lab) => `<span>${escapeHtml(lab)}</span>`).join("");
-    const pointGroups = points.map((p) => {
-      const isMin = p.i === minIdx;
-      const isMax = p.i === maxIdx;
-      let fill = "#FF5C00";
-      let pointClass = "chart__point";
-      if (isMin && isMax) {
-        pointClass += " chart__point--both";
-        fill = "#7C3AED";
-      } else if (isMin) {
-        pointClass += " chart__point--min";
-        fill = "#2563EB";
-      } else if (isMax) {
-        pointClass += " chart__point--max";
-        fill = "#DC2626";
-      }
-      let labelSvg = "";
-      const labelY = p.y + 28;
-      if (isMin && isMax) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--both" text-anchor="middle" pointer-events="none">
-        <tspan class="chart__point-label-line" x="${p.x}" y="${labelY}">\uCD5C\uC800\uAC00</tspan>
-        <tspan class="chart__point-label-line" x="${p.x}" dy="21">\uCD5C\uACE0\uAC00</tspan>
-      </text>`;
-      } else if (isMin) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--min" x="${p.x}" y="${labelY}" text-anchor="middle" pointer-events="none">\uCD5C\uC800\uAC00</text>`;
-      } else if (isMax) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--max" x="${p.x}" y="${labelY}" text-anchor="middle" pointer-events="none">\uCD5C\uACE0\uAC00</text>`;
-      }
+    const pointGroups = lowPoints.map((lowPoint, i) => {
+      const highPoint = highPoints[i];
       return `
-    <g class="${pointClass}" data-month="${escapeAttr(monthFull[p.i])}" data-avg="${escapeAttr(formatWonFull(p.v))}">
-      <circle class="chart__hit" cx="${p.x}" cy="${p.y}" r="14" fill="transparent" style="cursor:pointer"/>
-      <circle cx="${p.x}" cy="${p.y}" r="4" fill="${fill}" stroke="#fff" stroke-width="1.2"/>
-      ${labelSvg}
+    <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
+      <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
+      <circle cx="${highPoint.x}" cy="${highPoint.y}" r="3.5" fill="#20B15A" stroke="#fff" stroke-width="1.2"/>
+      <circle cx="${lowPoint.x}" cy="${lowPoint.y}" r="3.5" fill="#EF5B66" stroke="#fff" stroke-width="1.2"/>
     </g>`;
     }).join("");
-    const currentV = values[values.length - 1];
-    const minMaxLine = `<p class="chart__minmax" role="status"><span class="chart__minmax-item chart__minmax-item--low">\uCD5C\uC800\uAC00 <strong>${escapeHtml(formatWonFull(minV))}</strong></span><span class="chart__minmax-sep" aria-hidden="true">\xB7</span><span class="chart__minmax-item chart__minmax-item--high">\uCD5C\uACE0\uAC00 <strong>${escapeHtml(formatWonFull(maxV))}</strong></span><span class="chart__minmax-sep" aria-hidden="true">\xB7</span><span class="chart__minmax-item chart__minmax-item--current">\uD604\uC7AC\uAC00 <strong>${escapeHtml(formatWonFull(currentV))}</strong></span><span class="chart__minmax-note"> (\uADF8\uB798\uD504 7\uAC1C\uC6D4 \uAD6C\uAC04 \uB0B4 \uC6D4\uBCC4 \uD3C9\uADE0 \uC911\uACE0 \uC2DC\uC138 \uAE30\uC900)</span></p>`;
+    const currentStats = `<div class="chart__current-card" role="status">
+    <div class="chart__current-row chart__current-row--high"><span><i></i>\uD604 \uCD5C\uACE0\uAC00</span><strong>${escapeHtml(formatWonFull(currentHigh))}</strong></div>
+    <div class="chart__current-row chart__current-row--avg"><span><i></i>\uD604\uC7AC \uD3C9\uADE0\uAC00</span><strong>${escapeHtml(formatWonFull(currentAvg))}</strong></div>
+    <div class="chart__current-row chart__current-row--low"><span><i></i>\uD604 \uCD5C\uC800\uAC00</span><strong>${escapeHtml(formatWonFull(currentLow))}</strong></div>
+  </div>`;
+    const lastHigh = highPoints[N - 1];
+    const lastLow = lowPoints[N - 1];
+    const highGuideY = lastHigh.y;
+    const lowGuideY = lastLow.y;
     mount.innerHTML = `
-    <div class="chart">
-      ${minMaxLine}
+    <div class="chart chart--range">
+      ${currentStats}
       <div class="chart__y-axis" aria-hidden="true">${yAxisHtml}</div>
       <div class="chart__area chart__area--interactive">
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" class="chart__svg" overflow="visible" focusable="false" aria-hidden="true" id="priceChartSvg">
-          <defs>
-            <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FF5C00" stop-opacity="0.3"/>
-              <stop offset="100%" stop-color="#FF5C00" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-          <path d="${areaPath}" fill="url(#${gradId})"/>
-          <polyline points="${polyline}" fill="none" stroke="#FF5C00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <g class="chart__grid">
+            ${lowPoints.map((p) => `<line x1="${p.x}" y1="${PAD_T}" x2="${p.x}" y2="${H - PAD_B}" />`).join("")}
+          </g>
+          <line class="chart__guide chart__guide--high" x1="${X0}" y1="${highGuideY}" x2="${X1}" y2="${highGuideY}" />
+          <line class="chart__guide chart__guide--low" x1="${X0}" y1="${lowGuideY}" x2="${X1}" y2="${lowGuideY}" />
+          <polyline points="${highPolyline}" fill="none" stroke="#20B15A" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <polyline points="${lowPolyline}" fill="none" stroke="#EF5B66" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <text class="chart__inline-label chart__inline-label--high" x="${X1 - 146}" y="${Math.max(PAD_T + 12, highGuideY - 12)}">\uCD5C\uACE0\uAC00 ${escapeHtml(formatWonFull(currentHigh))}</text>
+          <text class="chart__inline-label chart__inline-label--low" x="${X1 - 146}" y="${Math.min(H - PAD_B - 6, lowGuideY + 22)}">\uCD5C\uC800\uAC00 ${escapeHtml(formatWonFull(currentLow))}</text>
           ${pointGroups}
         </svg>
         <div class="chart__x-axis" aria-hidden="true">${xAxisHtml}</div>
@@ -522,12 +532,12 @@
     const tooltip = mount.querySelector("#chartTooltip");
     const area = mount.querySelector(".chart__area--interactive");
     let lastTipKey = "";
-    function showTip(textMonth, textAvg, clientX, clientY) {
+    function showTip(textMonth, textLow, textHigh, clientX, clientY) {
       if (!tooltip || !area) return;
-      const key = `${textMonth}|${textAvg}`;
+      const key = `${textMonth}|${textLow}|${textHigh}`;
       const contentChanged = key !== lastTipKey;
       lastTipKey = key;
-      const html = `<span class="chart-tooltip__month">${escapeHtml(textMonth)}</span><span class="chart-tooltip__avg">\uD3C9\uADE0 \uC911\uACE0 \uC2DC\uC138 ${escapeHtml(textAvg)}</span>`;
+      const html = `<span class="chart-tooltip__month">${escapeHtml(textMonth)}</span><span class="chart-tooltip__avg chart-tooltip__avg--high">\uCD5C\uACE0\uAC00 ${escapeHtml(textHigh)}</span><span class="chart-tooltip__avg chart-tooltip__avg--low">\uCD5C\uC800\uAC00 ${escapeHtml(textLow)}</span>`;
       if (contentChanged) {
         tooltip.innerHTML = html;
         tooltip.classList.remove("chart-tooltip--visible");
@@ -561,15 +571,15 @@
     }
     mount.querySelectorAll(".chart__point").forEach((g) => {
       g.addEventListener("mouseenter", (e) => {
-        showTip(g.dataset.month, g.dataset.avg, e.clientX, e.clientY);
+        showTip(g.dataset.month, g.dataset.low, g.dataset.high, e.clientX, e.clientY);
       });
       g.addEventListener("mousemove", (e) => {
-        showTip(g.dataset.month, g.dataset.avg, e.clientX, e.clientY);
+        showTip(g.dataset.month, g.dataset.low, g.dataset.high, e.clientX, e.clientY);
       });
       g.addEventListener("mouseleave", hideTip);
     });
     svg?.addEventListener("mouseleave", hideTip);
-    return { values, anchorAvg };
+    return { values: avgValues, anchorAvg, highValues, lowValues };
   }
   function chartInsightText(values) {
     if (!values || values.length < 2) return "\uAC80\uC0C9\uB41C \uC911\uACE0 \uC2DC\uC138 \uCD94\uC774\uB97C \uD655\uC778\uD574 \uBCF4\uC138\uC694.";

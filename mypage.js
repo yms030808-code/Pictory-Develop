@@ -2,12 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('[data-mypage-tab]');
   const panels = document.querySelectorAll('[data-mypage-panel]');
   const logoutBtn = document.getElementById('mypageLogoutBtn');
+  const settingsGearBtn = document.getElementById('mypageSettingsGear');
+  const settingsDropdown = document.getElementById('mypageSettingsDropdown');
   const sessionStorageKey = 'picoryAuthSession';
   const activityLogStorageKey = 'picoryActivityLogs';
+  const recentCameraStorageKey = 'picoryRecentCameras';
+  const bookmarkStorageKey = 'picoryBookmarks';
   const archiveStorageKey = 'picoryArchivePosts';
   const communityStorageKey = 'picoryCommunityPosts';
   const nicknameEl = document.getElementById('mypageNickname');
-  const timelineEl = document.getElementById('mypageTimeline');
+  const recentCameraListEl = document.getElementById('mypageRecentCameraList');
+  const bookmarkGridEl = document.getElementById('mypageBookmarkGrid');
+  const bookmarkEmptyEl = document.getElementById('mypageBookmarkEmpty');
+  const bookmarkCompareEl = document.getElementById('mypageBookmarkCompare');
+  const bookmarkCompareChoicesEl = document.getElementById('mypageBookmarkCompareChoices');
+  const bookmarkCompareResultEl = document.getElementById('mypageBookmarkCompareResult');
+  const bookmarkCompareBtn = document.getElementById('mypageBookmarkCompareBtn');
   const archiveGridEl = document.getElementById('mypageArchiveGrid');
   const archiveCountEl = document.getElementById('mypageArchiveCount');
   const archivePanel = document.querySelector('[data-mypage-panel="archive"]');
@@ -34,15 +44,71 @@ document.addEventListener('DOMContentLoaded', () => {
   let archiveEditImageDataUrl = '';
   let archiveEditingId = '';
   let archiveEditOverlay = null;
+  const cameraCompareCatalog = [
+    { name: 'Fujifilm X100VI', sensor: 'APS-C', price: '약 2,190,000원대', feature: '필름 시뮬레이션, 스냅 고정렌즈', bestFor: '일상·스냅·감성 사진', weight: '컴팩트' },
+    { name: 'Canon EOS R10', sensor: 'APS-C', price: '약 920,000원대', feature: '빠른 반응성, 입문 친화 조작', bestFor: '입문·여행·가성비', weight: '가벼움' },
+    { name: 'Sony ZV-E10 II', sensor: 'APS-C', price: '약 1,280,000원대', feature: '브이로그 자동 모드, 마이크 단자', bestFor: '영상·브이로그', weight: '가벼움' },
+    { name: 'Ricoh GR IIIx', sensor: 'APS-C', price: '약 1,590,000원대', feature: '40mm 스냅 특화 포켓 카메라', bestFor: '여행·거리 스냅', weight: '매우 가벼움' },
+    { name: 'Sony A7C II', sensor: '풀프레임', price: '약 2,390,000원대', feature: '작은 바디 + 풀프레임 센서', bestFor: '인물·여행·올라운드', weight: '중간' },
+    { name: 'Nikon Z fc', sensor: 'APS-C', price: '약 1,190,000원대', feature: '레트로 디자인, 다이얼 조작', bestFor: '감성·일상·여행', weight: '가벼움' },
+    { name: 'Canon PowerShot G7 X Mark III', sensor: '1인치', price: '약 950,000원대', feature: '컴팩트 4K 영상, 휴대성', bestFor: '브이로그·일상', weight: '매우 가벼움' },
+    { name: 'DJI Osmo Pocket 3', sensor: '1인치', price: '약 649,000원대', feature: '3축 짐벌 손떨림 보정', bestFor: '영상·여행 브이로그', weight: '초경량' },
+    { name: 'Sony A6700', sensor: 'APS-C', price: '약 1,520,000원대', feature: '빠른 AF, 고급 영상 옵션', bestFor: '영상·사진 올라운드', weight: '중간' },
+    { name: 'Canon EOS R50', sensor: 'APS-C', price: '약 980,000원대', feature: '쉬운 조작, 입문형 미러리스', bestFor: '입문·일상', weight: '가벼움' },
+    { name: 'Fujifilm X-S20', sensor: 'APS-C', price: '약 1,780,000원대', feature: '손떨림 보정, 배터리 효율', bestFor: '사진·영상 겸용', weight: '중간' },
+    { name: 'Canon EOS R50 V', sensor: 'APS-C', price: '약 1,180,000원대', feature: '세로 영상·라이브 친화 UI', bestFor: '브이로그·숏폼', weight: '가벼움' },
+  ];
+
+  const activateTab = (target) => {
+    const matchedTab = Array.from(tabs).find((tab) => tab.dataset.mypageTab === target);
+    const matchedPanel = Array.from(panels).find((panel) => panel.dataset.mypagePanel === target);
+    if (!matchedTab || !matchedPanel) return;
+
+    tabs.forEach((tab) => tab.classList.toggle('is-active', tab === matchedTab));
+    panels.forEach((panel) => {
+      panel.classList.toggle('is-active', panel === matchedPanel);
+    });
+  };
 
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
-      const target = tab.dataset.mypageTab;
-      tabs.forEach((t) => t.classList.toggle('is-active', t === tab));
-      panels.forEach((panel) => {
-        panel.classList.toggle('is-active', panel.dataset.mypagePanel === target);
-      });
+      activateTab(tab.dataset.mypageTab);
     });
+  });
+
+  const requestedTab = new URLSearchParams(window.location.search).get('tab');
+  const requestedHash = window.location.hash.replace('#', '');
+  const initialTab = requestedTab || (requestedHash === 'bookmarks' ? 'bookmark' : requestedHash);
+  if (initialTab) {
+    activateTab(initialTab);
+    if (requestedHash) {
+      window.requestAnimationFrame(() => {
+        document.getElementById(requestedHash)?.scrollIntoView({ block: 'start' });
+      });
+    }
+  }
+
+  const closeSettingsDropdown = () => {
+    settingsDropdown?.classList.add('hidden');
+    settingsGearBtn?.setAttribute('aria-expanded', 'false');
+  };
+
+  settingsGearBtn?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const shouldOpen = settingsDropdown?.classList.contains('hidden');
+    settingsDropdown?.classList.toggle('hidden', !shouldOpen);
+    settingsGearBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    if (settingsDropdown?.contains(target) || settingsGearBtn?.contains(target)) return;
+    closeSettingsDropdown();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSettingsDropdown();
   });
 
   const sessionRaw = localStorage.getItem(sessionStorageKey);
@@ -76,29 +142,211 @@ document.addEventListener('DOMContentLoaded', () => {
       "'": '&#39;',
     }[ch] || ch));
 
-  const renderActivityLogs = () => {
-    if (!timelineEl) return;
-    const logsRaw = localStorage.getItem(activityLogStorageKey);
-    let logs = [];
-    try {
-      logs = logsRaw ? JSON.parse(logsRaw) : [];
-    } catch (error) {
-      logs = [];
-    }
+  const normalizeCameraName = (value) =>
+    String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
 
-    if (!logs.length) {
-      timelineEl.innerHTML = '<li><span>안내</span>아직 기록된 활동 로그가 없습니다. 서비스를 사용하면 여기에 자동으로 쌓여요.</li>';
+  const findCompareMeta = (name) => {
+    const key = normalizeCameraName(name);
+    return cameraCompareCatalog.find((item) => normalizeCameraName(item.name) === key) ||
+      cameraCompareCatalog.find((item) => key.includes(normalizeCameraName(item.name)) || normalizeCameraName(item.name).includes(key));
+  };
+
+  const addActivityLog = (message) => {
+    try {
+      const raw = localStorage.getItem(activityLogStorageKey);
+      const logs = raw ? JSON.parse(raw) : [];
+      logs.push({
+        at: new Date().toISOString(),
+        message: String(message || '').trim(),
+      });
+      localStorage.setItem(activityLogStorageKey, JSON.stringify(logs.slice(-80)));
+    } catch (_) {
+      /* noop */
+    }
+  };
+
+  const readRecentCameras = () => {
+    try {
+      const raw = localStorage.getItem(recentCameraStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) return [];
+      return list.slice().reverse();
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const renderRecentCameras = () => {
+    if (!recentCameraListEl) return;
+    const items = readRecentCameras();
+    if (!items.length) {
+      recentCameraListEl.innerHTML = '<li class="mypage-recent-camera-list__empty">최근 본 카메라가 아직 없습니다. 상품을 클릭하거나 검색하면 여기에 표시됩니다.</li>';
       return;
     }
-
-    timelineEl.innerHTML = logs
-      .slice(-12)
-      .reverse()
-      .map((log) => `<li><span>${formatTime(log.at)}</span>${log.message}</li>`)
+    recentCameraListEl.innerHTML = items
+      .slice(0, 12)
+      .map((item) => {
+        const name = escapeHtml(item?.name || '카메라');
+        const query = encodeURIComponent(String(item?.query || item?.name || '').trim());
+        const source = escapeHtml(item?.source || '클릭');
+        const at = formatTime(item?.at);
+        return `
+          <li>
+            <a class="mypage-recent-camera-list__link" href="price.html?q=${query}">
+              <strong>${name}</strong>
+              <span>${source}${at ? ` · ${at}` : ''}</span>
+            </a>
+          </li>
+        `;
+      })
       .join('');
   };
 
-  renderActivityLogs();
+  renderRecentCameras();
+
+  const readBookmarks = () => {
+    try {
+      const raw = localStorage.getItem(bookmarkStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list.filter((item) => item?.name) : [];
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const renderBookmarks = () => {
+    if (!bookmarkGridEl) return;
+    const items = readBookmarks();
+    if (!items.length) {
+      bookmarkGridEl.hidden = true;
+      bookmarkGridEl.innerHTML = '';
+      bookmarkEmptyEl?.classList.remove('hidden');
+      if (bookmarkCompareEl) bookmarkCompareEl.hidden = true;
+      return;
+    }
+
+    bookmarkEmptyEl?.classList.add('hidden');
+    bookmarkGridEl.hidden = false;
+    if (bookmarkCompareEl) bookmarkCompareEl.hidden = false;
+    bookmarkGridEl.innerHTML = items
+      .map((item, index) => ({ item, index }))
+      .reverse()
+      .map(({ item, index }) => {
+        const name = escapeHtml(item.name || '카메라');
+        const lens = escapeHtml(item.lens || '북마크');
+        const price = escapeHtml(item.price || '');
+        const href = escapeHtml(item.href || `price.html?q=${encodeURIComponent(item.name || '')}`);
+        return `
+          <article class="mypage-bookmark-card card">
+            <div>
+              <strong>${name}</strong>
+              <p>${lens}${price ? ` · ${price}` : ''}</p>
+            </div>
+            <div class="mypage-bookmark-card__actions">
+              <a class="btn btn--outline btn--xs" href="${href}">시세 보기</a>
+              <button type="button" class="mypage-bookmark-card__remove" data-bookmark-remove="${index}" aria-label="${name} 북마크 해제">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
+    renderBookmarkCompareChoices(items);
+  };
+
+  renderBookmarks();
+
+  bookmarkGridEl?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const removeBtn = target.closest('[data-bookmark-remove]');
+    if (!removeBtn) return;
+    const index = Number(removeBtn.dataset.bookmarkRemove);
+    const items = readBookmarks();
+    if (!Number.isInteger(index) || !items[index]) return;
+
+    items.splice(index, 1);
+    localStorage.setItem(bookmarkStorageKey, JSON.stringify(items));
+    renderBookmarks();
+    window.syncPicoryBookmarks?.();
+  });
+
+  function buildCompareItem(bookmark) {
+    const meta = findCompareMeta(bookmark.name) || {};
+    return {
+      name: bookmark.name || '카메라',
+      price: bookmark.price || meta.price || '가격 정보 없음',
+      sensor: meta.sensor || '정보 준비 중',
+      feature: meta.feature || bookmark.lens || '북마크한 카메라',
+      bestFor: meta.bestFor || '시세 비교에서 확인',
+      weight: meta.weight || '정보 준비 중',
+      href: bookmark.href || `price.html?q=${encodeURIComponent(bookmark.name || '')}`,
+    };
+  }
+
+  function renderBookmarkCompareChoices(items) {
+    if (!bookmarkCompareChoicesEl) return;
+    bookmarkCompareChoicesEl.innerHTML = items
+      .map((item, index) => `
+        <label class="mypage-bookmark-compare__choice">
+          <input type="checkbox" value="${index}" ${index < 2 ? 'checked' : ''}>
+          <span>${escapeHtml(item.name)}</span>
+        </label>
+      `)
+      .join('');
+    renderBookmarkComparison();
+  }
+
+  function renderBookmarkComparison() {
+    if (!bookmarkCompareChoicesEl || !bookmarkCompareResultEl) return;
+    const bookmarks = readBookmarks();
+    const checkedInputs = Array.from(bookmarkCompareChoicesEl.querySelectorAll('input:checked'));
+    if (checkedInputs.length > 4) {
+      bookmarkCompareResultEl.innerHTML = '<p class="mypage-muted">비교는 최대 4개 카메라까지만 선택할 수 있어요.</p>';
+      return;
+    }
+
+    const selected = checkedInputs
+      .map((input) => bookmarks[Number(input.value)])
+      .filter(Boolean);
+
+    if (selected.length < 2) {
+      bookmarkCompareResultEl.innerHTML = '<p class="mypage-muted">비교할 카메라를 2개 이상 선택해 주세요.</p>';
+      return;
+    }
+
+    const rows = selected.map(buildCompareItem);
+    bookmarkCompareResultEl.innerHTML = `
+      <div class="mypage-bookmark-compare-table">
+        ${rows.map((item) => `
+          <article class="mypage-bookmark-compare-card">
+            <h4>${escapeHtml(item.name)}</h4>
+            <dl>
+              <div><dt>가격</dt><dd>${escapeHtml(item.price)}</dd></div>
+              <div><dt>센서</dt><dd>${escapeHtml(item.sensor)}</dd></div>
+              <div><dt>특징</dt><dd>${escapeHtml(item.feature)}</dd></div>
+              <div><dt>추천 용도</dt><dd>${escapeHtml(item.bestFor)}</dd></div>
+              <div><dt>휴대성</dt><dd>${escapeHtml(item.weight)}</dd></div>
+            </dl>
+            <a class="btn btn--outline btn--xs" href="${escapeHtml(item.href)}">시세 보기</a>
+          </article>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  bookmarkCompareBtn?.addEventListener('click', renderBookmarkComparison);
+  bookmarkCompareChoicesEl?.addEventListener('change', (event) => {
+    const checkedInputs = Array.from(bookmarkCompareChoicesEl.querySelectorAll('input:checked'));
+    if (checkedInputs.length > 4) {
+      if (event.target instanceof HTMLInputElement) {
+        event.target.checked = false;
+      }
+      alert('비교는 최대 4개 카메라까지만 선택할 수 있어요.');
+    }
+    renderBookmarkComparison();
+  });
 
   const renderArchive = () => {
     if (!archiveGridEl) return;

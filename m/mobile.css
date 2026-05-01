@@ -74,6 +74,7 @@ body.page-mobile {
   display: block;
   object-fit: contain;
   object-position: left center;
+  filter: invert(1);
 }
 
 .m-topbar__search-form {
@@ -233,13 +234,13 @@ html[data-theme="dark"] .m-splash {
   width: min(220px, 58vw);
   height: auto;
   object-fit: contain;
-  filter: none;
+  filter: invert(1);
   opacity: 0;
   animation: m-splash-logo-in 0.55s ease forwards;
 }
 
 html[data-theme="dark"] .m-splash__logo {
-  filter: invert(1);
+  filter: none;
 }
 
 @keyframes m-splash-logo-in {
@@ -338,7 +339,7 @@ html[data-theme="dark"] .m-topbar__search-input::placeholder {
 }
 
 html[data-theme="dark"] .m-topbar__logo {
-  filter: invert(1);
+  filter: none;
 }
 
 html[data-theme="dark"] .m-topbar .btn--ghost {

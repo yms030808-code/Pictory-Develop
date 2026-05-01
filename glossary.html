@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pictory - 상품</title>
+  <title>Pictory - 용어 사전</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
-<body class="page-products">
+<body class="page-glossary">
   <nav class="nav">
     <div class="nav__inner">
       <a href="index.html" class="nav__logo">
@@ -22,9 +22,9 @@
       </label>
       <ul class="nav__menu">
         <li><a href="index.html" class="nav__link">홈</a></li>
-        <li><a href="products.html" class="nav__link nav__link--active">상품</a></li>
+        <li><a href="products.html" class="nav__link">상품</a></li>
         <li><a href="camera-explore.html" class="nav__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="glossary.html" class="nav__link nav__link--active">용어 사전</a></li>
         <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       </ul>
       <div class="nav__actions">
@@ -40,64 +40,45 @@
     </div>
   </nav>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <ul class="mobile-menu__list">
-      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
-      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
-      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      <li><a href="#" class="mobile-menu__link" data-bookmark-nav>북마크</a></li>
-    </ul>
-  </div>
-
-  <section class="section product-catalog" id="product-catalog">
-    <div class="product-catalog-nav-wrapper">
-      <div class="container">
-        <nav id="productCategoryNav" class="product-catalog-nav" aria-label="상품 카테고리"></nav>
-      </div>
-    </div>
-
+  <section class="mypage-wrap">
     <div class="container">
-      <div class="product-catalog__intro">
-        <div class="product-catalog__titles">
-          <h1 class="section__title">상품 카탈로그</h1>
-          <p class="section__desc product-catalog__desc">상단 카테고리를 선택하면 해당 분류에 맞는 카메라만 모아볼 수 있어요. 카드를 누르면 <strong>통합 시세 비교</strong> 페이지로 이동해 당근·중고·번개·쇼핑몰 시세를 볼 수 있어요.</p>
+      <section class="mypage-section card">
+        <h2>카메라 용어 사전</h2>
+        <p class="mypage-muted">자주 쓰는 카메라 용어를 빠르게 확인해보세요.</p>
+        <div class="modal__search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="용어를 검색하세요..." id="glossarySearchInput" class="modal__search-input">
         </div>
-        <div class="product-catalog__sort-wrap">
-          <span class="product-catalog__sort-label" id="productSortLabel">정렬</span>
-          <div class="product-catalog__sort-ui" id="productSortRoot">
-            <button
-              type="button"
-              class="product-catalog__sort-trigger"
-              id="productSortTrigger"
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby="productSortLabel productSortValue"
-            >
-              <span id="productSortValue" class="product-catalog__sort-value">추천순</span>
-              <span class="product-catalog__sort-chevron" aria-hidden="true">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-              </span>
-            </button>
-            <ul class="product-catalog__sort-list" id="productSortList" role="listbox" hidden>
-              <li class="product-catalog__sort-option" role="option" data-value="recommend" tabindex="-1">추천순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="popular" tabindex="-1">인기순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
-            </ul>
+        <div class="modal__body" id="glossaryBody">
+          <div class="glossary-item">
+            <h4 class="glossary-item__term">조리개 (Aperture)</h4>
+            <p class="glossary-item__desc">렌즈로 들어오는 빛의 양을 조절하는 값입니다. <strong>F값이 낮을수록</strong> 더 많은 빛을 받아 배경이 흐려지고, 피사체가 더 도드라져 보여요.</p>
+            <div class="glossary-item__visual">F1.4 배경 흐림 강함 → F16 전체적으로 선명</div>
+          </div>
+          <div class="glossary-item">
+            <h4 class="glossary-item__term">셔터스피드 (Shutter Speed)</h4>
+            <p class="glossary-item__desc">센서가 빛에 노출되는 시간입니다. <strong>빠를수록</strong> 움직임을 또렷하게 멈추고, <strong>느릴수록</strong> 빛의 궤적이나 흔들림이 표현돼요.</p>
+            <div class="glossary-item__visual">1/4000s 초고속 → 30s 장노출</div>
+          </div>
+          <div class="glossary-item">
+            <h4 class="glossary-item__term">ISO</h4>
+            <p class="glossary-item__desc">센서 감도를 뜻합니다. <strong>낮을수록</strong> 노이즈가 적고, <strong>높을수록</strong> 어두운 환경에서도 더 밝게 촬영할 수 있어요.</p>
+            <div class="glossary-item__visual">ISO 100 깨끗함 → ISO 12800 밝지만 노이즈 증가</div>
+          </div>
+          <div class="glossary-item">
+            <h4 class="glossary-item__term">풀프레임 / APS-C / M4/3</h4>
+            <p class="glossary-item__desc">센서 크기를 뜻해요. <strong>풀프레임</strong>은 화질과 표현력이 좋고, <strong>APS-C</strong>는 균형이 좋고, <strong>M4/3</strong>는 더 가볍고 컴팩트합니다.</p>
+            <div class="glossary-item__visual">풀프레임 &gt; APS-C &gt; M4/3</div>
           </div>
         </div>
-      </div>
-
-      <div id="productGrid" class="product-grid" aria-live="polite"></div>
-      <p id="productCatalogEmpty" class="product-catalog__empty hidden" role="status">이 카테고리에 표시할 상품이 없습니다.</p>
+      </section>
     </div>
   </section>
 
   <aside class="bookmark-sidebar" id="bookmarkSidebar">
     <div class="bookmark-sidebar__header">
       <h3>내 북마크</h3>
-      <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기">
+      <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
@@ -128,9 +109,6 @@
         </div>
         <div class="footer__links">
           <a href="m/index.html">모바일 버전</a>
-          <a href="#">이용약관</a>
-          <a href="#">개인정보처리방침</a>
-          <a href="#">고객센터</a>
         </div>
         <div class="footer__theme" role="group" aria-label="화면 테마">
           <span class="footer__theme-label">테마</span>
@@ -144,6 +122,5 @@
 
   <script src="js/theme.js"></script>
   <script src="app.js"></script>
-  <script src="js/products.bundle.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveStorageKey = 'picoryArchivePosts';
   const communityStorageKey = 'picoryCommunityPosts';
   const bookmarkStorageKey = 'picoryBookmarks';
+  const recentCameraStorageKey = 'picoryRecentCameras';
 
   function isPicorySessionActive() {
     return Boolean(localStorage.getItem(sessionStorageKey));
@@ -33,6 +34,27 @@ document.addEventListener('DOMContentLoaded', () => {
       message,
     });
     localStorage.setItem(activityLogStorageKey, JSON.stringify(logs.slice(-80)));
+  }
+
+  function pushRecentCamera(name, source, query) {
+    const cameraName = String(name || '').trim();
+    if (!cameraName) return;
+    const q = String(query || cameraName).trim();
+    try {
+      const raw = localStorage.getItem(recentCameraStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      const prev = Array.isArray(list) ? list : [];
+      const deduped = prev.filter((item) => String(item?.name || '').trim() !== cameraName);
+      deduped.push({
+        name: cameraName,
+        source: String(source || '클릭'),
+        query: q,
+        at: new Date().toISOString(),
+      });
+      localStorage.setItem(recentCameraStorageKey, JSON.stringify(deduped.slice(-20)));
+    } catch (_) {
+      /* noop */
+    }
   }
 
   function updateAuthNavButton() {
@@ -187,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = new URL(window.location.href);
         if (picked) url.searchParams.set('q', picked);
         else url.searchParams.delete('q');
+        if (picked) pushRecentCamera(picked, '검색', picked);
         window.location.href = `${url.pathname}${url.search}${url.hash || ''}`;
       }
 
@@ -319,13 +342,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="bookmark-choice-banner__text">북마크에 저장했어요. 북마크 목록으로 갈까요, 아니면 계속 둘러볼까요?</span>
         <div class="bookmark-choice-banner__actions">
           <button type="button" class="btn btn--ghost btn--sm" data-bookmark-stay>계속 보기</button>
-          <button type="button" class="btn btn--primary btn--sm" data-bookmark-go>북마크로</button>
+          <button type="button" class="btn btn--primary btn--sm" data-bookmark-go>북마크로 이동</button>
         </div>
       `;
       document.body.appendChild(el);
       el.querySelector('[data-bookmark-go]')?.addEventListener('click', () => {
         el.hidden = true;
-        document.getElementById('bookmarkSidebar')?.classList.add('open');
+        window.location.href = 'mypage.html?tab=bookmark#bookmarks';
       });
       el.querySelector('[data-bookmark-stay]')?.addEventListener('click', () => {
         el.hidden = true;
@@ -394,11 +417,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function syncBookmarkButtons() {
     document.querySelectorAll('.bookmark-add').forEach((btn) => {
-      const card = btn.closest('.recommend-card') || btn.closest('.product-card');
+      const card = btn.closest('.recommend-card') || btn.closest('.product-card') || btn.closest('.checklist-result__card');
       if (!card) return;
       let name = '';
       if (card.classList.contains('recommend-card')) {
         name = card.querySelector('.recommend-card__name')?.textContent?.trim() || '';
+      } else if (card.classList.contains('checklist-result__card')) {
+        name = card.dataset.cameraName || card.querySelector('h4')?.textContent?.trim() || '';
       } else {
         const brand = card.querySelector('.product-card__brand')?.textContent?.trim() || '';
         const model = card.querySelector('.product-card__model')?.textContent?.trim() || '';
@@ -872,11 +897,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== Bookmark Add (이벤트 위임: 추천 카드 + 상품 카드 동적 생성 대응) =====
+  // ===== Bookmark Add (이벤트 위임: 추천 카드 + 상품 카드 + 체크리스트 결과 대응) =====
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.bookmark-add');
     if (!btn) return;
-    const card = btn.closest('.recommend-card') || btn.closest('.product-card');
+    const card = btn.closest('.recommend-card') || btn.closest('.product-card') || btn.closest('.checklist-result__card');
     if (!card) return;
     e.preventDefault();
     e.stopPropagation();
@@ -890,6 +915,10 @@ document.addEventListener('DOMContentLoaded', () => {
       name = card.querySelector('.recommend-card__name')?.textContent?.trim() || '';
       lens = (card.querySelector('.recommend-card__lens')?.textContent || '').replace('+ ', '').trim();
       price = card.querySelector('.price-value')?.textContent?.trim() || '';
+    } else if (card.classList.contains('checklist-result__card')) {
+      name = card.dataset.cameraName || card.querySelector('h4')?.textContent?.trim() || '';
+      lens = '체크리스트 추천';
+      price = card.dataset.cameraPrice || card.querySelector('.checklist-result__price-row span')?.textContent?.trim() || '';
     } else {
       const brand = card.querySelector('.product-card__brand')?.textContent?.trim() || '';
       const model = card.querySelector('.product-card__model')?.textContent?.trim() || '';
@@ -903,6 +932,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let detailHref = `price.html?q=${encodeURIComponent(name)}`;
     if (card.classList.contains('product-card')) {
       const linkEl = card.querySelector('.product-card__link');
+      const h = linkEl && linkEl.getAttribute('href');
+      if (h) detailHref = h;
+    } else if (card.classList.contains('checklist-result__card')) {
+      const linkEl = card.querySelector('.checklist-result__price-row a');
       const h = linkEl && linkEl.getAttribute('href');
       if (h) detailHref = h;
     }
@@ -986,45 +1019,59 @@ document.addEventListener('DOMContentLoaded', () => {
   checklistResultBtn?.addEventListener('click', async () => {
     const grid = document.getElementById('checklistResultGrid');
     const summaryEl = document.getElementById('checklistResultSummary');
-    try {
-      const mod = await import('./js/checklist/recommendEngine.js');
-      const answers = mod.parseChecklistAnswersFromDom(document);
-
-      let usedOpenAI = false;
-      try {
-        const res = await fetch('/api/checklist-recommend', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (res.ok && Array.isArray(data.items) && data.items.length > 0) {
-          mod.renderChecklistRows(grid, data.items);
-          if (summaryEl) {
-            summaryEl.textContent =
-              data.summary ||
-              `${mod.formatChecklistSummary(answers)} (OpenAI 분석)`;
-          }
-          usedOpenAI = true;
-        }
-      } catch (_) {
-        /* 네트워크 실패 시 로컬로 */
+    const renderLocalChecklist = (engine) => {
+      const answers = engine.parseChecklistAnswersFromDom(document);
+      engine.renderChecklistResultGrid(grid, answers);
+      if (summaryEl && typeof engine.formatChecklistSummary === 'function') {
+        summaryEl.textContent = engine.formatChecklistSummary(answers);
       }
+    };
+    try {
+      if (window.PicoryChecklistLocal) {
+        renderLocalChecklist(window.PicoryChecklistLocal);
+      } else {
+        const mod = await import('./js/checklist/recommendEngine.js');
+        const answers = mod.parseChecklistAnswersFromDom(document);
 
-      if (!usedOpenAI) {
-        mod.renderChecklistResultGrid(grid, answers);
-        if (summaryEl && typeof mod.formatChecklistSummary === 'function') {
-          summaryEl.textContent = mod.formatChecklistSummary(answers);
+        let usedOpenAI = false;
+        try {
+          const res = await fetch('/api/checklist-recommend', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ answers }),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && Array.isArray(data.items) && data.items.length > 0) {
+            mod.renderChecklistRows(grid, data.items);
+            if (summaryEl) {
+              summaryEl.textContent =
+                data.summary ||
+                `${mod.formatChecklistSummary(answers)} (OpenAI 분석)`;
+            }
+            usedOpenAI = true;
+          }
+        } catch (_) {
+          /* 네트워크 실패 시 로컬로 */
+        }
+
+        if (!usedOpenAI) {
+          mod.renderChecklistResultGrid(grid, answers);
+          if (summaryEl && typeof mod.formatChecklistSummary === 'function') {
+            summaryEl.textContent = mod.formatChecklistSummary(answers);
+          }
         }
       }
     } catch (err) {
-      if (grid) {
+      if (window.PicoryChecklistLocal) {
+        renderLocalChecklist(window.PicoryChecklistLocal);
+      } else if (grid) {
         grid.innerHTML =
           '<p class="checklist-result__empty">추천을 불러오지 못했습니다. 페이지를 새로고침 후 다시 시도해 주세요.</p>';
       }
     }
     checklistSubmit.classList.add('hidden');
     checklistResult.classList.remove('hidden');
+    window.syncPicoryBookmarks?.();
     const checklistResultHeader = checklistResult.querySelector('.checklist-result__header');
     (checklistResultHeader || checklistResult).scrollIntoView({
       behavior: 'smooth',
@@ -1709,6 +1756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key !== 'Enter') return;
         e.preventDefault();
         const v = input.value.trim();
+        if (v) pushRecentCamera(v, '검색', v);
         if (v) {
           window.location.href = `products.html?q=${encodeURIComponent(v)}`;
         } else {
@@ -1717,5 +1765,24 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  document.addEventListener('click', (e) => {
+    const productLink = e.target.closest('.product-card__link');
+    if (productLink) {
+      const card = productLink.closest('.product-card');
+      const brand = card?.querySelector('.product-card__brand')?.textContent?.trim() || '';
+      const model = card?.querySelector('.product-card__model')?.textContent?.trim() || '';
+      const cameraName = `${brand} ${model}`.trim();
+      if (cameraName) pushRecentCamera(cameraName, '클릭', cameraName);
+      return;
+    }
+
+    const recommendLink = e.target.closest('.recommend-card__actions a.btn--primary');
+    if (recommendLink) {
+      const card = recommendLink.closest('.recommend-card');
+      const cameraName = card?.querySelector('.recommend-card__name')?.textContent?.trim() || '';
+      if (cameraName) pushRecentCamera(cameraName, '클릭', cameraName);
+    }
+  });
 
 });

@@ -14,20 +14,20 @@ function hashString(s) {
 
 const W = 600;
 const H = 200;
-const PAD_T = 18;
-const PAD_B = 22;
+const PAD_T = 24;
+const PAD_B = 28;
 const X0 = 36;
 const X1 = 564;
 const N = 7;
 
 /** 시세 목록·그래프 기준일 (buildListings.js LISTING_REF_DATE와 동일) */
-const CHART_REF_DATE = new Date(2026, 3, 17);
+const CHART_REF_DATE = new Date(2026, 3, 28);
 
 function monthLabelsRolling7(reference = CHART_REF_DATE) {
   const labels = [];
   for (let i = N - 1; i >= 0; i -= 1) {
-    const d = new Date(reference.getFullYear(), reference.getMonth() - i, 1);
-    labels.push(`${d.getMonth() + 1}월`);
+    const d = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate() - (i * 10));
+    labels.push(`${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`);
   }
   return labels;
 }
@@ -35,8 +35,8 @@ function monthLabelsRolling7(reference = CHART_REF_DATE) {
 function fullMonthLabels(reference = CHART_REF_DATE) {
   const labels = [];
   for (let i = N - 1; i >= 0; i -= 1) {
-    const d = new Date(reference.getFullYear(), reference.getMonth() - i, 1);
-    labels.push(`${d.getFullYear()}년 ${d.getMonth() + 1}월`);
+    const d = new Date(reference.getFullYear(), reference.getMonth(), reference.getDate() - (i * 10));
+    labels.push(`${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`);
   }
   return labels;
 }
@@ -115,6 +115,38 @@ function xAt(i) {
   return X0 + (i / (N - 1)) * (X1 - X0);
 }
 
+function buildHighLowSeries(avgValues, currentLow, currentHigh, query) {
+  const seed = hashString(`${query}|${currentLow}|${currentHigh}|range`);
+  const lowStart = Math.round(currentLow * (1.035 + (seed % 8) / 500));
+  const highStart = Math.round(currentHigh * (1.02 + (seed % 7) / 500));
+  const lowValues = [];
+  const highValues = [];
+
+  for (let i = 0; i < N; i += 1) {
+    const t = i / (N - 1);
+    const flatStep = i < 2 ? 0 : i < 3 ? 0.55 : 1;
+    const lowBase = lowStart + (currentLow - lowStart) * flatStep;
+    const highBase = highStart + (currentHigh - highStart) * flatStep;
+    const lowWobble = 1 + (((seed >> (i * 2)) & 7) - 3) / 900;
+    const highWobble = 1 + (((seed >> (i * 3)) & 7) - 3) / 900;
+    lowValues.push(Math.round(lowBase * lowWobble));
+    highValues.push(Math.round(highBase * highWobble));
+
+    if (t > 0.55) {
+      lowValues[i] = Math.round(currentLow * (1 + (((seed >> i) & 3) - 1) / 1200));
+      highValues[i] = Math.round(currentHigh * (1 + (((seed >> (i + 1)) & 3) - 1) / 1200));
+    }
+  }
+
+  lowValues[N - 1] = currentLow;
+  highValues[N - 1] = currentHigh;
+
+  return {
+    lowValues,
+    highValues: highValues.map((v, i) => Math.max(v, lowValues[i] + Math.max(50000, avgValues[i] * 0.035))),
+  };
+}
+
 /**
  * @param {HTMLElement} mount - #chartContainer
  * @param {Array<{ conditionKey: string, priceValue: number }>} filteredListings
@@ -131,24 +163,29 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
     ? Math.round(used.reduce((s, r) => s + r.priceValue, 0) / used.length)
     : fallbackAnchorAvg(query);
 
-  const values =
+  const avgValues =
     catalogProducts.length > 0
       ? buildMonthlySeriesFromCatalog(anchorAvg, catalogProducts, query)
       : buildMonthlyAverages(anchorAvg, query);
-  const minV = Math.min(...values);
-  const maxV = Math.max(...values);
-  const minIdx = values.indexOf(minV);
-  const maxIdx = values.indexOf(maxV);
+  const usedPrices = used.map((r) => Number(r.priceValue)).filter(Number.isFinite);
+  const currentLow = usedPrices.length ? Math.min(...usedPrices) : Math.round(anchorAvg * 0.92);
+  const currentHigh = usedPrices.length ? Math.max(...usedPrices) : Math.round(anchorAvg * 1.08);
+  const currentAvg = usedPrices.length
+    ? Math.round(usedPrices.reduce((s, n) => s + n, 0) / usedPrices.length)
+    : anchorAvg;
+  const { lowValues, highValues } = buildHighLowSeries(avgValues, currentLow, currentHigh, query);
+  const minV = Math.min(...lowValues);
+  const maxV = Math.max(...highValues);
 
-  const { ticks, lo, hi } = yTicks(minV, maxV, 5);
-  const points = values.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
+  const { ticks, lo, hi } = yTicks(minV, maxV, 4);
+  const lowPoints = lowValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
+  const highPoints = highValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
 
-  const polyline = points.map((p) => `${p.x},${p.y}`).join(' ');
-  const areaPath = `M${points[0].x} ${points[0].y} L${points.slice(1).map((p) => `${p.x} ${p.y}`).join(' ')} L${points[N - 1].x} ${H} L${points[0].x} ${H} Z`;
+  const lowPolyline = lowPoints.map((p) => `${p.x},${p.y}`).join(' ');
+  const highPolyline = highPoints.map((p) => `${p.x},${p.y}`).join(' ');
 
   const monthShort = monthLabelsRolling7();
   const monthFull = fullMonthLabels();
-  const gradId = `chartGrad_${hashString(query + String(anchorAvg))}`;
 
   const yAxisHtml = ticks
     .slice()
@@ -158,66 +195,43 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
 
   const xAxisHtml = monthShort.map((lab) => `<span>${escapeHtml(lab)}</span>`).join('');
 
-  const pointGroups = points
-    .map((p) => {
-      const isMin = p.i === minIdx;
-      const isMax = p.i === maxIdx;
-      let fill = '#FF5C00';
-      let pointClass = 'chart__point';
-      if (isMin && isMax) {
-        pointClass += ' chart__point--both';
-        fill = '#7C3AED';
-      } else if (isMin) {
-        pointClass += ' chart__point--min';
-        fill = '#2563EB';
-      } else if (isMax) {
-        pointClass += ' chart__point--max';
-        fill = '#DC2626';
-      }
-
-      let labelSvg = '';
-      /* 원(r≈4)·글자 크기 고려해 충분히 아래로 — 겹침 방지 */
-      const labelY = p.y + 28;
-      if (isMin && isMax) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--both" text-anchor="middle" pointer-events="none">
-        <tspan class="chart__point-label-line" x="${p.x}" y="${labelY}">최저가</tspan>
-        <tspan class="chart__point-label-line" x="${p.x}" dy="21">최고가</tspan>
-      </text>`;
-      } else if (isMin) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--min" x="${p.x}" y="${labelY}" text-anchor="middle" pointer-events="none">최저가</text>`;
-      } else if (isMax) {
-        labelSvg = `
-      <text class="chart__point-label chart__point-label--max" x="${p.x}" y="${labelY}" text-anchor="middle" pointer-events="none">최고가</text>`;
-      }
-
+  const pointGroups = lowPoints
+    .map((lowPoint, i) => {
+      const highPoint = highPoints[i];
       return `
-    <g class="${pointClass}" data-month="${escapeAttr(monthFull[p.i])}" data-avg="${escapeAttr(formatWonFull(p.v))}">
-      <circle class="chart__hit" cx="${p.x}" cy="${p.y}" r="14" fill="transparent" style="cursor:pointer"/>
-      <circle cx="${p.x}" cy="${p.y}" r="4" fill="${fill}" stroke="#fff" stroke-width="1.2"/>
-      ${labelSvg}
+    <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
+      <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
+      <circle cx="${highPoint.x}" cy="${highPoint.y}" r="3.5" fill="#20B15A" stroke="#fff" stroke-width="1.2"/>
+      <circle cx="${lowPoint.x}" cy="${lowPoint.y}" r="3.5" fill="#EF5B66" stroke="#fff" stroke-width="1.2"/>
     </g>`;
     })
     .join('');
 
-  const currentV = values[values.length - 1];
-  const minMaxLine = `<p class="chart__minmax" role="status"><span class="chart__minmax-item chart__minmax-item--low">최저가 <strong>${escapeHtml(formatWonFull(minV))}</strong></span><span class="chart__minmax-sep" aria-hidden="true">·</span><span class="chart__minmax-item chart__minmax-item--high">최고가 <strong>${escapeHtml(formatWonFull(maxV))}</strong></span><span class="chart__minmax-sep" aria-hidden="true">·</span><span class="chart__minmax-item chart__minmax-item--current">현재가 <strong>${escapeHtml(formatWonFull(currentV))}</strong></span><span class="chart__minmax-note"> (그래프 7개월 구간 내 월별 평균 중고 시세 기준)</span></p>`;
+  const currentStats = `<div class="chart__current-card" role="status">
+    <div class="chart__current-row chart__current-row--high"><span><i></i>현 최고가</span><strong>${escapeHtml(formatWonFull(currentHigh))}</strong></div>
+    <div class="chart__current-row chart__current-row--avg"><span><i></i>현재 평균가</span><strong>${escapeHtml(formatWonFull(currentAvg))}</strong></div>
+    <div class="chart__current-row chart__current-row--low"><span><i></i>현 최저가</span><strong>${escapeHtml(formatWonFull(currentLow))}</strong></div>
+  </div>`;
+  const lastHigh = highPoints[N - 1];
+  const lastLow = lowPoints[N - 1];
+  const highGuideY = lastHigh.y;
+  const lowGuideY = lastLow.y;
 
   mount.innerHTML = `
-    <div class="chart">
-      ${minMaxLine}
+    <div class="chart chart--range">
+      ${currentStats}
       <div class="chart__y-axis" aria-hidden="true">${yAxisHtml}</div>
       <div class="chart__area chart__area--interactive">
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" class="chart__svg" overflow="visible" focusable="false" aria-hidden="true" id="priceChartSvg">
-          <defs>
-            <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FF5C00" stop-opacity="0.3"/>
-              <stop offset="100%" stop-color="#FF5C00" stop-opacity="0.02"/>
-            </linearGradient>
-          </defs>
-          <path d="${areaPath}" fill="url(#${gradId})"/>
-          <polyline points="${polyline}" fill="none" stroke="#FF5C00" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <g class="chart__grid">
+            ${lowPoints.map((p) => `<line x1="${p.x}" y1="${PAD_T}" x2="${p.x}" y2="${H - PAD_B}" />`).join('')}
+          </g>
+          <line class="chart__guide chart__guide--high" x1="${X0}" y1="${highGuideY}" x2="${X1}" y2="${highGuideY}" />
+          <line class="chart__guide chart__guide--low" x1="${X0}" y1="${lowGuideY}" x2="${X1}" y2="${lowGuideY}" />
+          <polyline points="${highPolyline}" fill="none" stroke="#20B15A" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <polyline points="${lowPolyline}" fill="none" stroke="#EF5B66" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+          <text class="chart__inline-label chart__inline-label--high" x="${X1 - 146}" y="${Math.max(PAD_T + 12, highGuideY - 12)}">최고가 ${escapeHtml(formatWonFull(currentHigh))}</text>
+          <text class="chart__inline-label chart__inline-label--low" x="${X1 - 146}" y="${Math.min(H - PAD_B - 6, lowGuideY + 22)}">최저가 ${escapeHtml(formatWonFull(currentLow))}</text>
           ${pointGroups}
         </svg>
         <div class="chart__x-axis" aria-hidden="true">${xAxisHtml}</div>
@@ -232,13 +246,13 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
 
   let lastTipKey = '';
 
-  function showTip(textMonth, textAvg, clientX, clientY) {
+  function showTip(textMonth, textLow, textHigh, clientX, clientY) {
     if (!tooltip || !area) return;
-    const key = `${textMonth}|${textAvg}`;
+    const key = `${textMonth}|${textLow}|${textHigh}`;
     const contentChanged = key !== lastTipKey;
     lastTipKey = key;
 
-    const html = `<span class="chart-tooltip__month">${escapeHtml(textMonth)}</span><span class="chart-tooltip__avg">평균 중고 시세 ${escapeHtml(textAvg)}</span>`;
+    const html = `<span class="chart-tooltip__month">${escapeHtml(textMonth)}</span><span class="chart-tooltip__avg chart-tooltip__avg--high">최고가 ${escapeHtml(textHigh)}</span><span class="chart-tooltip__avg chart-tooltip__avg--low">최저가 ${escapeHtml(textLow)}</span>`;
     if (contentChanged) {
       tooltip.innerHTML = html;
       tooltip.classList.remove('chart-tooltip--visible');
@@ -276,17 +290,17 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
 
   mount.querySelectorAll('.chart__point').forEach((g) => {
     g.addEventListener('mouseenter', (e) => {
-      showTip(g.dataset.month, g.dataset.avg, e.clientX, e.clientY);
+      showTip(g.dataset.month, g.dataset.low, g.dataset.high, e.clientX, e.clientY);
     });
     g.addEventListener('mousemove', (e) => {
-      showTip(g.dataset.month, g.dataset.avg, e.clientX, e.clientY);
+      showTip(g.dataset.month, g.dataset.low, g.dataset.high, e.clientX, e.clientY);
     });
     g.addEventListener('mouseleave', hideTip);
   });
 
   svg?.addEventListener('mouseleave', hideTip);
 
-  return { values, anchorAvg };
+  return { values: avgValues, anchorAvg, highValues, lowValues };
 }
 
 export function chartInsightText(values) {

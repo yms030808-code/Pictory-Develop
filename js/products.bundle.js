@@ -573,11 +573,32 @@
       });
     }
     // Global suggest is mounted by app.js (all pages). Keep products bundle lean.
+    const RECENT_CAMERA_STORAGE_KEY = "picoryRecentCameras";
+    function pushRecentCamera(name, source, query) {
+      const cameraName = String(name || "").trim();
+      if (!cameraName) return;
+      const q = String(query || cameraName).trim();
+      try {
+        const raw = localStorage.getItem(RECENT_CAMERA_STORAGE_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const prev = Array.isArray(list) ? list : [];
+        const deduped = prev.filter((item) => String(item?.name || "").trim() !== cameraName);
+        deduped.push({
+          name: cameraName,
+          source: String(source || "검색"),
+          query: q,
+          at: (/* @__PURE__ */ new Date()).toISOString()
+        });
+        localStorage.setItem(RECENT_CAMERA_STORAGE_KEY, JSON.stringify(deduped.slice(-20)));
+      } catch {
+      }
+    }
     if (searchInput) {
       searchInput.addEventListener("keydown", (e) => {
         if (e.key !== "Enter") return;
         e.preventDefault();
         const v = searchInput.value.trim();
+        if (v) pushRecentCamera(v, "검색", v);
         const url = new URL(window.location.href);
         if (v) url.searchParams.set("q", v);
         else url.searchParams.delete("q");

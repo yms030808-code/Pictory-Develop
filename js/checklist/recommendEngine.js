@@ -314,8 +314,11 @@ export function renderChecklistRows(gridEl, rows) {
       const storeText = stores.join(' · ');
 
       return `
-      <div class="checklist-result__card card">
+      <div class="checklist-result__card card" data-camera-name="${escapeAttr(name)}" data-camera-price="${escapeAttr(p.priceSummary)}">
         <div class="checklist-result__rank">${i + 1}</div>
+        <button type="button" class="bookmark-add checklist-result__bookmark" aria-label="${escapeAttr(name)} 북마크 추가">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
         <div class="checklist-result__body">
           <div class="checklist-result__media">
             <div class="checklist-result__camera">
