@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 1분 매칭 테스트</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script src="picory-nav-badges-pre.js"></script>
+</head>
+<body class="match-page">
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">
+        <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+      </a>
+      <label class="nav__search" aria-label="검색">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="상품, 브랜드 검색">
+      </label>
+      <ul class="nav__menu">
+        <li><a href="index.html" class="nav__link">홈</a></li>
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="camera-explore.html" class="nav__link nav__link--active" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
+      </div>
+      <button class="nav__hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link">카메라 탐색</a></li>
+      <li><a href="community.html" class="mobile-menu__link">커뮤니티</a></li>
+    </ul>
+  </div>
+
+  <!-- INTRO SCREEN -->
+  <div id="introScreen">
+    <!-- Sliding camera strip -->
+    <div class="match-strip-wrap">
+      <div class="match-strip" id="matchStrip"></div>
+    </div>
+
+    <!-- Intro copy -->
+    <div class="match-intro">
+      <p class="match-intro__eyebrow">1분 매칭 테스트</p>
+      <h1 class="match-intro__title">나에게 맞는<br>카메라 찾기</h1>
+      <p class="match-intro__desc">6가지 질문에 답하면 촬영 성향에 딱 맞는<br>카메라 TOP 3를 추천해 드려요.</p>
+      <button class="match-start-btn" id="startBtn" type="button">
+        시작하기
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="match-quiz-screen" id="quizScreen">
+    <div class="match-progress">
+      <div class="match-progress__bar">
+        <div class="match-progress__fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <span class="match-progress__label" id="progressLabel">1 / 6</span>
+    </div>
+    <div class="match-question" id="questionWrap"></div>
+    <div class="match-quiz-nav">
+      <button class="match-prev-btn" id="prevBtn" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        이전
+      </button>
+      <button class="match-next-btn" id="nextBtn" type="button" disabled>
+        다음
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="match-result-screen" id="resultScreen">
+    <div class="match-result-header">
+      <p class="match-result-header__eyebrow">매칭 완료</p>
+      <h2 class="match-result-header__title">추천 카메라 TOP 3</h2>
+    </div>
+    <div class="match-result-grid" id="resultGrid"></div>
+    <div style="text-align:center;">
+      <button class="match-retry-btn" id="retryBtn" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3"/></svg>
+        다시 테스트하기
+      </button>
+    </div>
+  </div>
+
+  <footer class="footer" id="pageFooter" style="display:none;">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__logo footer__logo">
+            <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+          </a>
+          <p class="footer__tagline">카메라 탐색의 새로운 기준</p>
+        </div>
+        <div class="footer__links">
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+        </div>
+        <div class="footer__theme" role="group" aria-label="화면 테마">
+          <span class="footer__theme-label">테마</span>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
+        </div>
+        <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/compare-drawer.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    // ── Camera data ──────────────────────────────
+    const CAMERAS = [
+      { id:'fujifilm-x100vi',    brand:'Fujifilm', model:'X100VI',           priceKrw:2190000, priceSummary:'약 2,190,000원', thumbnail:'images/cameras/fujifilm-x100vi.png',    scores:{ beginner:1,intermediate:3,advanced:3, photo:3,video:1,both:2, portable:3,quality:2,balance:2, noVideo:3,yesVideo:1, budget100:0,budget150:0,budget200:3,budget300:3, complexity:2,shake:2,battery:1,quality_c:3,price:1 }, tags:['필름시뮬레이션','고정렌즈','스냅'] },
+      { id:'canon-eos-r10',      brand:'Canon',    model:'EOS R10',           priceKrw: 920000, priceSummary:'약 920,000원',   thumbnail:'images/cameras/canon-eos-r10.png',      scores:{ beginner:3,intermediate:2,advanced:1, photo:3,video:2,both:2, portable:2,quality:2,balance:3, noVideo:2,yesVideo:2, budget100:3,budget150:2,budget200:1,budget300:0, complexity:3,shake:2,battery:2,quality_c:1,price:3 }, tags:['입문용','가벼움','APS-C'] },
+      { id:'sony-zv-e10-ii',     brand:'Sony',     model:'ZV-E10 II',         priceKrw:1280000, priceSummary:'약 1,280,000원', thumbnail:'images/cameras/sony-zv-e10-ii.png',     scores:{ beginner:3,intermediate:2,advanced:1, photo:1,video:3,both:3, portable:2,quality:1,balance:2, noVideo:0,yesVideo:3, budget100:1,budget150:3,budget200:2,budget300:1, complexity:3,shake:1,battery:1,quality_c:1,price:2 }, tags:['브이로그','마이크','자동AF'] },
+      { id:'ricoh-gr-iiix',      brand:'Ricoh',    model:'GR IIIx',           priceKrw:1590000, priceSummary:'약 1,590,000원', thumbnail:'images/cameras/ricoh-gr-iiix.png',      scores:{ beginner:1,intermediate:3,advanced:3, photo:3,video:1,both:1, portable:3,quality:2,balance:2, noVideo:3,yesVideo:0, budget100:0,budget150:2,budget200:2,budget300:1, complexity:1,shake:1,battery:1,quality_c:2,price:1 }, tags:['초소형','스냅','40mm'] },
+      { id:'sony-a7c-ii',        brand:'Sony',     model:'A7C II',            priceKrw:2390000, priceSummary:'약 2,390,000원', thumbnail:'images/cameras/sony-a7c-ii.png',        scores:{ beginner:0,intermediate:2,advanced:3, photo:3,video:3,both:3, portable:2,quality:3,balance:3, noVideo:2,yesVideo:3, budget100:0,budget150:0,budget200:1,budget300:3, complexity:1,shake:2,battery:2,quality_c:3,price:0 }, tags:['풀프레임','올라운더','고화질'] },
+      { id:'nikon-z-fc',         brand:'Nikon',    model:'Z fc',              priceKrw:1190000, priceSummary:'약 1,190,000원', thumbnail:'images/cameras/nikon-z-fc.png',         scores:{ beginner:2,intermediate:3,advanced:1, photo:3,video:1,both:2, portable:2,quality:2,balance:2, noVideo:2,yesVideo:1, budget100:1,budget150:3,budget200:2,budget300:1, complexity:2,shake:2,battery:2,quality_c:2,price:2 }, tags:['레트로','다이얼','감성'] },
+      { id:'canon-g7x-mark-iii', brand:'Canon',    model:'PowerShot G7X III', priceKrw: 950000, priceSummary:'약 950,000원',   thumbnail:'images/cameras/canon-g7x-mark-iii.png', scores:{ beginner:3,intermediate:2,advanced:1, photo:2,video:3,both:3, portable:3,quality:1,balance:2, noVideo:0,yesVideo:3, budget100:3,budget150:2,budget200:1,budget300:0, complexity:3,shake:1,battery:1,quality_c:1,price:3 }, tags:['컴팩트','4K','틸트LCD'] },
+      { id:'dji-osmo-pocket-3',  brand:'DJI',      model:'Osmo Pocket 3',     priceKrw: 649000, priceSummary:'약 649,000원',   thumbnail:'images/cameras/dji-osmo-pocket-3.png',  scores:{ beginner:3,intermediate:2,advanced:1, photo:1,video:3,both:2, portable:3,quality:1,balance:1, noVideo:0,yesVideo:3, budget100:3,budget150:1,budget200:0,budget300:0, complexity:3,shake:3,battery:1,quality_c:0,price:3 }, tags:['짐벌','손떨림','포켓'] },
+      { id:'sony-a6700',         brand:'Sony',     model:'A6700',             priceKrw:1520000, priceSummary:'약 1,520,000원', thumbnail:'images/cameras/sony-a6700.png',         scores:{ beginner:1,intermediate:3,advanced:3, photo:2,video:3,both:3, portable:2,quality:3,balance:3, noVideo:1,yesVideo:3, budget100:0,budget150:2,budget200:3,budget300:2, complexity:1,shake:2,battery:2,quality_c:3,price:1 }, tags:['APS-C','4K120p','AF추적'] },
+      { id:'canon-eos-r50',      brand:'Canon',    model:'EOS R50',           priceKrw: 980000, priceSummary:'약 980,000원',   thumbnail:'images/cameras/canon-eos-r50.png',      scores:{ beginner:3,intermediate:2,advanced:1, photo:2,video:2,both:2, portable:2,quality:1,balance:2, noVideo:2,yesVideo:2, budget100:3,budget150:2,budget200:1,budget300:0, complexity:3,shake:2,battery:2,quality_c:1,price:3 }, tags:['입문','가벼움','무난'] },
+      { id:'fujifilm-x-s20',     brand:'Fujifilm', model:'X-S20',             priceKrw:1780000, priceSummary:'약 1,780,000원', thumbnail:'images/cameras/fujifilm-x-s20.png',     scores:{ beginner:2,intermediate:3,advanced:2, photo:2,video:3,both:3, portable:2,quality:2,balance:3, noVideo:1,yesVideo:3, budget100:0,budget150:1,budget200:3,budget300:2, complexity:2,shake:3,battery:3,quality_c:2,price:1 }, tags:['OIS','배터리','영상+사진'] },
+      { id:'canon-eos-r50-v',    brand:'Canon',    model:'EOS R50 V',         priceKrw:1180000, priceSummary:'약 1,180,000원', thumbnail:'images/cameras/canon-eos-r50-v.png',    scores:{ beginner:3,intermediate:2,advanced:1, photo:1,video:3,both:2, portable:2,quality:1,balance:2, noVideo:0,yesVideo:3, budget100:1,budget150:3,budget200:2,budget300:0, complexity:3,shake:1,battery:1,quality_c:1,price:2 }, tags:['세로촬영','브이로그','라이브'] },
+    ];
+
+    // ── Quiz questions ────────────────────────────
+    const QUESTIONS = [
+      {
+        key: 'experience',
+        text: '카메라를 얼마나 써보셨나요?',
+        options: [
+          { emoji:'🌱', label:'처음이에요, 잘 모릅니다',   value:'beginner' },
+          { emoji:'📷', label:'몇 번 써본 적 있어요',       value:'intermediate' },
+          { emoji:'🎯', label:'꽤 익숙하게 다뤄요',         value:'advanced' },
+        ]
+      },
+      {
+        key: 'purpose',
+        text: '주로 어떤 콘텐츠를 만들고 싶으세요?',
+        options: [
+          { emoji:'🖼️', label:'사진 위주로 찍고 싶어요',   value:'photo' },
+          { emoji:'🎬', label:'영상·브이로그가 메인이에요', value:'video' },
+          { emoji:'✨', label:'사진과 영상 모두 해보고 싶어요', value:'both' },
+        ]
+      },
+      {
+        key: 'portability',
+        text: '휴대성과 화질, 어느 쪽이 더 중요한가요?',
+        options: [
+          { emoji:'🎒', label:'항상 들고 다닐 수 있어야 해요', value:'portable' },
+          { emoji:'🏆', label:'화질이 최우선이에요',           value:'quality' },
+          { emoji:'⚖️', label:'적당히 균형이 맞으면 돼요',    value:'balance' },
+        ]
+      },
+      {
+        key: 'video',
+        text: '영상 촬영 기능이 중요한가요?',
+        options: [
+          { emoji:'✅', label:'네, 영상 기능이 있어야 해요',    value:'yesVideo' },
+          { emoji:'❌', label:'아니요, 사진만 찍을 것 같아요', value:'noVideo' },
+        ]
+      },
+      {
+        key: 'budget',
+        text: '예산은 어느 정도인가요?',
+        options: [
+          { emoji:'💸', label:'100만원 이하',    value:'budget100' },
+          { emoji:'💳', label:'100~150만원대',   value:'budget150' },
+          { emoji:'💰', label:'150~250만원대',   value:'budget200' },
+          { emoji:'🏦', label:'250만원 이상도 OK', value:'budget300' },
+        ]
+      },
+      {
+        key: 'concern',
+        text: '카메라 구매에서 가장 걱정되는 게 뭔가요?',
+        options: [
+          { emoji:'😰', label:'조작이 너무 어려울 것 같아요', value:'complexity' },
+          { emoji:'🤸', label:'흔들림이 많이 나올 것 같아요', value:'shake' },
+          { emoji:'🔋', label:'배터리가 빨리 닳을 것 같아요', value:'battery' },
+          { emoji:'📸', label:'원하는 화질이 안 나올 것 같아요', value:'quality_c' },
+          { emoji:'💵', label:'가격 대비 만족이 낮을 것 같아요', value:'price' },
+        ]
+      },
+    ];
+
+    let currentQ = 0;
+    const answers = {};
+
+    // ── Build camera strip ────────────────────────
+    function buildStrip() {
+      const strip = document.getElementById('matchStrip');
+      const doubled = [...CAMERAS, ...CAMERAS];
+      strip.innerHTML = doubled.map(cam => `
+        <div class="match-strip-card">
+          <img class="match-strip-card__img" src="${cam.thumbnail}" alt="${cam.model}" onerror="this.src='images/cameras/default-camera.png'">
+          <p class="match-strip-card__name">${cam.brand} ${cam.model}</p>
+        </div>
+      `).join('');
+    }
+
+    // ── Render question ───────────────────────────
+    function renderQuestion() {
+      const q = QUESTIONS[currentQ];
+      const wrap = document.getElementById('questionWrap');
+
+      document.getElementById('progressFill').style.width = ((currentQ / QUESTIONS.length) * 100) + '%';
+      document.getElementById('progressLabel').textContent = (currentQ + 1) + ' / ' + QUESTIONS.length;
+      document.getElementById('prevBtn').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+      const isLast = currentQ === QUESTIONS.length - 1;
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.innerHTML = isLast
+        ? '결과 보기 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>'
+        : '다음 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+      nextBtn.disabled = !answers[q.key];
+
+      wrap.innerHTML = `
+        <p class="match-question__num">Q${currentQ + 1}</p>
+        <p class="match-question__text">${q.text}</p>
+        <div class="match-options">
+          ${q.options.map(opt => `
+            <button class="match-option ${answers[q.key] === opt.value ? 'is-selected' : ''}"
+              data-value="${opt.value}" type="button">
+              <span class="match-option__emoji">${opt.emoji}</span>
+              ${opt.label}
+            </button>
+          `).join('')}
+        </div>
+      `;
+
+      wrap.querySelectorAll('.match-option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          answers[q.key] = btn.dataset.value;
+          wrap.querySelectorAll('.match-option').forEach(b => b.classList.remove('is-selected'));
+          btn.classList.add('is-selected');
+          document.getElementById('nextBtn').disabled = false;
+        });
+      });
+    }
+
+    // ── Calculate scores ──────────────────────────
+    function calcScores() {
+      return CAMERAS.map(cam => {
+        let score = 0;
+        Object.values(answers).forEach(val => {
+          if (cam.scores[val] !== undefined) score += cam.scores[val];
+        });
+        return { ...cam, score };
+      }).sort((a, b) => b.score - a.score).slice(0, 3);
+    }
+
+    // ── Render results ────────────────────────────
+    function renderResults() {
+      const top3 = calcScores();
+      const grid = document.getElementById('resultGrid');
+      const rankColors = ['#f59e0b','#9ca3af','#cd7c54'];
+
+      grid.innerHTML = top3.map((cam, i) => `
+        <div class="match-result-card ${i === 0 ? 'match-result-card--top' : ''}">
+          <span class="match-result-card__rank match-result-card__rank--${i+1}">${i+1}</span>
+          <div class="match-result-card__thumb">
+            <img src="${cam.thumbnail}" alt="${cam.model}" onerror="this.src='images/cameras/default-camera.png'">
+          </div>
+          <div class="match-result-card__body">
+            <p class="match-result-card__brand">${cam.brand}</p>
+            <p class="match-result-card__model">${cam.model}</p>
+            <div class="match-result-card__tags">
+              ${cam.tags.map(t => `<span class="match-result-card__tag">${t}</span>`).join('')}
+            </div>
+            <p class="match-result-card__price">${cam.priceSummary}</p>
+            <div style="display:flex;gap:8px;">
+              <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}"
+                 class="btn btn--ghost" style="flex:1;font-size:0.78rem;padding:8px 10px;">자세히 보기</a>
+              <button class="cam-add-compare-btn" data-id="${cam.id}" type="button"
+                style="flex:1;padding:8px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--color-border);background:transparent;font-size:0.78rem;font-weight:600;color:var(--color-text-secondary);cursor:pointer;transition:all 0.18s;display:flex;align-items:center;justify-content:center;gap:5px;">
+                + 비교함 담기
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.cam-add-compare-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const cam = CAMERAS.find(c => c.id === id);
+          if (!cam || !window.PicoryCompare) return;
+          if (window.PicoryCompare.has(id)) { btn.textContent = '✓ 담김'; return; }
+          const added = window.PicoryCompare.add(cam);
+          if (added) {
+            btn.style.background = 'var(--color-accent)';
+            btn.style.borderColor = 'var(--color-accent)';
+            btn.style.color = '#fff';
+            btn.textContent = '✓ 담김';
+          } else {
+            btn.textContent = '최대 3개';
+            setTimeout(() => { btn.textContent = '+ 비교함 담기'; }, 1500);
+          }
+        });
+      });
+    }
+
+    // ── Screen transitions ────────────────────────
+    function showQuiz() {
+      document.getElementById('introScreen').style.display = 'none';
+      document.getElementById('quizScreen').classList.add('is-active');
+      renderQuestion();
+    }
+
+    function showResults() {
+      document.getElementById('quizScreen').classList.remove('is-active');
+      document.getElementById('resultScreen').classList.add('is-active');
+      document.getElementById('pageFooter').style.display = '';
+      document.getElementById('progressFill').style.width = '100%';
+      renderResults();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function reset() {
+      currentQ = 0;
+      Object.keys(answers).forEach(k => delete answers[k]);
+      document.getElementById('resultScreen').classList.remove('is-active');
+      document.getElementById('pageFooter').style.display = 'none';
+      document.getElementById('introScreen').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Event listeners ───────────────────────────
+    document.getElementById('startBtn').addEventListener('click', showQuiz);
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentQ < QUESTIONS.length - 1) {
+        currentQ++;
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        showResults();
+      }
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentQ > 0) {
+        currentQ--;
+        renderQuestion();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+
+    document.getElementById('retryBtn').addEventListener('click', reset);
+
+    buildStrip();
+  })();
+  </script>
+</body>
+</html>

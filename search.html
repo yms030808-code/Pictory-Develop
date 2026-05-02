@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 맞춤 카메라 검색</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script src="picory-nav-badges-pre.js"></script>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">
+        <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+      </a>
+      <label class="nav__search" aria-label="검색">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="상품, 브랜드 검색">
+      </label>
+      <ul class="nav__menu">
+        <li><a href="index.html" class="nav__link">홈</a></li>
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="camera-explore.html" class="nav__link nav__link--active" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
+      <div class="nav__actions">
+        <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
+      </div>
+      <button class="nav__hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link">카메라 탐색</a></li>
+      <li><a href="community.html" class="mobile-menu__link">커뮤니티</a></li>
+    </ul>
+  </div>
+
+  <main class="cam-search-page">
+    <div class="container">
+      <div style="margin-bottom:28px;">
+        <a href="camera-explore.html" style="display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--color-text-muted);text-decoration:none;margin-bottom:12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          카메라 탐색으로
+        </a>
+        <h1 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.04em;margin-bottom:8px;">맞춤 카메라 검색</h1>
+        <p style="color:var(--color-text-secondary);font-size:0.95rem;">종류와 촬영 목적을 선택하면 조건에 맞는 카메라를 바로 보여드려요.</p>
+      </div>
+
+      <div class="cam-search-layout">
+        <!-- Filter Panel -->
+        <div>
+          <div class="cam-search-panel">
+            <div class="cam-search-section">
+              <p class="cam-search-section__title">카메라 종류</p>
+              <div class="cam-type-chips">
+                <button class="cam-type-chip is-active" data-type="all" type="button">전체</button>
+                <button class="cam-type-chip" data-type="mirrorless" type="button">미러리스</button>
+                <button class="cam-type-chip" data-type="compact" type="button">컴팩트</button>
+                <button class="cam-type-chip" data-type="action" type="button">액션캠</button>
+                <button class="cam-type-chip" data-type="film" type="button">필름</button>
+                <button class="cam-type-chip" data-type="dslr" type="button">DSLR</button>
+              </div>
+            </div>
+
+            <div class="cam-search-section">
+              <p class="cam-search-section__title">촬영 목적 <span style="font-size:0.72rem;font-weight:400;color:var(--color-text-muted);letter-spacing:0;">(복수 선택 가능)</span></p>
+              <div class="cam-purpose-grid" id="purposeGrid">
+                <button class="cam-purpose-tile" data-purpose="travel" type="button">
+                  <span class="cam-purpose-tile__icon">✈️</span>
+                  <span class="cam-purpose-tile__label">여행</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="portrait" type="button">
+                  <span class="cam-purpose-tile__icon">🧑‍🎨</span>
+                  <span class="cam-purpose-tile__label">인물</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="video" type="button">
+                  <span class="cam-purpose-tile__icon">🎬</span>
+                  <span class="cam-purpose-tile__label">영상</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="night" type="button">
+                  <span class="cam-purpose-tile__icon">🌙</span>
+                  <span class="cam-purpose-tile__label">야경</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="sports" type="button">
+                  <span class="cam-purpose-tile__icon">🏃</span>
+                  <span class="cam-purpose-tile__label">스포츠</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="parenting" type="button">
+                  <span class="cam-purpose-tile__icon">👶</span>
+                  <span class="cam-purpose-tile__label">육아</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="food" type="button">
+                  <span class="cam-purpose-tile__icon">🍜</span>
+                  <span class="cam-purpose-tile__label">음식</span>
+                </button>
+                <button class="cam-purpose-tile" data-purpose="vlog" type="button">
+                  <span class="cam-purpose-tile__icon">📱</span>
+                  <span class="cam-purpose-tile__label">브이로그</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Count Sidebar -->
+        <div class="cam-count-sidebar">
+          <div class="cam-count-panel">
+            <div class="cam-count-num" id="camCountNum">12</div>
+            <p class="cam-count-label">개의 카메라를 찾았어요</p>
+            <button class="btn btn--primary cam-count-btn" id="showResultsBtn" type="button">
+              검색된 카메라 보기
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="btn btn--ghost cam-count-btn" id="resetFilterBtn" type="button" style="font-size:0.8rem;">
+              필터 초기화
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="cam-search-results" id="searchResults" style="display:none;">
+        <div class="cam-search-results__header">
+          <h2 class="cam-search-results__title">검색 결과 <span id="resultCountLabel" style="color:var(--color-accent);"></span></h2>
+          <a href="camera-explore.html" style="font-size:0.82rem;color:var(--color-text-muted);">다른 방법으로 찾기</a>
+        </div>
+        <div class="cam-search-result-grid" id="resultGrid"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__logo footer__logo">
+            <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+          </a>
+          <p class="footer__tagline">카메라 탐색의 새로운 기준</p>
+        </div>
+        <div class="footer__links">
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+        </div>
+        <div class="footer__theme" role="group" aria-label="화면 테마">
+          <span class="footer__theme-label">테마</span>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
+        </div>
+        <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/compare-drawer.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    const CAMERAS = [
+      { id:'fujifilm-x100vi',   brand:'Fujifilm', model:'X100VI',           priceKrw:2190000, priceSummary:'약 2,190,000원', thumbnail:'images/cameras/fujifilm-x100vi.png',   type:'compact',    purposes:['travel','portrait','food','night'],       desc:'고정 렌즈와 필름 시뮬레이션으로 스냅·일상 기록에 강한 풀프레임급 인기 모델.' },
+      { id:'canon-eos-r10',     brand:'Canon',    model:'EOS R10',           priceKrw: 920000, priceSummary:'약 920,000원',   thumbnail:'images/cameras/canon-eos-r10.png',     type:'mirrorless', purposes:['travel','portrait','sports','parenting'],   desc:'가벼운 APS-C 미러리스로 조작이 단순해 입문용 바디로 많이 선택됩니다.' },
+      { id:'sony-zv-e10-ii',    brand:'Sony',     model:'ZV-E10 II',         priceKrw:1280000, priceSummary:'약 1,280,000원', thumbnail:'images/cameras/sony-zv-e10-ii.png',    type:'mirrorless', purposes:['vlog','parenting','video'],                 desc:'브이로그에 맞춘 자동 모드와 마이크 단자 구성이 강점인 APS-C 기종.' },
+      { id:'ricoh-gr-iiix',     brand:'Ricoh',    model:'GR IIIx',           priceKrw:1590000, priceSummary:'약 1,590,000원', thumbnail:'images/cameras/ricoh-gr-iiix.png',     type:'compact',    purposes:['travel','food','portrait'],                 desc:'40mm 화각의 스냅 특화 컴팩트로 주머니에 넣고 다니기 좋습니다.' },
+      { id:'sony-a7c-ii',       brand:'Sony',     model:'A7C II',            priceKrw:2390000, priceSummary:'약 2,390,000원', thumbnail:'images/cameras/sony-a7c-ii.png',       type:'mirrorless', purposes:['portrait','vlog','night','travel'],          desc:'풀프레임 센서를 작은 바디에 담아 인물·여행·브이로그까지 균형이 좋습니다.' },
+      { id:'nikon-z-fc',        brand:'Nikon',    model:'Z fc',              priceKrw:1190000, priceSummary:'약 1,190,000원', thumbnail:'images/cameras/nikon-z-fc.png',        type:'film',       purposes:['travel','portrait'],                        desc:'필름 SLR 감성의 다이얼 조작과 vari-angle LCD가 매력인 APS-C 바디.' },
+      { id:'canon-g7x-mark-iii',brand:'Canon',    model:'PowerShot G7X III', priceKrw: 950000, priceSummary:'약 950,000원',   thumbnail:'images/cameras/canon-g7x-mark-iii.png',type:'compact',    purposes:['vlog','travel','video','food'],              desc:'1인치 센서 컴팩트로 4K 영상과 수직 촬영에 적합한 휴대형 기종.' },
+      { id:'dji-osmo-pocket-3', brand:'DJI',      model:'Osmo Pocket 3',     priceKrw: 649000, priceSummary:'약 649,000원',   thumbnail:'images/cameras/dji-osmo-pocket-3.png', type:'action',     purposes:['vlog','travel','video'],                    desc:'3축 짐벌 일체형 포켓 캠으로 손떨림 보정이 강한 영상 기기.' },
+      { id:'sony-a6700',        brand:'Sony',     model:'A6700',             priceKrw:1520000, priceSummary:'약 1,520,000원', thumbnail:'images/cameras/sony-a6700.png',        type:'mirrorless', purposes:['video','sports','vlog','portrait'],          desc:'최신 APS-C AF 성능과 4K 120p 등 영상 옵션이 풍부한 올라운더.' },
+      { id:'canon-eos-r50',     brand:'Canon',    model:'EOS R50',           priceKrw: 980000, priceSummary:'약 980,000원',   thumbnail:'images/cameras/canon-eos-r50.png',     type:'mirrorless', purposes:['parenting','travel','portrait'],             desc:'가볍고 가격 부담이 적어 첫 미러리스로 무난한 입문 모델.' },
+      { id:'fujifilm-x-s20',    brand:'Fujifilm', model:'X-S20',             priceKrw:1780000, priceSummary:'약 1,780,000원', thumbnail:'images/cameras/fujifilm-x-s20.png',    type:'mirrorless', purposes:['video','vlog','portrait','night'],           desc:'손떨림 보정과 배터리 용량이 좋아 사진·영상 겸용으로 인기.' },
+      { id:'canon-eos-r50-v',   brand:'Canon',    model:'EOS R50 V',         priceKrw:1180000, priceSummary:'약 1,180,000원', thumbnail:'images/cameras/canon-eos-r50-v.png',   type:'mirrorless', purposes:['vlog','parenting','video'],                 desc:'세로 영상·라이브에 맞춘 UI와 입문형 조작이 강점인 V 시리즈.' },
+    ];
+
+    let selectedType = 'all';
+    let selectedPurposes = new Set();
+    let resultsVisible = false;
+
+    function getFiltered() {
+      return CAMERAS.filter(cam => {
+        const typeMatch = selectedType === 'all' || cam.type === selectedType;
+        const purposeMatch = selectedPurposes.size === 0 ||
+          [...selectedPurposes].some(p => cam.purposes.includes(p));
+        return typeMatch && purposeMatch;
+      });
+    }
+
+    function updateCount() {
+      const count = getFiltered().length;
+      const el = document.getElementById('camCountNum');
+      el.style.opacity = '0.4';
+      setTimeout(() => {
+        el.textContent = count;
+        el.style.opacity = '1';
+      }, 120);
+    }
+
+    function renderResults() {
+      const filtered = getFiltered();
+      const grid = document.getElementById('resultGrid');
+      document.getElementById('resultCountLabel').textContent = filtered.length + '개';
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="cam-no-results"><p style="font-size:2rem;margin-bottom:12px;">🔍</p><p>조건에 맞는 카메라가 없어요.<br><small>필터를 조정해 보세요.</small></p></div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(cam => {
+        const inCompare = window.PicoryCompare && window.PicoryCompare.has(cam.id);
+        return `
+          <div class="cam-result-card">
+            <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="cam-result-card__thumb" style="display:flex;text-decoration:none;">
+              <img src="${cam.thumbnail}" alt="${cam.brand} ${cam.model}" onerror="this.src='images/cameras/default-camera.png'">
+            </a>
+            <div class="cam-result-card__body">
+              <p class="cam-result-card__brand">${cam.brand}</p>
+              <p class="cam-result-card__model">${cam.model}</p>
+              <p class="cam-result-card__desc">${cam.desc}</p>
+              <p class="cam-result-card__price">${cam.priceSummary}</p>
+              <div class="cam-result-card__actions">
+                <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="btn btn--ghost" style="flex:1;font-size:0.78rem;padding:8px 10px;">자세히 보기</a>
+                <button class="cam-add-compare-btn ${inCompare ? 'is-added' : ''}" data-id="${cam.id}" type="button">
+                  ${inCompare ? '✓ 담김' : '+ 비교함 담기'}
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('.cam-add-compare-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const cam = CAMERAS.find(c => c.id === id);
+          if (!cam || !window.PicoryCompare) return;
+          if (window.PicoryCompare.has(id)) return;
+          const added = window.PicoryCompare.add(cam);
+          if (added) {
+            btn.classList.add('is-added');
+            btn.textContent = '✓ 담김';
+          } else {
+            btn.textContent = '최대 3개';
+            setTimeout(() => { btn.textContent = '+ 비교함 담기'; }, 1500);
+          }
+        });
+      });
+    }
+
+    function showResults() {
+      resultsVisible = true;
+      const section = document.getElementById('searchResults');
+      section.style.display = 'block';
+      renderResults();
+      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Type chips
+    document.querySelectorAll('.cam-type-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cam-type-chip').forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        selectedType = btn.dataset.type;
+        updateCount();
+        if (resultsVisible) renderResults();
+      });
+    });
+
+    // Purpose tiles
+    document.querySelectorAll('.cam-purpose-tile').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.purpose;
+        if (selectedPurposes.has(p)) {
+          selectedPurposes.delete(p);
+          btn.classList.remove('is-active');
+        } else {
+          selectedPurposes.add(p);
+          btn.classList.add('is-active');
+        }
+        updateCount();
+        if (resultsVisible) renderResults();
+      });
+    });
+
+    document.getElementById('showResultsBtn').addEventListener('click', showResults);
+
+    document.getElementById('resetFilterBtn').addEventListener('click', () => {
+      selectedType = 'all';
+      selectedPurposes.clear();
+      document.querySelectorAll('.cam-type-chip').forEach(b => b.classList.remove('is-active'));
+      document.querySelector('.cam-type-chip[data-type="all"]').classList.add('is-active');
+      document.querySelectorAll('.cam-purpose-tile').forEach(b => b.classList.remove('is-active'));
+      updateCount();
+      if (resultsVisible) renderResults();
+    });
+
+    updateCount();
+  })();
+  </script>
+</body>
+</html>

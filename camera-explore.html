@@ -7,27 +7,6 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <style>
-    .camera-explore-section {
-      padding-top: 180px;
-    }
-    .camera-explore-section .container {
-      text-align: center;
-    }
-    .camera-explore-section .section__header {
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .camera-explore-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
-      align-items: stretch;
-    }
-    .camera-explore-grid .landing-card {
-      text-align: left;
-    }
-  </style>
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
@@ -67,17 +46,78 @@
       <li><a href="products.html" class="mobile-menu__link">상품</a></li>
       <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      <li><a href="#" class="mobile-menu__link" data-bookmark-nav>북마크</a></li>
     </ul>
   </div>
 
-  <section class="section landing-section camera-explore-section">
+  <!-- Hero -->
+  <div class="explore-hero">
     <div class="container">
-      <div class="section__header">
-        <h1 class="section__title">카메라 탐색</h1>
-        <p class="section__desc">AI 추천, 시세 비교, 나에게 맞는 카메라 찾기를 한 곳에서 빠르게 이동하세요.</p>
+      <p class="explore-hero__eyebrow">카메라 탐색</p>
+      <h1 class="explore-hero__title">내 카메라를 찾는<br>두 가지 방법</h1>
+      <p class="explore-hero__desc">조건으로 직접 좁히거나, 1분 테스트로 맞춤 추천을 받아보세요.</p>
+    </div>
+  </div>
+
+  <!-- Entry Cards -->
+  <section style="background: var(--color-bg); padding-bottom: 0;">
+    <div class="container">
+      <div class="explore-cards">
+
+        <!-- 맞춤 카메라 검색 -->
+        <a href="search.html" class="explore-card">
+          <span class="explore-card__badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            직접 필터링
+          </span>
+          <h2 class="explore-card__title">맞춤 카메라 검색</h2>
+          <p class="explore-card__desc">
+            카메라 종류와 촬영 목적을 선택하면<br>
+            조건에 맞는 카메라를 실시간으로 걸러드려요.<br>
+            결과에서 바로 비교함에 담을 수 있어요.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:16px;">
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">미러리스</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">컴팩트</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">여행</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">브이로그</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">인물</span>
+          </div>
+          <span class="explore-card__cta">
+            검색 시작하기
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span class="explore-card__icon" aria-hidden="true">🔍</span>
+        </a>
+
+        <!-- 1분 매칭 테스트 -->
+        <a href="match.html" class="explore-card">
+          <span class="explore-card__badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            1분 테스트
+          </span>
+          <h2 class="explore-card__title">1분 매칭 테스트</h2>
+          <p class="explore-card__desc">
+            6개 질문에 답하면 촬영 성향에 맞는<br>
+            카메라 TOP 3를 추천해 드려요.<br>
+            어떤 카메라가 맞는지 모르는 분께 추천해요.
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:16px;">
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">예산</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">촬영 목적</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">휴대성</span>
+            <span style="font-size:0.75rem; padding:4px 10px; border-radius:999px; border:1px solid var(--color-border); color:var(--color-text-secondary);">영상 여부</span>
+          </div>
+          <span class="explore-card__cta">
+            테스트 시작하기
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+          <span class="explore-card__icon" aria-hidden="true">⚡</span>
+        </a>
+
       </div>
-      <div class="camera-explore-grid">
+
+      <!-- Also: AI recommend & Price -->
+      <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:16px; padding-bottom: var(--space-3xl);">
         <a href="recommend.html" class="landing-card card">
           <span class="landing-card__label">AI 추천</span>
           <h3>사진 업로드 기반 추천</h3>
@@ -88,35 +128,37 @@
           <h3>플랫폼별 가격 흐름 확인</h3>
           <p>중고/신품 시세를 비교해서 예산에 맞는 타이밍을 찾을 수 있습니다.</p>
         </a>
-        <a href="checklist.html" class="landing-card card">
-          <span class="landing-card__label">나에게 맞는 카메라 찾기</span>
-          <h3>체크리스트 기반 후보 압축</h3>
-          <p>예산과 촬영 성향을 바탕으로 딱 맞는 후보를 빠르게 좁혀줍니다.</p>
-        </a>
       </div>
     </div>
   </section>
 
-  <aside class="bookmark-sidebar" id="bookmarkSidebar">
-    <div class="bookmark-sidebar__header">
-      <h3>내 북마크</h3>
-      <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="bookmark-sidebar__body" id="bookmarkBody">
-      <div class="bookmark-empty" id="bookmarkEmpty">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <p>아직 북마크한 카메라가 없어요.</p>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__logo footer__logo">
+            <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+          </a>
+          <p class="footer__tagline">카메라 탐색의 새로운 기준</p>
+        </div>
+        <div class="footer__links">
+          <a href="m/index.html">모바일 버전</a>
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">고객센터</a>
+        </div>
+        <div class="footer__theme" role="group" aria-label="화면 테마">
+          <span class="footer__theme-label">테마</span>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
+        </div>
+        <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
       </div>
-      <div class="bookmark-list hidden" id="bookmarkList"></div>
     </div>
-    <div class="bookmark-sidebar__footer hidden" id="bookmarkFooter">
-      <button class="btn btn--primary" style="width: 100%;" id="compareBtn" type="button">선택한 카메라 비교하기</button>
-    </div>
-  </aside>
+  </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/compare-drawer.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

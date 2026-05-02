@@ -52,6 +52,77 @@
 
   <section class="section section--dark" id="price">
     <div class="container">
+
+      <!-- ① 상품 상세 (검색 후 표시) -->
+      <div class="product-detail" id="productDetail">
+        <div class="product-detail__hero">
+          <div class="product-detail__copy">
+            <p class="product-detail__brand" id="detailBrand">Brand</p>
+            <h1 class="product-detail__name" id="detailName">카메라 모델명</h1>
+            <p class="product-detail__tagline" id="detailTagline">한 줄 소개가 여기에 표시됩니다.</p>
+          </div>
+          <div class="product-detail__img-wrap">
+            <img class="product-detail__img" id="detailImg" src="" alt="">
+          </div>
+        </div>
+
+        <!-- ② 주요 스펙 하이라이트 -->
+        <div class="product-detail__specs" id="detailSpecs">
+          <div class="spec-card">
+            <div class="spec-card__icon">📷</div>
+            <p class="spec-card__label">센서</p>
+            <p class="spec-card__value" id="specSensor">—</p>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card__icon">🎬</div>
+            <p class="spec-card__label">영상</p>
+            <p class="spec-card__value" id="specVideo">—</p>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card__icon">⚖️</div>
+            <p class="spec-card__label">무게</p>
+            <p class="spec-card__value" id="specWeight">—</p>
+          </div>
+          <div class="spec-card">
+            <div class="spec-card__icon">🔋</div>
+            <p class="spec-card__label">배터리</p>
+            <p class="spec-card__value" id="specBattery">—</p>
+          </div>
+        </div>
+
+        <!-- ③ 샘플 이미지 갤러리 -->
+        <div class="product-detail__gallery">
+          <h3 class="gallery-title">샘플 이미지</h3>
+          <div class="gallery-grid">
+            <div class="gallery-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              샘플 사진 1
+            </div>
+            <div class="gallery-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              샘플 사진 2
+            </div>
+            <div class="gallery-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              샘플 사진 3
+            </div>
+            <div class="gallery-placeholder">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              샘플 사진 4
+            </div>
+          </div>
+        </div>
+
+        <!-- ④ 적합한 촬영 유형 -->
+        <div class="product-detail__use-cases">
+          <h3 class="use-cases-title">적합한 촬영 유형</h3>
+          <div class="use-cases-grid" id="detailUseCases"></div>
+        </div>
+
+        <hr class="product-detail__divider">
+      </div>
+
+      <!-- ⑤ 시세 비교 (기존) -->
       <div class="section__header">
         <h2 class="section__title">통합 시세 비교</h2>
         <p class="section__desc">흩어진 가격 정보를 한눈에. 당근, 중고나라, 번개장터, 공식 판매처를 실시간으로 모아봐요.</p>
@@ -157,7 +228,69 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/compare-drawer.js"></script>
   <script src="app.js"></script>
   <script src="js/price.bundle.js"></script>
+  <script>
+  (function () {
+    const CAMERA_META = {
+      'fujifilm-x100vi':    { brand:'Fujifilm', tagline:'고정 렌즈와 필름 시뮬레이션으로 스냅·일상 기록에 강한 풀프레임급 인기 모델.', img:'images/cameras/fujifilm-x100vi.png',    sensor:'APS-C 26.1MP', video:'4K 30p', weight:'521g', battery:'약 420장', uses:['여행 ✈️','스냅 📸','인물 🧑‍🎨','음식 🍜'] },
+      'canon-eos-r10':      { brand:'Canon',    tagline:'가벼운 APS-C 미러리스로 조작이 단순해 입문용 바디로 많이 선택됩니다.',        img:'images/cameras/canon-eos-r10.png',     sensor:'APS-C 24.2MP', video:'4K 30p', weight:'429g', battery:'약 430장', uses:['입문 🌱','인물 🧑‍🎨','스포츠 🏃','여행 ✈️'] },
+      'sony-zv-e10-ii':     { brand:'Sony',     tagline:'브이로그에 맞춘 자동 모드와 마이크 단자 구성이 강점인 APS-C 기종.',          img:'images/cameras/sony-zv-e10-ii.png',   sensor:'APS-C 26.1MP', video:'4K 60p', weight:'293g', battery:'약 370장', uses:['브이로그 📱','육아 👶','영상 🎬'] },
+      'ricoh-gr-iiix':      { brand:'Ricoh',    tagline:'40mm 화각의 스냅 특화 컴팩트로 주머니에 넣고 다니기 좋습니다.',               img:'images/cameras/ricoh-gr-iiix.png',    sensor:'APS-C 24.2MP', video:'FHD',    weight:'262g', battery:'약 200장', uses:['스냅 📸','여행 ✈️','음식 🍜'] },
+      'sony-a7c-ii':        { brand:'Sony',     tagline:'풀프레임 센서를 작은 바디에 담아 인물·여행·브이로그까지 균형이 좋습니다.',     img:'images/cameras/sony-a7c-ii.png',      sensor:'FF 33MP',      video:'4K 60p', weight:'514g', battery:'약 530장', uses:['인물 🧑‍🎨','야경 🌙','브이로그 📱','여행 ✈️'] },
+      'nikon-z-fc':         { brand:'Nikon',    tagline:'필름 SLR 감성의 다이얼 조작과 vari-angle LCD가 매력인 APS-C 바디.',          img:'images/cameras/nikon-z-fc.png',       sensor:'APS-C 20.9MP', video:'4K 30p', weight:'445g', battery:'약 300장', uses:['감성 📷','여행 ✈️','인물 🧑‍🎨'] },
+      'canon-g7x-mark-iii': { brand:'Canon',    tagline:'1인치 센서 컴팩트로 4K 영상과 수직 촬영에 적합한 휴대형 기종.',              img:'images/cameras/canon-g7x-mark-iii.png',sensor:'1인치 20.1MP', video:'4K 30p', weight:'304g', battery:'약 235장', uses:['브이로그 📱','여행 ✈️','영상 🎬','음식 🍜'] },
+      'dji-osmo-pocket-3':  { brand:'DJI',      tagline:'3축 짐벌 일체형 포켓 캠으로 손떨림 보정이 강한 영상 기기.',                  img:'images/cameras/dji-osmo-pocket-3.png', sensor:'1/1.3인치',    video:'4K 120p',weight:'179g', battery:'약 166분', uses:['브이로그 📱','여행 ✈️','영상 🎬'] },
+      'sony-a6700':         { brand:'Sony',     tagline:'최신 APS-C AF 성능과 4K 120p 등 영상 옵션이 풍부한 올라운더.',               img:'images/cameras/sony-a6700.png',       sensor:'APS-C 26.1MP', video:'4K 120p',weight:'493g', battery:'약 570장', uses:['영상 🎬','스포츠 🏃','브이로그 📱','인물 🧑‍🎨'] },
+      'canon-eos-r50':      { brand:'Canon',    tagline:'가볍고 가격 부담이 적어 첫 미러리스로 무난한 입문 모델.',                     img:'images/cameras/canon-eos-r50.png',    sensor:'APS-C 24.2MP', video:'4K 30p', weight:'375g', battery:'약 390장', uses:['입문 🌱','육아 👶','여행 ✈️'] },
+      'fujifilm-x-s20':     { brand:'Fujifilm', tagline:'손떨림 보정과 배터리 용량이 좋아 사진·영상 겸용으로 인기.',                   img:'images/cameras/fujifilm-x-s20.png',   sensor:'APS-C 26.1MP', video:'6.2K 30p',weight:'491g',battery:'약 750장', uses:['영상 🎬','브이로그 📱','인물 🧑‍🎨','야경 🌙'] },
+      'canon-eos-r50-v':    { brand:'Canon',    tagline:'세로 영상·라이브에 맞춘 UI와 입문형 조작이 강점인 V 시리즈.',                 img:'images/cameras/canon-eos-r50-v.png',  sensor:'APS-C 24.2MP', video:'4K 30p', weight:'375g', battery:'약 390장', uses:['세로촬영 📱','브이로그 📱','육아 👶'] },
+    };
+
+    function fillDetail(query) {
+      if (!query) return;
+      const key = Object.keys(CAMERA_META).find(k =>
+        query.toLowerCase().replace(/\s/g,'').includes(k.replace(/-/g,''))
+      );
+      const meta = key ? CAMERA_META[key] : null;
+      if (!meta) return;
+
+      const detail = document.getElementById('productDetail');
+      detail.classList.add('is-visible');
+
+      document.getElementById('detailBrand').textContent = meta.brand;
+      const nameParts = key.replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+      document.getElementById('detailName').textContent = nameParts;
+      document.getElementById('detailTagline').textContent = meta.tagline;
+      const img = document.getElementById('detailImg');
+      img.src = meta.img;
+      img.alt = nameParts;
+      document.getElementById('specSensor').textContent = meta.sensor;
+      document.getElementById('specVideo').textContent = meta.video;
+      document.getElementById('specWeight').textContent = meta.weight;
+      document.getElementById('specBattery').textContent = meta.battery;
+      document.getElementById('detailUseCases').innerHTML = meta.uses
+        .map(u => `<span class="use-case-badge">${u}</span>`).join('');
+    }
+
+    // Hook: fill on page load if URL has ?q=
+    const params = new URLSearchParams(location.search);
+    const q = params.get('q');
+    if (q) fillDetail(q);
+
+    // Hook: fill when search button clicked
+    const searchBtn = document.getElementById('priceSearchBtn');
+    const searchInput = document.getElementById('priceSearchInput');
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => fillDetail(searchInput.value));
+    }
+    if (searchInput) {
+      searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') fillDetail(searchInput.value);
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
