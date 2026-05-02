@@ -342,6 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('bookmarkList');
     const empty = document.getElementById('bookmarkEmpty');
     const footer = document.getElementById('bookmarkFooter');
+    if (!list || !empty || !footer) return;
 
     if (bookmarks.length === 0) {
       empty.classList.remove('hidden');
@@ -1223,9 +1224,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = glossarySearchInput.value.toLowerCase().trim();
     const items = document.querySelectorAll('.glossary-item');
     items.forEach(item => {
-      const term = item.querySelector('.glossary-item__term').textContent.toLowerCase();
-      const desc = item.querySelector('.glossary-item__desc').textContent.toLowerCase();
-      const matches = !query || term.includes(query) || desc.includes(query);
+      const term = item.querySelector('.glossary-item__term')?.textContent.toLowerCase() ?? '';
+      const desc = item.querySelector('.glossary-item__desc')?.textContent.toLowerCase() ?? '';
+      const example = item.querySelector('.glossary-item__example')?.textContent.toLowerCase() ?? '';
+      const matches = !query || term.includes(query) || desc.includes(query) || example.includes(query);
       item.style.display = matches ? '' : 'none';
     });
   });
@@ -1564,7 +1566,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileMenu = document.getElementById('mobileMenu');
 
   hamburgerBtn?.addEventListener('click', () => {
-    mobileMenu.classList.toggle('open');
+    mobileMenu?.classList.toggle('open');
   });
 
   document.querySelectorAll('.mobile-menu__link').forEach((link) => {

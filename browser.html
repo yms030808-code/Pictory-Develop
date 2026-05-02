@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" class="live-browser-page">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 라이브 브라우저</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <style>
+    html.live-browser-page,
+    html.live-browser-page body {
+      height: 100%;
+      margin: 0;
+    }
+    .live-browser {
+      position: relative;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #111;
+    }
+    .live-browser__frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="live-browser">
+    <iframe class="live-browser__frame" id="view" title="웹 미리보기"></iframe>
+  </div>
+
+  <script>
+    (function () {
+      var baseHref = window.location.href;
+      var iframe = document.getElementById('view');
+      function resolveUrl(raw) {
+        var t = String(raw || '').trim();
+        if (!t) {
+          try {
+            return new URL('index.html', baseHref).href;
+          } catch (e) {
+            return 'index.html';
+          }
+        }
+        if (/^https?:\/\//i.test(t)) return t;
+        if (t.startsWith('//')) return (window.location.protocol || 'https:') + t;
+        try {
+          return new URL(t, baseHref).href;
+        } catch (e) {
+          try {
+            return new URL('./' + String(t).replace(/^\.\//, ''), baseHref).href;
+          } catch (e2) {
+            return t;
+          }
+        }
+      }
+      var start = new URLSearchParams(window.location.search).get('url');
+      iframe.src = resolveUrl(start || 'index.html');
+    })();
+  </script>
+</body>
+</html>

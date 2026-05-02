@@ -302,6 +302,7 @@ function tryListen() {
   server.listen(listenPort, () => {
     console.log(`Server running at http://localhost:${listenPort}`);
     console.log(`모바일: http://localhost:${listenPort}/m/index.html`);
+    console.log(`라이브 브라우저: http://localhost:${listenPort}/browser.html`);
     if (listenPort !== PREFERRED_PORT) {
       console.warn(
         `[포트] ${PREFERRED_PORT}번은 이미 사용 중이라 ${listenPort}번으로 띄웠습니다. 브라우저에는 http://localhost:${listenPort}/recommend.html 로 접속하세요.`,

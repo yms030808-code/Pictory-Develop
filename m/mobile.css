@@ -213,7 +213,7 @@ body.m-splash-active {
 }
 
 html[data-theme="dark"] .m-splash {
-  background: #0a0a0a;
+  background: #030305;
 }
 
 .m-splash[hidden] {
@@ -320,7 +320,7 @@ html[data-theme="dark"] .page-mobile.auth-page .auth-login-logo .nav__logo-image
 
 /* 다크 테마: 참고 이미지와 유사한 상단 스트립 */
 html[data-theme="dark"] .m-topbar {
-  background: #0a0a0a;
+  background: rgba(4, 4, 7, 0.98);
 }
 
 html[data-theme="dark"] .m-topbar__search-icon {
@@ -328,8 +328,8 @@ html[data-theme="dark"] .m-topbar__search-icon {
 }
 
 html[data-theme="dark"] .m-topbar__search-input {
-  background: #2a2a2a;
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(30, 30, 40, 0.96);
+  border-color: rgba(255, 255, 255, 0.22);
   color: rgba(255, 255, 255, 0.92);
 }
 
@@ -417,8 +417,8 @@ html[data-theme="dark"] .m-topbar .nav__hamburger span {
 }
 
 html[data-theme="dark"] .m-subnav {
-  background: #0a0a0a;
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: #101018;
+  border-bottom-color: var(--color-border);
 }
 
 .m-subnav__scroll {
@@ -475,7 +475,7 @@ html[data-theme="dark"] .m-subnav__link:hover {
 
 html[data-theme="dark"] .m-subnav__link--active {
   color: #fff;
-  background: #2d2d2d;
+  background: #2a2a34;
 }
 
 .page-mobile .mobile-menu {
@@ -610,8 +610,8 @@ html[data-theme="dark"] .m-subnav__link--active {
 }
 
 html[data-theme="dark"] .page-mobile .product-catalog-nav-wrapper {
-  background: rgba(18, 18, 18, 0.96);
-  border-bottom-color: var(--color-border-dark);
+  background: rgba(22, 22, 28, 0.97);
+  border-bottom-color: var(--color-border);
 }
 
 /* 카테고리 칩: 가로 스크롤 없이 4개씩 두 줄 (8개) */
@@ -1227,8 +1227,12 @@ body.page-mobile.page-mypage .mypage-profile__meta h1 {
   margin-bottom: 0;
 }
 
-body.page-mobile.page-mypage .mypage-profile__logout {
+body.page-mobile.page-mypage .mypage-profile__actions {
   margin-left: auto;
+  flex-shrink: 0;
+}
+
+body.page-mobile.page-mypage .mypage-profile__logout {
   padding: 4px 8px;
   font-size: 0.68rem;
   line-height: 1.2;

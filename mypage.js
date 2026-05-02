@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('[data-mypage-tab]');
   const panels = document.querySelectorAll('[data-mypage-panel]');
   const logoutBtn = document.getElementById('mypageLogoutBtn');
+<<<<<<< Updated upstream
+=======
+  const profileSettingsBtn = document.getElementById('mypageProfileSettingsBtn');
+>>>>>>> Stashed changes
   const sessionStorageKey = 'picoryAuthSession';
   const activityLogStorageKey = 'picoryActivityLogs';
   const archiveStorageKey = 'picoryArchivePosts';
@@ -42,17 +46,31 @@ document.addEventListener('DOMContentLoaded', () => {
       panels.forEach((panel) => {
         panel.classList.toggle('is-active', panel.dataset.mypagePanel === target);
       });
+<<<<<<< Updated upstream
     });
+=======
+    }
+  }
+
+  profileSettingsBtn?.addEventListener('click', () => {
+    activateTab('settings');
+>>>>>>> Stashed changes
   });
 
   const sessionRaw = localStorage.getItem(sessionStorageKey);
-  if (nicknameEl && sessionRaw) {
+  const profileSubEl = document.getElementById('mypageProfileSub');
+  if (sessionRaw) {
     try {
       const session = JSON.parse(sessionRaw);
-      if (session.nickname) nicknameEl.textContent = session.nickname;
+      if (nicknameEl && session.nickname) nicknameEl.textContent = session.nickname;
+      if (profileSubEl) {
+        profileSubEl.textContent = session.id ? `아이디 ${session.id}` : '';
+      }
     } catch (error) {
       /* noop */
     }
+  } else if (profileSubEl) {
+    profileSubEl.textContent = '로그인하면 계정 정보가 표시돼요.';
   }
 
   const formatTime = (isoString) => {
@@ -86,8 +104,104 @@ document.addEventListener('DOMContentLoaded', () => {
       logs = [];
     }
 
+<<<<<<< Updated upstream
     if (!logs.length) {
       timelineEl.innerHTML = '<li><span>안내</span>아직 기록된 활동 로그가 없습니다. 서비스를 사용하면 여기에 자동으로 쌓여요.</li>';
+=======
+  const readRecentCameras = () => {
+    try {
+      const raw = localStorage.getItem(recentCameraStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) return [];
+      return list.slice().reverse();
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const syncSidebarStats = () => {
+    let bookmarks = 0;
+    let archive = 0;
+    let recent = 0;
+    try {
+      const bRaw = localStorage.getItem(bookmarkStorageKey);
+      const bList = bRaw ? JSON.parse(bRaw) : [];
+      if (Array.isArray(bList)) bookmarks = bList.filter((item) => item?.name).length;
+    } catch (_) {
+      /* noop */
+    }
+    try {
+      const aRaw = localStorage.getItem(archiveStorageKey);
+      const aList = aRaw ? JSON.parse(aRaw) : [];
+      if (Array.isArray(aList)) archive = aList.length;
+    } catch (_) {
+      /* noop */
+    }
+    try {
+      const rRaw = localStorage.getItem(recentCameraStorageKey);
+      const rList = rRaw ? JSON.parse(rRaw) : [];
+      if (Array.isArray(rList)) recent = rList.length;
+    } catch (_) {
+      /* noop */
+    }
+    const elBm = document.getElementById('mypageStatBookmarks');
+    const elAr = document.getElementById('mypageStatArchive');
+    const elRc = document.getElementById('mypageStatRecent');
+    if (elBm) elBm.textContent = String(bookmarks);
+    if (elAr) elAr.textContent = String(archive);
+    if (elRc) elRc.textContent = String(recent);
+  };
+
+  const renderRecentCameras = () => {
+    if (!recentCameraListEl) return;
+    const items = readRecentCameras();
+    if (!items.length) {
+      recentCameraListEl.innerHTML = '<li class="mypage-recent-camera-list__empty">최근 본 카메라가 아직 없습니다. 상품을 클릭하거나 검색하면 여기에 표시됩니다.</li>';
+      syncSidebarStats();
+      return;
+    }
+    recentCameraListEl.innerHTML = items
+      .slice(0, 12)
+      .map((item) => {
+        const name = escapeHtml(item?.name || '카메라');
+        const query = encodeURIComponent(String(item?.query || item?.name || '').trim());
+        const source = escapeHtml(item?.source || '클릭');
+        const at = formatTime(item?.at);
+        return `
+          <li>
+            <a class="mypage-recent-camera-list__link" href="price.html?q=${query}">
+              <strong>${name}</strong>
+              <span>${source}${at ? ` · ${at}` : ''}</span>
+            </a>
+          </li>
+        `;
+      })
+      .join('');
+    syncSidebarStats();
+  };
+
+  renderRecentCameras();
+
+  const readBookmarks = () => {
+    try {
+      const raw = localStorage.getItem(bookmarkStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list.filter((item) => item?.name) : [];
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const renderBookmarks = () => {
+    if (!bookmarkGridEl) return;
+    const items = readBookmarks();
+    if (!items.length) {
+      bookmarkGridEl.hidden = true;
+      bookmarkGridEl.innerHTML = '';
+      bookmarkEmptyEl?.classList.remove('hidden');
+      if (bookmarkCompareEl) bookmarkCompareEl.hidden = true;
+      syncSidebarStats();
+>>>>>>> Stashed changes
       return;
     }
 
@@ -96,6 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
       .reverse()
       .map((log) => `<li><span>${formatTime(log.at)}</span>${log.message}</li>`)
       .join('');
+<<<<<<< Updated upstream
+=======
+    renderBookmarkCompareChoices(items);
+    syncSidebarStats();
+>>>>>>> Stashed changes
   };
 
   renderActivityLogs();
@@ -113,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (archiveCountEl) {
       archiveCountEl.textContent = `${items.length}개`;
     }
+    syncSidebarStats();
 
     if (!items.length) {
       archiveGridEl.hidden = true;

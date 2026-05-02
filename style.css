@@ -6,9 +6,15 @@
 /* ===== Design Tokens ===== */
 :root {
   /* Colors */
+<<<<<<< Updated upstream
   --color-primary: #2C2C2C;
   --color-primary-light: #3D3D3D;
   --color-primary-dark: #1A1A1A;
+=======
+  --color-primary: #1c1c1c;
+  --color-primary-light: #333333;
+  --color-primary-dark: #0d0d0d;
+>>>>>>> Stashed changes
   --color-accent: #FF5C00;
   --color-accent-hover: #E65200;
   --color-accent-light: rgba(255, 92, 0, 0.1);
@@ -19,9 +25,15 @@
   --color-surface-dark: #2A2A2A;
   --color-border: #E5E5E5;
   --color-border-dark: #3A3A3A;
+<<<<<<< Updated upstream
   --color-text: #2C2C2C;
   --color-text-secondary: #777777;
   --color-text-muted: #AAAAAA;
+=======
+  --color-text: #171717;
+  --color-text-secondary: #525252;
+  --color-text-muted: #737373;
+>>>>>>> Stashed changes
   --color-text-inverse: #F5F5F5;
   --color-success: #22C55E;
   --color-warning: #F59E0B;
@@ -984,28 +996,56 @@ body.page-recommend .spinner {
   z-index: 2;
   width: 48px;
   height: 48px;
-  border-radius: 0;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.72);
-  background: transparent;
-  border: none;
-  backdrop-filter: none;
-  transition: color var(--transition-fast);
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  transition:
+    color 0.2s ease,
+    transform 0.22s cubic-bezier(0.34, 1.45, 0.64, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.22s ease;
 }
 
 .landing-banner__arrow svg {
   display: block;
   filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.35));
+  transition: filter 0.2s ease, transform 0.22s cubic-bezier(0.34, 1.45, 0.64, 1);
 }
 
 .landing-banner__arrow:hover {
-  color: rgba(255, 255, 255, 0.95);
+  color: #fff;
+  background: rgba(255, 92, 0, 0.42);
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow:
+    0 0 0 2px rgba(255, 140, 60, 0.55),
+    0 8px 28px rgba(255, 92, 0, 0.38),
+    0 4px 16px rgba(0, 0, 0, 0.25);
+  transform: translateY(-50%) scale(1.12);
+}
+
+.landing-banner__arrow:hover svg {
+  filter:
+    drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 14px rgba(255, 180, 120, 0.95));
+  transform: scale(1.08);
+}
+
+.landing-banner__arrow:active {
+  transform: translateY(-50%) scale(1.04);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 4px 14px rgba(255, 92, 0, 0.28);
 }
 
 .landing-banner__arrow:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline: 2px solid rgba(255, 255, 255, 0.75);
   outline-offset: 3px;
 }
 
@@ -2943,6 +2983,9 @@ body.page-checklist .checklist-option__icon {
 
 /* Glossary Items */
 .glossary-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
   padding: var(--space-md) 0;
   border-bottom: 1px solid var(--color-border);
 }
@@ -2951,17 +2994,38 @@ body.page-checklist .checklist-option__icon {
   border-bottom: none;
 }
 
+.glossary-item__section--term {
+  padding-bottom: var(--space-sm);
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--color-border);
+}
+
 .glossary-item__term {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
-  color: var(--color-primary);
-  margin-bottom: 6px;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.glossary-item__section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.glossary-item__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
 }
 
 .glossary-item__desc {
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   line-height: 1.7;
+  margin: 0;
 }
 
 .glossary-item__desc strong {
@@ -2973,16 +3037,15 @@ body.page-checklist .checklist-option__icon {
   font-style: normal;
 }
 
-.glossary-item__visual {
-  margin-top: var(--space-sm);
-  padding: 6px 12px;
+.glossary-item__example {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.65;
   background: var(--color-bg);
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-  text-align: center;
-  letter-spacing: -0.2px;
+  border-left: 3px solid var(--color-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 /* Upload Modal Form */
@@ -4094,15 +4157,65 @@ html[data-theme="dark"] .bookmark-choice-banner {
   padding: 108px 0 var(--space-2xl);
 }
 
-.mypage-header {
-  padding: var(--space-lg);
-  margin-bottom: var(--space-md);
+.container--mypage {
+  max-width: 1200px;
 }
 
-.mypage-profile {
+.mypage-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+.mypage-sidebar {
+  position: sticky;
+  top: 84px;
+  padding: var(--space-lg);
+}
+
+.mypage-sidebar__inner {
   display: flex;
-  gap: var(--space-lg);
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-md);
+}
+
+.mypage-profile__hit {
+  display: flex;
   align-items: center;
+  gap: var(--space-lg);
+  margin: 0;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.mypage-profile__hit--stack {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: var(--space-sm) var(--space-sm) var(--space-md);
+}
+
+.mypage-profile__hit:hover {
+  background: var(--color-bg);
+}
+
+.mypage-profile__hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+html[data-theme="dark"] .mypage-profile__hit:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .mypage-profile__avatar {
@@ -4114,9 +4227,20 @@ html[data-theme="dark"] .bookmark-choice-banner {
   background: #9e9e9e;
 }
 
+.mypage-profile__avatar--sidebar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
 .mypage-profile__meta {
   flex: 1;
   min-width: 0;
+}
+
+.mypage-profile__meta--sidebar {
+  flex: none;
+  width: 100%;
 }
 
 .mypage-profile__meta h1 {
@@ -4127,10 +4251,84 @@ html[data-theme="dark"] .bookmark-choice-banner {
   white-space: nowrap;
 }
 
+<<<<<<< Updated upstream
 .mypage-profile__logout {
   flex-shrink: 0;
   margin-left: auto;
   align-self: center;
+=======
+.mypage-profile__meta--sidebar h1 {
+  white-space: normal;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.mypage-profile__sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.mypage-profile__meta--sidebar .mypage-profile__sub {
+  text-align: center;
+}
+
+.mypage-sidebar__stats {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mypage-sidebar__stats li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  padding: 6px 0;
+}
+
+.mypage-sidebar__stat-label {
+  color: var(--color-text-secondary);
+}
+
+.mypage-sidebar__stat-value {
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.mypage-sidebar__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.mypage-sidebar__logout {
+  width: 100%;
+}
+
+.mypage-main {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .mypage-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .mypage-sidebar {
+    position: static;
+  }
+>>>>>>> Stashed changes
 }
 
 .mypage-profile__meta p {
@@ -5021,6 +5219,7 @@ a.product-card__link:hover .product-card__cta-icon {
     align-items: flex-start;
   }
 
+<<<<<<< Updated upstream
   .mypage-profile {
     flex-direction: column;
     align-items: flex-start;
@@ -5029,6 +5228,10 @@ a.product-card__link:hover .product-card__cta-icon {
   .mypage-profile__logout {
     margin-left: 0;
     align-self: flex-start;
+=======
+  .mypage-profile__hit {
+    width: 100%;
+>>>>>>> Stashed changes
   }
 
   .mypage-summary-grid,
@@ -5268,12 +5471,22 @@ a.product-card__link:hover .product-card__cta-icon {
 /* ===== Theme: 다크(블랙) — 주황·파랑·플랫폼 뱃지 등 포인트 컬러 유지 ===== */
 html[data-theme="dark"] {
   color-scheme: dark;
+<<<<<<< Updated upstream
   --color-bg: #0a0a0a;
   --color-surface: #141414;
   --color-text: #ececec;
   --color-text-secondary: #a8a8a8;
   --color-text-muted: #6e6e6e;
   --color-border: #2a2a2a;
+=======
+  /* 페이지(가장 어두움) ↔ 카드/패널 ↔ 테두리 명도차를 크게 */
+  --color-bg: #030305;
+  --color-surface: #1a1a22;
+  --color-text: #f4f4f7;
+  --color-text-secondary: #c6c6d0;
+  --color-text-muted: #9494a3;
+  --color-border: #45455a;
+>>>>>>> Stashed changes
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45);
   --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 10px 32px rgba(0, 0, 0, 0.55);
@@ -5286,7 +5499,11 @@ html[data-theme="dark"] body {
 }
 
 html[data-theme="dark"] .nav {
+<<<<<<< Updated upstream
   background: rgba(10, 10, 10, 0.94);
+=======
+  background: rgba(4, 4, 7, 0.98);
+>>>>>>> Stashed changes
   border-bottom-color: var(--color-border);
 }
 
@@ -5300,13 +5517,22 @@ html[data-theme="dark"] .mobile-menu .nav__link-badge {
 
 html[data-theme="dark"] body.page-landing .nav,
 html[data-theme="dark"] body.page-checklist .nav {
+<<<<<<< Updated upstream
   background: rgba(10, 10, 10, 0.94);
+=======
+  background: rgba(4, 4, 7, 0.98);
+>>>>>>> Stashed changes
   border-bottom-color: var(--color-border);
 }
 
 html[data-theme="dark"] .nav__search {
+<<<<<<< Updated upstream
   background: rgba(28, 28, 28, 0.96);
   border: 1px solid rgba(255, 255, 255, 0.1);
+=======
+  background: rgba(30, 30, 40, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+>>>>>>> Stashed changes
   color: var(--color-text-muted);
 }
 
@@ -5345,8 +5571,8 @@ html[data-theme="dark"] .nav__actions .btn--ghost {
 
 html[data-theme="dark"] .nav__actions .btn--ghost:hover {
   color: var(--color-text);
-  border-color: #555;
-  background: #1c1c1c;
+  border-color: #6a6a7e;
+  background: #26262f;
 }
 
 html[data-theme="dark"] .nav__logout {
@@ -5368,7 +5594,7 @@ html[data-theme="dark"] .mobile-menu__link:hover {
 
 html[data-theme="dark"] .hero,
 html[data-theme="dark"] body.page-recommend .hero {
-  background: linear-gradient(180deg, #141414 0%, var(--color-bg) 100%);
+  background: linear-gradient(180deg, #0e0e14 0%, var(--color-bg) 100%);
 }
 
 html[data-theme="dark"] .recommend-card__img {
@@ -5376,13 +5602,13 @@ html[data-theme="dark"] .recommend-card__img {
 }
 
 html[data-theme="dark"] .recommend-card__actions .recommend-card__bookmark-btn {
-  background: #1a1a1a;
-  border-color: #3a3a3a;
+  background: #23232c;
+  border-color: #4d4d5e;
   box-shadow: none;
 }
 
 html[data-theme="dark"] .recommend-card__actions .recommend-card__bookmark-btn:hover {
-  background: #222;
+  background: #2e2e3a;
 }
 
 html[data-theme="dark"] .landing-hero {
@@ -5392,14 +5618,14 @@ html[data-theme="dark"] .landing-hero {
 html[data-theme="dark"] .auth-page {
   background:
     radial-gradient(circle at top left, rgba(255, 92, 0, 0.1), transparent 32%),
-    linear-gradient(180deg, #141414 0%, var(--color-bg) 100%);
+    linear-gradient(180deg, #0e0e14 0%, var(--color-bg) 100%);
 }
 
 html[data-theme="dark"] .auth-card {
-  background: rgba(48, 48, 48, 0.45);
+  background: rgba(36, 36, 46, 0.72);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
   color: var(--color-text);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.4);
 }
@@ -5522,7 +5748,7 @@ html[data-theme="dark"] .mypage-empty-state {
 }
 
 html[data-theme="dark"] .price-search__suggest {
-  background: #1a1a1a;
+  background: var(--color-surface);
   border-color: var(--color-border);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
 }
@@ -5533,13 +5759,13 @@ html[data-theme="dark"] .price-search__suggest-btn:focus-visible {
 }
 
 html[data-theme="dark"] .product-catalog-nav-wrapper {
-  background: rgba(18, 18, 18, 0.96);
+  background: rgba(22, 22, 28, 0.97);
   border-bottom-color: var(--color-border);
 }
 
 html[data-theme="dark"] .product-catalog__sort-trigger {
-  background: #1f1f1f;
-  border-color: #4a4a4a;
+  background: #2a2a34;
+  border-color: #5c5c6e;
   color: #f5f5f5;
 }
 
@@ -5548,17 +5774,17 @@ html[data-theme="dark"] .product-catalog__sort-chevron {
 }
 
 html[data-theme="dark"] .product-catalog__sort-trigger:hover {
-  border-color: #8c8c8c;
+  border-color: #7a7a92;
 }
 
 html[data-theme="dark"] .product-catalog__sort-trigger:focus-visible {
-  border-color: #e8e8e8;
-  box-shadow: 0 0 0 1px #e8e8e8;
+  border-color: #b8b8c8;
+  box-shadow: 0 0 0 1px #b8b8c8;
 }
 
 html[data-theme="dark"] .product-catalog__sort-list {
-  background: #1a1a1a;
-  border-color: #4a4a4a;
+  background: var(--color-surface);
+  border-color: var(--color-border);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
 }
 
@@ -5568,7 +5794,7 @@ html[data-theme="dark"] .product-catalog__sort-option {
 
 html[data-theme="dark"] .product-catalog__sort-option:hover,
 html[data-theme="dark"] .product-catalog__sort-option:focus-visible {
-  background: #2e2e2e;
+  background: #363644;
 }
 
 html[data-theme="dark"] .product-catalog__sort-option.is-selected {
@@ -5582,7 +5808,7 @@ html[data-theme="dark"] .product-catalog__sort-option.is-selected:hover {
 }
 
 html[data-theme="dark"] .product-catalog__sort-label {
-  color: #a8a8a8;
+  color: var(--color-text-muted);
 }
 
 html[data-theme="dark"] .product-card__thumb,

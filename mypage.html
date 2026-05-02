@@ -39,7 +39,17 @@
     </div>
   </nav>
 
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+    </ul>
+  </div>
+
   <section class="mypage-wrap">
+<<<<<<< Updated upstream
     <div class="container">
       <header class="mypage-header card">
         <div class="mypage-profile">
@@ -60,8 +70,49 @@
         <button class="mypage-tab" data-mypage-tab="settings" type="button">설정</button>
         <button class="mypage-tab" id="openGlossaryBtn" type="button">용어 사전</button>
       </nav>
+=======
+    <div class="container container--mypage">
+      <div class="mypage-layout">
+        <aside class="mypage-sidebar card" aria-label="내 프로필">
+          <div class="mypage-sidebar__inner">
+            <button type="button" class="mypage-profile__hit mypage-profile__hit--stack" id="mypageProfileSettingsBtn" aria-label="설정으로 이동">
+              <img class="mypage-profile__avatar mypage-profile__avatar--sidebar" src="images/mypage-profile-default.svg" width="80" height="80" alt="프로필 이미지">
+              <div class="mypage-profile__meta mypage-profile__meta--sidebar">
+                <h1 id="mypageNickname">하늘필름</h1>
+                <p class="mypage-profile__sub" id="mypageProfileSub"></p>
+              </div>
+            </button>
+            <ul class="mypage-sidebar__stats" aria-label="활동 요약">
+              <li>
+                <span class="mypage-sidebar__stat-label">북마크</span>
+                <span class="mypage-sidebar__stat-value" id="mypageStatBookmarks">0</span>
+              </li>
+              <li>
+                <span class="mypage-sidebar__stat-label">아카이브</span>
+                <span class="mypage-sidebar__stat-value" id="mypageStatArchive">0</span>
+              </li>
+              <li>
+                <span class="mypage-sidebar__stat-label">최근 본</span>
+                <span class="mypage-sidebar__stat-value" id="mypageStatRecent">0</span>
+              </li>
+            </ul>
+            <p class="mypage-sidebar__hint">프로필을 누르면 설정으로 이동해요.</p>
+            <button type="button" class="btn btn--outline btn--sm mypage-sidebar__logout" id="mypageLogoutBtn">로그아웃</button>
+          </div>
+        </aside>
 
-      <div class="mypage-panel is-active" data-mypage-panel="home">
+        <div class="mypage-main">
+          <nav class="mypage-tabs" aria-label="마이페이지 탭">
+            <button class="mypage-tab is-active" data-mypage-tab="home" type="button">홈</button>
+            <button class="mypage-tab" data-mypage-tab="recommend" type="button">내 추천</button>
+            <button class="mypage-tab" data-mypage-tab="bookmark" type="button">북마크</button>
+            <button class="mypage-tab" data-mypage-tab="archive" type="button">내 사진 모아보기</button>
+            <button class="mypage-tab" data-mypage-tab="community" type="button">커뮤니티</button>
+            <button class="mypage-tab" data-mypage-tab="settings" type="button">설정</button>
+          </nav>
+>>>>>>> Stashed changes
+
+          <div class="mypage-panel is-active" data-mypage-panel="home">
         <section class="mypage-summary-grid">
           <article class="mypage-stat card"><strong>최근 추천 결과</strong><span>아직 없음</span></article>
           <article class="mypage-stat card"><strong>시세 알림 수</strong><span>0건</span></article>
@@ -167,6 +218,7 @@
       <div class="mypage-panel" data-mypage-panel="settings">
         <section class="mypage-section card">
           <h2>설정</h2>
+<<<<<<< Updated upstream
           <div class="mypage-settings">
             <button class="btn btn--outline">계정 설정</button>
             <button class="btn btn--outline">알림 설정</button>
@@ -174,6 +226,20 @@
           </div>
         </section>
       </div>
+=======
+          <p class="mypage-muted">프로필 영역을 눌러도 이 화면으로 올 수 있어요. 세부 화면은 준비 중입니다.</p>
+          <div class="mypage-settings">
+            <button type="button" class="btn btn--outline">계정 설정</button>
+            <button type="button" class="btn btn--outline">알림 설정</button>
+            <button type="button" class="btn btn--outline">취향 재설정</button>
+            <button type="button" class="btn btn--outline">개인정보 설정</button>
+          </div>
+        </section>
+      </div>
+
+        </div>
+      </div>
+>>>>>>> Stashed changes
     </div>
   </section>
 
