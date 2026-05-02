@@ -2,8 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('[data-mypage-tab]');
   const panels = document.querySelectorAll('[data-mypage-panel]');
   const logoutBtn = document.getElementById('mypageLogoutBtn');
-  const settingsGearBtn = document.getElementById('mypageSettingsGear');
-  const settingsDropdown = document.getElementById('mypageSettingsDropdown');
+  const profileOpenSettingsEl = document.querySelector('.mypage-profile--opens-settings');
   const sessionStorageKey = 'picoryAuthSession';
   const activityLogStorageKey = 'picoryActivityLogs';
   const recentCameraStorageKey = 'picoryRecentCameras';
@@ -11,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveStorageKey = 'picoryArchivePosts';
   const communityStorageKey = 'picoryCommunityPosts';
   const nicknameEl = document.getElementById('mypageNickname');
+  const profileSubEl = document.getElementById('mypageProfileSub');
   const recentCameraListEl = document.getElementById('mypageRecentCameraList');
   const bookmarkGridEl = document.getElementById('mypageBookmarkGrid');
   const bookmarkEmptyEl = document.getElementById('mypageBookmarkEmpty');
@@ -59,7 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Canon EOS R50 V', sensor: 'APS-C', price: '약 1,180,000원대', feature: '세로 영상·라이브 친화 UI', bestFor: '브이로그·숏폼', weight: '가벼움' },
   ];
 
-  const activateTab = (target) => {
+  function activateTab(target) {
+    if (!target) return;
     const matchedTab = Array.from(tabs).find((tab) => tab.dataset.mypageTab === target);
     const matchedPanel = Array.from(panels).find((panel) => panel.dataset.mypagePanel === target);
     if (!matchedTab || !matchedPanel) return;
@@ -68,14 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
     panels.forEach((panel) => {
       panel.classList.toggle('is-active', panel === matchedPanel);
     });
-  };
+  }
 
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       activateTab(tab.dataset.mypageTab);
     });
   });
-
   const requestedTab = new URLSearchParams(window.location.search).get('tab');
   const requestedHash = window.location.hash.replace('#', '');
   const initialTab = requestedTab || (requestedHash === 'bookmarks' ? 'bookmark' : requestedHash);
@@ -88,37 +88,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const closeSettingsDropdown = () => {
-    settingsDropdown?.classList.add('hidden');
-    settingsGearBtn?.setAttribute('aria-expanded', 'false');
-  };
-
-  settingsGearBtn?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    const shouldOpen = settingsDropdown?.classList.contains('hidden');
-    settingsDropdown?.classList.toggle('hidden', !shouldOpen);
-    settingsGearBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-  });
-
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    if (!(target instanceof Node)) return;
-    if (settingsDropdown?.contains(target) || settingsGearBtn?.contains(target)) return;
-    closeSettingsDropdown();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeSettingsDropdown();
+  profileOpenSettingsEl?.addEventListener('click', (event) => {
+    const t = event.target;
+    if (!(t instanceof Element)) return;
+    if (t.closest('#mypageLogoutBtn')) return;
+    activateTab('settings');
   });
 
   const sessionRaw = localStorage.getItem(sessionStorageKey);
-  if (nicknameEl && sessionRaw) {
+  if (sessionRaw) {
     try {
       const session = JSON.parse(sessionRaw);
-      if (session.nickname) nicknameEl.textContent = session.nickname;
+      if (nicknameEl && session.nickname) nicknameEl.textContent = session.nickname;
+      if (profileSubEl) {
+        profileSubEl.textContent = session.id ? `아이디 ${session.id}` : '';
+      }
     } catch (error) {
       /* noop */
     }
+  } else if (profileSubEl) {
+    profileSubEl.textContent = '로그인하면 계정 정보가 표시돼요.';
   }
 
   const formatTime = (isoString) => {
@@ -165,6 +154,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  const syncSidebarStats = () => {
+    let bookmarks = 0;
+    let archive = 0;
+    let recent = 0;
+    try {
+      const bRaw = localStorage.getItem(bookmarkStorageKey);
+      const bList = bRaw ? JSON.parse(bRaw) : [];
+      if (Array.isArray(bList)) bookmarks = bList.filter((item) => item?.name).length;
+    } catch (_) {
+      /* noop */
+    }
+    try {
+      const aRaw = localStorage.getItem(archiveStorageKey);
+      const aList = aRaw ? JSON.parse(aRaw) : [];
+      if (Array.isArray(aList)) archive = aList.length;
+    } catch (_) {
+      /* noop */
+    }
+    try {
+      const rRaw = localStorage.getItem(recentCameraStorageKey);
+      const rList = rRaw ? JSON.parse(rRaw) : [];
+      if (Array.isArray(rList)) recent = rList.length;
+    } catch (_) {
+      /* noop */
+    }
+    const elBm = document.getElementById('mypageStatBookmarks');
+    const elAr = document.getElementById('mypageStatArchive');
+    const elRc = document.getElementById('mypageStatRecent');
+    if (elBm) elBm.textContent = String(bookmarks);
+    if (elAr) elAr.textContent = String(archive);
+    if (elRc) elRc.textContent = String(recent);
+  };
+
   const readRecentCameras = () => {
     try {
       const raw = localStorage.getItem(recentCameraStorageKey);
@@ -181,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = readRecentCameras();
     if (!items.length) {
       recentCameraListEl.innerHTML = '<li class="mypage-recent-camera-list__empty">최근 본 카메라가 아직 없습니다. 상품을 클릭하거나 검색하면 여기에 표시됩니다.</li>';
+      syncSidebarStats();
       return;
     }
     recentCameraListEl.innerHTML = items
@@ -200,9 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       })
       .join('');
+    syncSidebarStats();
   };
-
-  renderRecentCameras();
 
   const readBookmarks = () => {
     try {
@@ -222,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bookmarkGridEl.innerHTML = '';
       bookmarkEmptyEl?.classList.remove('hidden');
       if (bookmarkCompareEl) bookmarkCompareEl.hidden = true;
+      syncSidebarStats();
       return;
     }
 
@@ -253,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .join('');
     renderBookmarkCompareChoices(items);
+    syncSidebarStats();
   };
 
   renderBookmarks();
@@ -263,11 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeBtn = target.closest('[data-bookmark-remove]');
     if (!removeBtn) return;
     const index = Number(removeBtn.dataset.bookmarkRemove);
-    const items = readBookmarks();
-    if (!Number.isInteger(index) || !items[index]) return;
+    const bmItems = readBookmarks();
+    if (!Number.isInteger(index) || !bmItems[index]) return;
 
-    items.splice(index, 1);
-    localStorage.setItem(bookmarkStorageKey, JSON.stringify(items));
+    bmItems.splice(index, 1);
+    localStorage.setItem(bookmarkStorageKey, JSON.stringify(bmItems));
     renderBookmarks();
     window.syncPicoryBookmarks?.();
   });
@@ -348,6 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBookmarkComparison();
   });
 
+  renderRecentCameras();
+  syncSidebarStats();
+
   const renderArchive = () => {
     if (!archiveGridEl) return;
     const raw = localStorage.getItem(archiveStorageKey);
@@ -361,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (archiveCountEl) {
       archiveCountEl.textContent = `${items.length}개`;
     }
+    syncSidebarStats();
 
     if (!items.length) {
       archiveGridEl.hidden = true;
