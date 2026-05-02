@@ -1270,9 +1270,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const query = glossarySearchInput.value.toLowerCase().trim();
     const items = document.querySelectorAll('.glossary-item');
     items.forEach(item => {
-      const term = item.querySelector('.glossary-item__term').textContent.toLowerCase();
-      const desc = item.querySelector('.glossary-item__desc').textContent.toLowerCase();
-      const matches = !query || term.includes(query) || desc.includes(query);
+      const termEl = item.querySelector('.glossary-item__term');
+      const descEl = item.querySelector('.glossary-item__desc');
+      const exampleEl = item.querySelector('.glossary-item__example');
+      const term = termEl ? termEl.textContent.toLowerCase() : '';
+      const desc = descEl ? descEl.textContent.toLowerCase() : '';
+      const example = exampleEl ? exampleEl.textContent.toLowerCase() : '';
+      const matches = !query || term.includes(query) || desc.includes(query) || example.includes(query);
       item.style.display = matches ? '' : 'none';
     });
   });

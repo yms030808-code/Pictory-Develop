@@ -1206,33 +1206,38 @@ body.page-mobile.page-mypage .mypage-wrap {
   padding-bottom: var(--space-xl);
 }
 
-body.page-mobile.page-mypage .mypage-header {
+body.page-mobile.page-mypage .mypage-sidebar__card {
   padding: var(--space-md);
-  margin-bottom: var(--space-sm);
 }
 
-body.page-mobile.page-mypage .mypage-profile {
-  flex-direction: row;
+body.page-mobile.page-mypage .mypage-profile.mypage-profile--sidebar {
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-xs);
 }
 
-body.page-mobile.page-mypage .mypage-profile__avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
+body.page-mobile.page-mypage .mypage-profile--sidebar .mypage-profile__avatar {
+  width: 64px;
+  height: 64px;
 }
 
-body.page-mobile.page-mypage .mypage-profile__meta h1 {
+body.page-mobile.page-mypage .mypage-profile__meta--sidebar h1 {
   font-size: 1.05rem;
-  margin-bottom: 0;
+  margin-bottom: 2px;
 }
 
-body.page-mobile.page-mypage .mypage-profile__logout {
-  margin-left: auto;
-  padding: 4px 8px;
-  font-size: 0.68rem;
-  line-height: 1.2;
+body.page-mobile.page-mypage .mypage-sidebar__logout {
+  padding: 8px 10px;
+  font-size: 0.75rem;
+}
+
+body.page-mobile.page-mypage .mypage-sidebar__stats li {
+  font-size: 0.8rem;
+  padding: 5px 0;
+}
+
+body.page-mobile.page-mypage .mypage-sidebar__hint {
+  font-size: 0.72rem;
 }
 
 body.page-mobile.page-mypage .mypage-summary-grid {
@@ -1250,7 +1255,7 @@ body.page-mobile.page-mypage .mypage-stat strong {
   letter-spacing: -0.02em;
 }
 
-/* 홈 탭: 추천 결과 요약 · 최근 활동 로그 영역만 살짝 축소 */
+/* 홈 탭: 추천 결과 요약 영역만 살짝 축소 */
 body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-section {
   padding: var(--space-md);
 }
@@ -1271,20 +1276,6 @@ body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-emp
 
 body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-empty-state .mypage-muted {
   font-size: 0.78rem;
-}
-
-body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-timeline {
-  gap: 6px;
-}
-
-body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-timeline li {
-  padding-left: 8px;
-  font-size: 0.8rem;
-}
-
-body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-timeline span {
-  font-size: 0.68rem;
-  margin-right: 6px;
 }
 
 /* 마이페이지: 탭 6개를 한 줄(커뮤니티 옆에 설정) — flex-wrap 때문에 두 줄로 내려가던 것 방지 */
