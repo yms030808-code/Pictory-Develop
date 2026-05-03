@@ -208,10 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function submitSearch() {
     const v = input?.value.trim() || '';
-    const url = new URL(window.location.href);
-    if (v) url.searchParams.set('q', v);
-    else url.searchParams.delete('q');
-    window.history.pushState({}, '', `${url.pathname}${url.search}`);
+    try {
+      const url = new URL(window.location.href);
+      if (v) url.searchParams.set('q', v);
+      else url.searchParams.delete('q');
+      window.history.pushState({}, '', `${url.pathname}${url.search}`);
+    } catch (_) {
+      /* file:// 프로토콜에서 pushState 실패 시 무시 */
+    }
     run();
     if (suggestEl) suggestEl.hidden = true;
     input?.setAttribute('aria-expanded', 'false');

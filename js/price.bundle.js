@@ -660,10 +660,10 @@
     }
     if (insightTextEl) insightTextEl.textContent = "";
   }
-  function applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl) {
+  function applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl, forceQuery) {
     const params = new URLSearchParams(window.location.search);
     const rawQ = params.get("q");
-    const query = (rawQ != null && rawQ.trim() !== "" ? rawQ : DEFAULT_QUERY).trim();
+    const query = (forceQuery != null ? forceQuery : (rawQ != null && rawQ.trim() !== "" ? rawQ : DEFAULT_QUERY)).trim();
     if (input) input.value = query;
     if (!query) {
       renderListings(
@@ -747,14 +747,18 @@
     const suggestEl = document.getElementById("priceSearchSuggest");
     if (!listContainer) return;
     const allListings = buildPriceListingsFromProducts();
-    const run = () => applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl);
+    const run = (forceQuery) => applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl, forceQuery);
     function submitSearch() {
       const v = input?.value.trim() || "";
-      const url = new URL(window.location.href);
-      if (v) url.searchParams.set("q", v);
-      else url.searchParams.delete("q");
-      window.history.pushState({}, "", `${url.pathname}${url.search}`);
-      run();
+      try {
+        const url = new URL(window.location.href);
+        if (v) url.searchParams.set("q", v);
+        else url.searchParams.delete("q");
+        window.history.pushState({}, "", `${url.pathname}${url.search}`);
+      } catch (_) {
+        /* file:// 프로토콜에서 pushState 실패 시 무시하고 forceQuery로 직접 렌더 */
+      }
+      run(v || undefined);
       if (suggestEl) suggestEl.hidden = true;
       input?.setAttribute("aria-expanded", "false");
     }
