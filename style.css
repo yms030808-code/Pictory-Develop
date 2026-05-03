@@ -449,7 +449,7 @@ body.page-community [data-nav-badge="community"] .nav__link-badge,
 
 .btn--ghost {
   background: rgba(255, 255, 255, 0.65);
-  color: var(--color-text-secondary);
+  color: var(--color-text);
   border: 1px solid var(--color-border);
 }
 
@@ -459,13 +459,14 @@ body.page-community [data-nav-badge="community"] .nav__link-badge,
 }
 
 .btn--outline {
-  background: rgba(255, 101, 0, 0.035);
-  color: var(--color-accent);
-  border: 1px solid #e95400;
+  background: var(--color-accent);
+  color: #fff;
+  border: 1px solid var(--color-accent);
 }
 
 .btn--outline:hover {
-  background: linear-gradient(180deg, #FF8C50 0%, var(--color-accent) 100%);
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
   color: #fff;
 }
 
@@ -5278,6 +5279,8 @@ html[data-theme="dark"] .btn--danger {
 
 .product-card.product-item {
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card__bookmark {
@@ -5306,7 +5309,9 @@ html[data-theme="dark"] .btn--danger {
 }
 
 a.product-card__link {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   gap: 6px;
   text-decoration: none;
   color: inherit;
@@ -5322,12 +5327,46 @@ a.product-card__link:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 4px;
+  margin-top: auto;
   padding-top: 8px;
   border-top: 1px solid var(--color-border);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-accent);
+}
+
+.product-card__actions {
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.product-card__compare-btn {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.product-card__compare-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(255, 101, 0, 0.05);
+}
+
+.product-card__compare-btn.is-added {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
 }
 
 .product-card__cta-text {
@@ -6620,8 +6659,9 @@ html[data-theme="dark"] .match-strip-wrap { background: linear-gradient(180deg, 
 .match-strip-card:hover { transform: translateY(-6px) scale(1.03); }
 .match-strip-card__img {
   width: 100%; aspect-ratio: 1; object-fit: contain;
-  background: var(--color-bg); padding: 16px;
+  background: #F0F2F5; padding: 16px;
 }
+html[data-theme="dark"] .match-strip-card__img { background: #222; }
 .match-strip-card__name {
   padding: 8px 12px 10px; font-size: 0.7rem; font-weight: 600;
   color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -6729,10 +6769,20 @@ html[data-theme="dark"] .match-strip-wrap { background: linear-gradient(180deg, 
 .match-result-card__rank--2 { background: #9ca3af; }
 .match-result-card__rank--3 { background: #cd7c54; }
 .match-result-card__thumb {
-  aspect-ratio: 4/3; background: var(--color-bg);
+  aspect-ratio: 4/3; background: #F0F2F5;
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
+html[data-theme="dark"] .match-result-card__thumb { background: #222; }
 .match-result-card__thumb img { max-width: 80%; max-height: 100%; object-fit: contain; }
+.match-result-card__role {
+  font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  background: rgba(255,101,0,0.1); color: var(--color-accent);
+  display: inline-block; margin-bottom: 6px; letter-spacing: 0.01em;
+}
+.match-result-card__reason {
+  font-size: 0.78rem; color: var(--color-text-secondary); line-height: 1.55;
+  margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--color-border);
+}
 .match-result-card__body { padding: 16px; }
 .match-result-card__brand { font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; }
 .match-result-card__model { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }

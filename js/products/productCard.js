@@ -11,7 +11,7 @@ export function renderProductCardHTML(product) {
   const alt = `${product.brand || ''} ${product.model || ''}`.trim();
   const searchQ = `${product.brand || ''} ${product.model || ''}`.trim();
   const priceHref = `${pageRelative('price.html')}?q=${encodeURIComponent(searchQ)}`;
-  const ariaLabel = `${alt} — 통합 시세 비교 페이지로 이동`;
+  const ariaLabel = `${alt} — 상세 페이지로 이동`;
   return `
     <div class="product-card product-item" data-product-id="${escapeAttr(product.id)}">
       <button type="button" class="bookmark-add product-card__bookmark" aria-label="북마크 추가">
@@ -34,10 +34,19 @@ export function renderProductCardHTML(product) {
         <strong class="product-card__price">${escapeHtml(product.priceSummary)}</strong>
         <p class="product-card__platform">${escapeHtml(product.platform)}</p>
         <span class="product-card__cta">
-          <span class="product-card__cta-text">시세 비교</span>
+          <span class="product-card__cta-text">상세보기</span>
           <svg class="product-card__cta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </span>
       </a>
+      <div class="product-card__actions">
+        <button type="button" class="product-card__compare-btn"
+          data-id="${escapeAttr(product.id)}"
+          data-brand="${escapeAttr(product.brand)}"
+          data-model="${escapeAttr(product.model)}"
+          data-thumb="${escapeAttr(thumb)}">
+          + 비교함 담기
+        </button>
+      </div>
     </div>
   `.trim();
 }

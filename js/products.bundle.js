@@ -298,10 +298,19 @@
         <strong class="product-card__price">${escapeHtml(product.priceSummary)}</strong>
         <p class="product-card__platform">${escapeHtml(product.platform)}</p>
         <span class="product-card__cta">
-          <span class="product-card__cta-text">\uC2DC\uC138 \uBE44\uAD50</span>
+          <span class="product-card__cta-text">\uC0C1\uC138\uBCF4\uAE30</span>
           <svg class="product-card__cta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </span>
       </a>
+      <div class="product-card__actions">
+        <button type="button" class="product-card__compare-btn"
+          data-id="${escapeAttr(product.id)}"
+          data-brand="${escapeAttr(product.brand)}"
+          data-model="${escapeAttr(product.model)}"
+          data-thumb="${escapeAttr(thumb)}">
+          + \uBE44\uAD50\uD568 \uB2F4\uAE30
+        </button>
+      </div>
     </div>
   `.trim();
   }
@@ -642,5 +651,29 @@
         document.getElementById("product-catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
+
+    // 비교함 담기 버튼 이벤트 위임
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".product-card__compare-btn");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const { id, brand, model, thumb } = btn.dataset;
+      if (!id || !window.PicoryCompare) return;
+      if (window.PicoryCompare.has(id)) {
+        btn.textContent = "✓ 담김";
+        btn.classList.add("is-added");
+        return;
+      }
+      const added = window.PicoryCompare.add({ id, brand, model, thumbnail: thumb });
+      if (added) {
+        btn.textContent = "✓ 담김";
+        btn.classList.add("is-added");
+      } else {
+        const orig = btn.textContent;
+        btn.textContent = "최대 3개까지";
+        setTimeout(() => { btn.textContent = orig; }, 1600);
+      }
+    });
   });
 })();
