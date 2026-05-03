@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pictory - 카메라 비교</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script src="picory-nav-badges-pre.js"></script>
+</head>
+<body class="page-compare">
+  <nav class="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo">
+        <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+      </a>
+      <label class="nav__search" aria-label="검색">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="상품, 브랜드 검색">
+      </label>
+      <ul class="nav__menu">
+        <li><a href="index.html" class="nav__link">홈</a></li>
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="camera-explore.html" class="nav__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
+      <div class="nav__actions">
+        <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          북마크
+        </button>
+        <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
+      </div>
+      <button class="nav__hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <ul class="mobile-menu__list">
+      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
+      <li><a href="products.html" class="mobile-menu__link">상품</a></li>
+      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      <li><a href="#" class="mobile-menu__link" data-bookmark-nav>북마크</a></li>
+    </ul>
+  </div>
+
+  <section class="section cmp-page">
+    <div class="container">
+      <div class="section__header">
+        <h2 class="section__title">카메라 비교</h2>
+        <p class="section__desc">선택한 카메라의 주요 사양을 나란히 비교해 보세요.</p>
+      </div>
+
+      <div id="cmpError" class="cmp-error hidden">
+        <p>비교할 카메라가 없어요. <a href="products.html">상품 목록</a>에서 카메라를 담아보세요.</p>
+      </div>
+
+      <div id="cmpContent">
+        <!-- Cards row -->
+        <div id="cmpCards" class="cmp-cards"></div>
+        <!-- Spec table -->
+        <div class="cmp-table-wrap">
+          <table id="cmpTable" class="cmp-table">
+            <thead id="cmpThead"></thead>
+            <tbody id="cmpTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="bookmark-sidebar" id="bookmarkSidebar">
+    <div class="bookmark-sidebar__header">
+      <h3>내 북마크</h3>
+      <button class="bookmark-sidebar__close" id="closeSidebar" aria-label="닫기">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="bookmark-sidebar__body" id="bookmarkBody">
+      <div class="bookmark-empty" id="bookmarkEmpty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <p>아직 북마크한 카메라가 없어요.</p>
+        <p class="text-sm text-muted">마음에 드는 카메라의 북마크 버튼을 눌러보세요.</p>
+      </div>
+      <div class="bookmark-list hidden" id="bookmarkList"></div>
+    </div>
+    <div class="bookmark-sidebar__footer hidden" id="bookmarkFooter">
+      <button class="btn btn--primary" style="width: 100%;" id="compareBtn" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        선택한 카메라 비교하기
+      </button>
+    </div>
+  </aside>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="index.html" class="nav__logo footer__logo">
+            <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
+          </a>
+          <p class="footer__tagline">카메라 탐색의 새로운 기준</p>
+        </div>
+        <div class="footer__links">
+          <a href="m/index.html">모바일 버전</a>
+          <a href="#">이용약관</a>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">고객센터</a>
+        </div>
+        <div class="footer__theme" role="group" aria-label="화면 테마">
+          <span class="footer__theme-label">테마</span>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
+          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
+        </div>
+        <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme.js"></script>
+  <script src="js/compare-drawer.js"></script>
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    /* ── Camera catalogue (same data as search.html / match.html) ── */
+    var CAMERAS = [
+      { id: 'fujifilm-x100vi', brand: 'Fujifilm', model: 'X100VI', priceKrw: 2190000, priceSummary: '약 219만원대', thumbnail: 'images/cameras/fujifilm-x100vi.png', sensor: 'APS-C 26.1MP', video: '6.2K / 4K', weight: '521g', battery: '약 450컷', af: '위상차 + 딥러닝 AF', ois: '○', size: '컴팩트' },
+      { id: 'canon-eos-r10', brand: 'Canon', model: 'EOS R10', priceKrw: 920000, priceSummary: '약 92만원대~', thumbnail: 'images/cameras/canon-eos-r10.png', sensor: 'APS-C 24.2MP', video: '4K / FHD', weight: '382g', battery: '약 430컷', af: '듀얼픽셀 CMOS AF II', ois: '△ (렌즈)', size: '소형' },
+      { id: 'sony-zv-e10-ii', brand: 'Sony', model: 'ZV-E10 II', priceKrw: 1280000, priceSummary: '약 128만원대~', thumbnail: 'images/cameras/sony-zv-e10-ii.png', sensor: 'APS-C 26MP', video: '4K / FHD', weight: '292g (바디)', battery: '약 570컷', af: '위상차 AI AF', ois: '△ (렌즈)', size: '초소형' },
+      { id: 'ricoh-gr-iiix', brand: 'Ricoh', model: 'GR IIIx', priceKrw: 1590000, priceSummary: '약 159만원대~', thumbnail: 'images/cameras/ricoh-gr-iiix.png', sensor: 'APS-C 24.2MP', video: 'FHD', weight: '262g', battery: '약 200컷', af: '위상차 PDAF', ois: '○ (센서)', size: '포켓' },
+      { id: 'sony-a7c-ii', brand: 'Sony', model: 'A7C II', priceKrw: 2390000, priceSummary: '약 239만원대~', thumbnail: 'images/cameras/sony-a7c-ii.png', sensor: '풀프레임 33MP', video: '4K / FHD', weight: '514g', battery: '약 530컷', af: 'AI AF (위상차)', ois: '○ (센서)', size: '소형 풀프레임' },
+      { id: 'nikon-z-fc', brand: 'Nikon', model: 'Z fc', priceKrw: 1190000, priceSummary: '약 119만원대~', thumbnail: 'images/cameras/nikon-z-fc.png', sensor: 'APS-C 20.9MP', video: '4K / FHD', weight: '390g', battery: '약 300컷', af: '위상차 하이브리드 AF', ois: '△ (렌즈)', size: '소형' },
+      { id: 'canon-g7x-mark-iii', brand: 'Canon', model: 'G7X Mark III', priceKrw: 950000, priceSummary: '약 95만원대~', thumbnail: 'images/cameras/canon-g7x-mark-iii.png', sensor: '1인치 20.1MP', video: '4K / FHD', weight: '304g', battery: '약 235컷', af: '듀얼픽셀 CMOS AF', ois: '○ (광학)', size: '컴팩트' },
+      { id: 'dji-osmo-pocket-3', brand: 'DJI', model: 'Osmo Pocket 3', priceKrw: 649000, priceSummary: '약 65만원대~', thumbnail: 'images/cameras/dji-osmo-pocket-3.png', sensor: '1인치 20MP', video: '4K 120fps', weight: '179g', battery: '약 116분', af: 'PDAF + 얼굴추적', ois: '○ (짐벌 3축)', size: '초소형' },
+      { id: 'sony-a6700', brand: 'Sony', model: 'A6700', priceKrw: 1520000, priceSummary: '약 152만원대~', thumbnail: 'images/cameras/sony-a6700.png', sensor: 'APS-C 26MP', video: '4K 120p / FHD', weight: '493g', battery: '약 570컷', af: 'AI AF (위상차)', ois: '○ (센서)', size: '소형' },
+      { id: 'canon-eos-r50', brand: 'Canon', model: 'EOS R50', priceKrw: 980000, priceSummary: '약 98만원대~', thumbnail: 'images/cameras/canon-eos-r50.png', sensor: 'APS-C 24.2MP', video: '4K / FHD', weight: '375g', battery: '약 390컷', af: '듀얼픽셀 CMOS AF II', ois: '△ (렌즈)', size: '소형' },
+      { id: 'fujifilm-x-s20', brand: 'Fujifilm', model: 'X-S20', priceKrw: 1780000, priceSummary: '약 178만원대~', thumbnail: 'images/cameras/fujifilm-x-s20.png', sensor: 'APS-C 26.1MP', video: '6.2K / 4K', weight: '491g', battery: '약 750컷', af: '위상차 AF', ois: '○ (센서)', size: '소형' },
+      { id: 'canon-eos-r50-v', brand: 'Canon', model: 'EOS R50 V', priceKrw: 1180000, priceSummary: '약 118만원대~', thumbnail: 'images/cameras/canon-eos-r50-v.png', sensor: 'APS-C 24.2MP', video: '4K / FHD', weight: '390g', battery: '약 390컷', af: '듀얼픽셀 CMOS AF II', ois: '△ (렌즈)', size: '소형' },
+    ];
+
+    var SPEC_ROWS = [
+      { label: '센서 / 화소', key: 'sensor' },
+      { label: '영상', key: 'video' },
+      { label: '무게', key: 'weight' },
+      { label: '배터리', key: 'battery' },
+      { label: 'AF 방식', key: 'af' },
+      { label: '손떨방(OIS)', key: 'ois' },
+      { label: '크기 분류', key: 'size' },
+      { label: '가격대', key: 'priceSummary' },
+    ];
+
+    function getCamerasToCompare() {
+      var params = new URLSearchParams(location.search);
+      var ids = (params.get('ids') || '').split(',').filter(Boolean);
+      if (!ids.length) {
+        try { var stored = JSON.parse(localStorage.getItem('picory-compare-v1')) || []; ids = stored.map(function(c){ return c.id; }); } catch(e){}
+      }
+      return ids.map(function(id){ return CAMERAS.find(function(c){ return c.id === id; }); }).filter(Boolean);
+    }
+
+    function formatPrice(n) {
+      return n ? n.toLocaleString('ko-KR') + '원' : '-';
+    }
+
+    function render() {
+      var cams = getCamerasToCompare();
+      var errorEl = document.getElementById('cmpError');
+      var contentEl = document.getElementById('cmpContent');
+      if (!cams.length) {
+        errorEl.classList.remove('hidden');
+        contentEl.style.display = 'none';
+        return;
+      }
+
+      /* ── Header cards ── */
+      var cardsHtml = cams.map(function(cam) {
+        return '<div class="cmp-card">' +
+          '<div class="cmp-card__img">' +
+            '<img src="' + cam.thumbnail + '" alt="' + cam.model + '" onerror="this.style.display=\'none\'">' +
+          '</div>' +
+          '<div class="cmp-card__body">' +
+            '<span class="cmp-card__brand">' + cam.brand + '</span>' +
+            '<strong class="cmp-card__model">' + cam.model + '</strong>' +
+            '<span class="cmp-card__price">' + formatPrice(cam.priceKrw) + '</span>' +
+          '</div>' +
+          '<button class="cmp-card__remove" data-cid="' + cam.id + '" type="button" aria-label="' + cam.model + ' 제거">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '</button>' +
+        '</div>';
+      }).join('');
+
+      /* Empty slot placeholders */
+      for (var i = cams.length; i < 3; i++) {
+        cardsHtml += '<div class="cmp-card cmp-card--empty">' +
+          '<div class="cmp-card__add">' +
+            '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>' +
+            '<span>카메라 추가</span>' +
+          '</div>' +
+        '</div>';
+      }
+      document.getElementById('cmpCards').innerHTML = cardsHtml;
+
+      /* Remove buttons */
+      document.querySelectorAll('.cmp-card__remove').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          if (window.PicoryCompare) window.PicoryCompare.remove(btn.dataset.cid);
+          var newCams = getCamerasToCompare().filter(function(c){ return c.id !== btn.dataset.cid; });
+          var newIds = newCams.map(function(c){ return c.id; }).join(',');
+          history.replaceState(null, '', newIds ? '?ids=' + newIds : location.pathname);
+          render();
+        });
+      });
+
+      /* ── Spec table ── */
+      var colCount = cams.length;
+      var theadHtml = '<tr><th class="cmp-th-label"></th>' +
+        cams.map(function(c){ return '<th>' + c.brand + '<br><span class="cmp-th-model">' + c.model + '</span></th>'; }).join('') +
+        '</tr>';
+      document.getElementById('cmpThead').innerHTML = theadHtml;
+
+      var tbodyHtml = SPEC_ROWS.map(function(row) {
+        var cells = cams.map(function(c){ return '<td>' + (c[row.key] || '-') + '</td>'; }).join('');
+        return '<tr><td class="cmp-td-label">' + row.label + '</td>' + cells + '</tr>';
+      }).join('');
+      document.getElementById('cmpTbody').innerHTML = tbodyHtml;
+    }
+
+    document.addEventListener('DOMContentLoaded', render);
+  })();
+  </script>
+</body>
+</html>
