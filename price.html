@@ -55,18 +55,20 @@
 
       <!-- ① 상품 상세 (검색 후 표시) -->
       <div class="product-detail" id="productDetail">
-        <div class="product-detail__hero">
-          <div class="product-detail__copy">
-            <p class="product-detail__brand" id="detailBrand">Brand</p>
-            <h1 class="product-detail__name" id="detailName">카메라 모델명</h1>
-            <p class="product-detail__tagline" id="detailTagline">한 줄 소개가 여기에 표시됩니다.</p>
-          </div>
-          <div class="product-detail__img-wrap">
-            <img class="product-detail__img" id="detailImg" src="" alt="">
-          </div>
+
+        <!-- 1. 카메라명 + 한줄 카피 -->
+        <div class="product-detail__header">
+          <p class="product-detail__brand" id="detailBrand">Brand</p>
+          <h1 class="product-detail__name" id="detailName">카메라 모델명</h1>
+          <p class="product-detail__tagline" id="detailTagline">한 줄 소개가 여기에 표시됩니다.</p>
         </div>
 
-        <!-- ② 주요 스펙 하이라이트 -->
+        <!-- 카메라 대표 이미지 (단독 행) -->
+        <div class="product-detail__img-row">
+          <img class="product-detail__img" id="detailImg" src="" alt="">
+        </div>
+
+        <!-- 2. 주요 스펙 하이라이트 -->
         <div class="product-detail__specs" id="detailSpecs">
           <div class="spec-card">
             <div class="spec-card__icon">📷</div>
@@ -90,7 +92,7 @@
           </div>
         </div>
 
-        <!-- ③ 샘플 이미지 갤러리 -->
+        <!-- 3. 샘플 이미지 갤러리 -->
         <div class="product-detail__gallery">
           <h3 class="gallery-title">샘플 이미지</h3>
           <div class="gallery-grid">
@@ -113,12 +115,13 @@
           </div>
         </div>
 
-        <!-- ④ 적합한 촬영 유형 -->
+        <!-- 4. 적합한 촬영 유형 -->
         <div class="product-detail__use-cases">
           <h3 class="use-cases-title">적합한 촬영 유형</h3>
           <div class="use-cases-grid" id="detailUseCases"></div>
         </div>
 
+        <!-- 5. 구분선 -->
         <hr class="product-detail__divider">
       </div>
 
