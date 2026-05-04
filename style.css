@@ -188,8 +188,9 @@ rect {
   padding: 0 18px;
   border-radius: 13px;
   position: relative;
-  background: rgba(255,255,255,0.98);
-  border: 1px solid rgba(0,0,0,0.14);
+  /* 본문·카드와 같은 그레이 톤 (순백 칩 대신) */
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
   color: var(--color-text-secondary);
 }
 
@@ -1866,7 +1867,24 @@ html[data-theme="dark"] .color-bar-stack {
   font-size: var(--font-size-sm);
   color: var(--color-accent);
   font-weight: var(--font-weight-medium);
-  margin-bottom: var(--space-md);
+  margin-bottom: 6px;
+}
+
+.recommend-card__match {
+  font-size: var(--font-size-xs);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-md);
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--color-border);
+}
+
+html[data-theme="dark"] .recommend-card__match {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
 }
 
 .recommend-card__specs {
@@ -5915,8 +5933,8 @@ html[data-theme="dark"] body.page-checklist .nav {
 }
 
 html[data-theme="dark"] .nav__search {
-  background: rgba(30, 30, 40, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: var(--color-surface-dark);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--color-text-muted);
 }
 
@@ -6203,102 +6221,6 @@ html[data-theme="dark"] .product-card__img {
 html[data-theme="dark"] .product-item img {
   background: #1a1a1a;
 }
-
-.recommend-compare {
-  margin-top: 28px;
-}
-
-.recommend-compare__head {
-  margin-bottom: 12px;
-}
-
-.recommend-compare__title {
-  margin: 0;
-  font-size: 22px;
-}
-
-.recommend-compare__desc {
-  margin: 8px 0 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-}
-
-.recommend-compare__tabs {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-
-.recommend-compare__tab {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text);
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-}
-
-.recommend-compare__tab.is-active {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.recommend-compare__body {
-  padding: 14px;
-}
-
-.recommend-compare__current {
-  margin: 0 0 12px;
-  font-size: var(--font-size-sm);
-}
-
-.recommend-compare__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.recommend-compare__chip {
-  font-size: var(--font-size-xs);
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  padding: 6px 10px;
-  color: var(--color-text-secondary);
-}
-
-.recommend-compare__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.recommend-compare__item {
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 10px;
-}
-
-.recommend-compare__item-title {
-  margin: 0 0 8px;
-  font-size: var(--font-size-sm);
-}
-
-.recommend-compare__item-kv {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-xs);
-  line-height: 1.6;
-}
-
-@media (max-width: 768px) {
-  .recommend-compare__list {
-    grid-template-columns: 1fr;
-  }
-}
-
 
 /* ================================================
    PICTORY 2026 DESIGN REFRESH AND NEW COMPONENTS

@@ -103,11 +103,12 @@ body.page-mobile {
 .m-topbar__search-input {
   width: 100%;
   min-height: 40px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 8px 12px 8px 40px;
   font-size: 0.8rem;
-  background: #fff;
+  /* 상단 스트립(#ececee)과 맞는 중간 그레이 — 데스크톱 .nav__search와 톤 통일 */
+  background: var(--color-bg);
   color: var(--color-text);
   outline: none;
   box-sizing: border-box;
@@ -329,7 +330,7 @@ html[data-theme="dark"] .m-topbar__search-icon {
 }
 
 html[data-theme="dark"] .m-topbar__search-input {
-  background: #2a2a2a;
+  background: var(--color-surface-dark);
   border-color: rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.92);
 }

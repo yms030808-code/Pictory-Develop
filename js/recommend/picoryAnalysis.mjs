@@ -341,6 +341,7 @@ export function toApiShape(color, ranked) {
     why: r.why,
     lens_suggestion: r.lens_suggestion,
     specs: r.specs,
+    score: r.score != null ? Number(r.score) : null,
   }));
 
   return {

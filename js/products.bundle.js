@@ -571,9 +571,9 @@
         if (!picked) return;
         input.value = picked;
         close();
-        const url = new URL(window.location.href);
-        url.searchParams.set("q", picked);
-        window.location.href = `${url.pathname}${url.search}${url.hash || ""}`;
+        const detailUrl = new URL("price.html", window.location.href);
+        detailUrl.searchParams.set("q", picked);
+        window.location.href = detailUrl.href;
       });
       document.addEventListener("mousedown", (e) => {
         const t = e.target;
@@ -582,39 +582,7 @@
       });
     }
     // Global suggest is mounted by app.js (all pages). Keep products bundle lean.
-    const RECENT_CAMERA_STORAGE_KEY = "picoryRecentCameras";
-    function pushRecentCamera(name, source, query) {
-      const cameraName = String(name || "").trim();
-      if (!cameraName) return;
-      const q = String(query || cameraName).trim();
-      try {
-        const raw = localStorage.getItem(RECENT_CAMERA_STORAGE_KEY);
-        const list = raw ? JSON.parse(raw) : [];
-        const prev = Array.isArray(list) ? list : [];
-        const deduped = prev.filter((item) => String(item?.name || "").trim() !== cameraName);
-        deduped.push({
-          name: cameraName,
-          source: String(source || "검색"),
-          query: q,
-          at: (/* @__PURE__ */ new Date()).toISOString()
-        });
-        localStorage.setItem(RECENT_CAMERA_STORAGE_KEY, JSON.stringify(deduped.slice(-20)));
-      } catch {
-      }
-    }
-    if (searchInput) {
-      searchInput.addEventListener("keydown", (e) => {
-        if (e.key !== "Enter") return;
-        e.preventDefault();
-        const v = searchInput.value.trim();
-        if (v) pushRecentCamera(v, "검색", v);
-        const url = new URL(window.location.href);
-        if (v) url.searchParams.set("q", v);
-        else url.searchParams.delete("q");
-        const next = `${url.pathname}${url.search}${url.hash || ""}`;
-        window.location.href = next;
-      });
-    }
+    /* 상단 검색 Enter → 상세(price.html?q=)는 app.js 전역 suggest에서 처리 */
     const navRoot = document.getElementById("productCategoryNav");
     const gridRoot = document.getElementById("productGrid");
     const emptyEl = document.getElementById("productCatalogEmpty");
@@ -661,8 +629,9 @@
       const { id, brand, model, thumb } = btn.dataset;
       if (!id || !window.PicoryCompare) return;
       if (window.PicoryCompare.has(id)) {
-        btn.textContent = "✓ 담김";
-        btn.classList.add("is-added");
+        window.PicoryCompare.remove(id);
+        btn.textContent = "+ 비교함 담기";
+        btn.classList.remove("is-added");
         return;
       }
       const added = window.PicoryCompare.add({ id, brand, model, thumbnail: thumb });

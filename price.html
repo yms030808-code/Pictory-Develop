@@ -253,9 +253,19 @@
 
     function fillDetail(query) {
       if (!query) return;
-      const key = Object.keys(CAMERA_META).find(k =>
-        query.toLowerCase().replace(/\s/g,'').includes(k.replace(/-/g,''))
-      );
+      /** 검색어·슬러그 모두 공백·하이픈 등 제거 후 비교 (예: ZV-E10 II ↔ sony-zv-e10-ii) */
+      function compact(s) {
+        return String(s || '')
+          .toLowerCase()
+          .replace(/[\s\-_.]/g, '');
+      }
+      const qn = compact(query);
+      const key = Object.keys(CAMERA_META).find((k) => {
+        const kn = compact(k);
+        if (qn.includes(kn)) return true;
+        if (qn.length >= 5 && kn.includes(qn)) return true;
+        return false;
+      });
       const meta = key ? CAMERA_META[key] : null;
       if (!meta) return;
 

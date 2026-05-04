@@ -1617,7 +1617,8 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
       product: r2.product,
       why: r2.why,
       lens_suggestion: r2.lens_suggestion,
-      specs: r2.specs
+      specs: r2.specs,
+      score: r2.score != null ? Number(r2.score) : null
     }));
     return {
       source: "local-color-match",

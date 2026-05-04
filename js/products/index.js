@@ -129,18 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchInput && qParam) {
     searchInput.value = qParam;
   }
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter') return;
-      e.preventDefault();
-      const v = searchInput.value.trim();
-      const url = new URL(window.location.href);
-      if (v) url.searchParams.set('q', v);
-      else url.searchParams.delete('q');
-      const next = `${url.pathname}${url.search}${url.hash || ''}`;
-      window.location.href = next;
-    });
-  }
+  /* 상단 검색 Enter → 상세(price.html?q=)는 app.js 전역 suggest에서 처리 */
 
   const navRoot = document.getElementById('productCategoryNav');
   const gridRoot = document.getElementById('productGrid');

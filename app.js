@@ -126,6 +126,36 @@ document.addEventListener('DOMContentLoaded', () => {
       return [brand, name || model].filter(Boolean).join(' ').trim();
     }
 
+    function goSearch(picked) {
+      const qStr = String(picked || '').trim();
+      if (!qStr) return;
+      pushRecentCamera(qStr, '검색', qStr);
+      const detailUrl = new URL('price.html', window.location.href);
+      detailUrl.searchParams.set('q', qStr);
+      window.location.href = detailUrl.href;
+    }
+
+    function navSearchInputs() {
+      return [
+        document.querySelector('.nav__search input[type="search"]'),
+        document.querySelector('.m-topbar__search-input'),
+      ].filter(Boolean);
+    }
+
+    function registerNavSearchEnter(input) {
+      if (!input || input.dataset.picoryNavSearchEnter === 'true') return;
+      input.dataset.picoryNavSearchEnter = 'true';
+      input.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter') return;
+        const v = input.value.trim();
+        if (!v) return;
+        e.preventDefault();
+        goSearch(v);
+      });
+    }
+
+    navSearchInputs().forEach(registerNavSearchEnter);
+
     function mountSuggest(input) {
       if (!input || input.dataset.picorySuggestMounted === 'true') return;
       input.dataset.picorySuggestMounted = 'true';
@@ -205,25 +235,10 @@ document.addEventListener('DOMContentLoaded', () => {
         open(items);
       }
 
-      function goSearch(picked) {
-        const url = new URL(window.location.href);
-        if (picked) url.searchParams.set('q', picked);
-        else url.searchParams.delete('q');
-        if (picked) pushRecentCamera(picked, '검색', picked);
-        window.location.href = `${url.pathname}${url.search}${url.hash || ''}`;
-      }
-
       input.addEventListener('input', compute);
       input.addEventListener('focus', compute);
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') close();
-        if (e.key === 'Enter') {
-          const v = input.value.trim();
-          if (!v) return;
-          e.preventDefault();
-          close();
-          goSearch(v);
-        }
       });
 
       window.addEventListener('resize', () => {
@@ -255,11 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     ensureCatalogLoaded().then(() => {
-      const inputs = [
-        document.querySelector('.nav__search input[type="search"]'),
-        document.querySelector('.m-topbar__search-input'),
-      ].filter(Boolean);
-      inputs.forEach(mountSuggest);
+      navSearchInputs().forEach(mountSuggest);
     });
   })();
 
@@ -516,11 +527,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const MAX_RECOMMEND_IMAGE_BYTES = 10 * 1024 * 1024;
-  const recommendCompareSection = document.getElementById('recommendCompareSection');
-  const recommendCompareTabs = document.getElementById('recommendCompareTabs');
-  const recommendCompareBody = document.getElementById('recommendCompareBody');
-  let recommendCompareItems = [];
-  let recommendCompareActiveIndex = 0;
 
   /** recommend.html에서 picoryRecommendInit.mjs가 먼저 window.picoryRecommend를 채움 */
   async function getPicoryRecommendModule() {
@@ -621,85 +627,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${Number(n).toLocaleString('ko-KR')}원`;
   }
 
-  function escapeHtmlLite(value) {
-    return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
-    }[ch] || ch));
-  }
-
-  function renderRecommendCompareBody() {
-    if (!recommendCompareBody || !recommendCompareItems.length) return;
-    const current = recommendCompareItems[recommendCompareActiveIndex];
-    if (!current) return;
-    const currentName = `${current.product?.brand || ''} ${current.product?.model || ''}`.trim() || '후보';
-    const currentPrice = (current.product?.priceSummary || '').trim() || formatPriceKrw(current.product?.priceKrw);
-    const currentSensor = current.specs?.sensor || '—';
-    const currentMp = current.specs?.megapixel || '—';
-    const currentAperture = current.specs?.aperture || '—';
-    const lensSuggestion = (current.lens_suggestion || '').trim() || '—';
-
-    const otherItems = recommendCompareItems.filter((_, i) => i !== recommendCompareActiveIndex);
-    const otherCards = otherItems.map((item) => {
-      const name = `${item.product?.brand || ''} ${item.product?.model || ''}`.trim() || '후보';
-      const price = (item.product?.priceSummary || '').trim() || formatPriceKrw(item.product?.priceKrw);
-      return `
-        <article class="recommend-compare__item">
-          <h4 class="recommend-compare__item-title">${escapeHtmlLite(name)}</h4>
-          <p class="recommend-compare__item-kv">센서: ${escapeHtmlLite(item.specs?.sensor || '—')}</p>
-          <p class="recommend-compare__item-kv">화소: ${escapeHtmlLite(item.specs?.megapixel || '—')}</p>
-          <p class="recommend-compare__item-kv">조리개: ${escapeHtmlLite(item.specs?.aperture || '—')}</p>
-          <p class="recommend-compare__item-kv">신품 최저: ${escapeHtmlLite(price)}</p>
-        </article>
-      `;
-    }).join('');
-
-    recommendCompareBody.innerHTML = `
-      <p class="recommend-compare__current"><strong>${escapeHtmlLite(currentName)}</strong>을(를) 기준으로 다른 후보와 비교 중입니다.</p>
-      <div class="recommend-compare__chips">
-        <span class="recommend-compare__chip">센서: ${escapeHtmlLite(currentSensor)}</span>
-        <span class="recommend-compare__chip">화소: ${escapeHtmlLite(currentMp)}</span>
-        <span class="recommend-compare__chip">조리개: ${escapeHtmlLite(currentAperture)}</span>
-        <span class="recommend-compare__chip">렌즈 제안: ${escapeHtmlLite(lensSuggestion)}</span>
-        <span class="recommend-compare__chip">신품 최저: ${escapeHtmlLite(currentPrice)}</span>
-      </div>
-      <div class="recommend-compare__list">${otherCards}</div>
-    `;
-  }
-
-  function renderRecommendCompareTabs(items) {
-    if (!recommendCompareSection || !recommendCompareTabs || !recommendCompareBody) return;
-    recommendCompareItems = Array.isArray(items) ? items.filter((it) => it && it.product).slice(0, 3) : [];
-    if (recommendCompareItems.length < 2) {
-      recommendCompareSection.classList.add('hidden');
-      recommendCompareTabs.innerHTML = '';
-      recommendCompareBody.innerHTML = '';
-      return;
-    }
-    recommendCompareSection.classList.remove('hidden');
-    if (recommendCompareActiveIndex >= recommendCompareItems.length) {
-      recommendCompareActiveIndex = 0;
-    }
-    recommendCompareTabs.innerHTML = recommendCompareItems.map((item, idx) => {
-      const name = `${item.product?.brand || ''} ${item.product?.model || ''}`.trim() || `후보 ${idx + 1}`;
-      const active = idx === recommendCompareActiveIndex;
-      return `<button type="button" class="recommend-compare__tab${active ? ' is-active' : ''}" data-recommend-compare-index="${idx}" role="tab" aria-selected="${active ? 'true' : 'false'}">${escapeHtmlLite(name)}</button>`;
-    }).join('');
-    renderRecommendCompareBody();
-  }
-
-  recommendCompareTabs?.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-recommend-compare-index]');
-    if (!btn) return;
-    const next = Number(btn.getAttribute('data-recommend-compare-index'));
-    if (!Number.isFinite(next) || next < 0 || next >= recommendCompareItems.length) return;
-    recommendCompareActiveIndex = next;
-    renderRecommendCompareTabs(recommendCompareItems);
-  });
-
   function fillRecommendCard(card, item) {
     if (!card || !item?.product) return;
     const p = item.product;
@@ -711,6 +638,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const lensEl = card.querySelector('.recommend-card__lens');
     if (lensEl) lensEl.textContent = '+ ' + (item.lens_suggestion || '').replace(/^\+\s*/, '');
+    const matchEl = card.querySelector('.recommend-card__match');
+    if (matchEl) {
+      const why = String(item?.why || '').trim();
+      const sc = item?.score;
+      const parts = [];
+      if (sc != null && Number.isFinite(Number(sc))) parts.push(`색감 유사도 약 ${Number(sc).toFixed(1)}점`);
+      if (why) parts.push(why);
+      const line = parts.join(' · ');
+      matchEl.textContent = line;
+      matchEl.hidden = !line;
+    }
     const specs = item.specs || {};
     const values = card.querySelectorAll('.spec-item__value');
     if (values[0]) values[0].textContent = specs.sensor || '—';
@@ -755,7 +693,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const items = data.items || [];
     if (cards[0]) fillRecommendCard(cards[0], items[0]);
     if (cards[1]) fillRecommendCard(cards[1], items[1]);
-    renderRecommendCompareTabs(items);
 
     const bundleTitle = document.querySelector('#resultSection .bundle-section__title-model');
     if (bundleTitle && items[0]?.product) {
@@ -779,7 +716,10 @@ document.addEventListener('DOMContentLoaded', () => {
       summaryEl.textContent = '';
       summaryEl.hidden = true;
     }
-    recommendCompareSection?.classList.add('hidden');
+    document.querySelectorAll('#resultSection .recommend-card__match').forEach((el) => {
+      el.textContent = '';
+      el.hidden = true;
+    });
   }
 
   function handleUpload(file) {
@@ -1752,23 +1692,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (bb) bb.hidden = true;
     }
   });
-
-  // ===== 상단 검색: 상품 페이지로 이동(한글 검색 지원은 products 번들에서 필터) =====
-  if (!document.getElementById('productGrid')) {
-    document.querySelectorAll('.nav__search input[type="search"]').forEach((input) => {
-      input.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') return;
-        e.preventDefault();
-        const v = input.value.trim();
-        if (v) pushRecentCamera(v, '검색', v);
-        if (v) {
-          window.location.href = `products.html?q=${encodeURIComponent(v)}`;
-        } else {
-          window.location.href = 'products.html';
-        }
-      });
-    });
-  }
 
   document.addEventListener('click', (e) => {
     const productLink = e.target.closest('.product-card__link');
