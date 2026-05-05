@@ -401,13 +401,34 @@
       gridRoot.innerHTML = "";
       if (emptyEl) emptyEl.classList.remove("hidden");
       window.syncPicoryBookmarks?.();
+      syncProductCompareButtons();
       return;
     }
     if (emptyEl) emptyEl.classList.add("hidden");
     gridRoot.innerHTML = items.map(renderProductCardHTML).join("");
     bindProductCardImageFallbacks(gridRoot);
     window.syncPicoryBookmarks?.();
+    syncProductCompareButtons();
   }
+
+  function syncProductCompareButtons() {
+    if (!window.PicoryCompare) return;
+    document.querySelectorAll(".product-card__compare-btn").forEach((btn) => {
+      const id = btn.getAttribute("data-id");
+      if (!id) return;
+      if (window.PicoryCompare.has(id)) {
+        btn.textContent = "✓ 담김";
+        btn.classList.add("is-added");
+      } else {
+        btn.textContent = "+ 비교함 담기";
+        btn.classList.remove("is-added");
+      }
+    });
+  }
+
+  /* compare-drawer render보다 먼저 등록해야 드로어에서 제거 시 카드 상태가 갱신됨 */
+  document.addEventListener("picory-compare-updated", syncProductCompareButtons);
+
   function getCategoryKeyFromHash() {
     const raw = window.location.hash.slice(1);
     if (!raw) return null;
@@ -626,7 +647,10 @@
       if (!btn) return;
       e.preventDefault();
       e.stopPropagation();
-      const { id, brand, model, thumb } = btn.dataset;
+      const id = btn.getAttribute("data-id");
+      const brand = btn.getAttribute("data-brand") || "";
+      const model = btn.getAttribute("data-model") || "";
+      const thumb = btn.getAttribute("data-thumb") || "";
       if (!id || !window.PicoryCompare) return;
       if (window.PicoryCompare.has(id)) {
         window.PicoryCompare.remove(id);
@@ -644,5 +668,7 @@
         setTimeout(() => { btn.textContent = orig; }, 1600);
       }
     });
+
+    syncProductCompareButtons();
   });
 })();

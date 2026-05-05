@@ -7,7 +7,14 @@
   function load() { try { items = JSON.parse(localStorage.getItem(KEY)) || []; } catch { items = []; } items = items.slice(0, MAX); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {} }
 
-  function has(id) { return items.some(c => c.id === id); }
+  function nid(id) {
+    return String(id == null ? '' : id);
+  }
+
+  function has(id) {
+    const x = nid(id);
+    return items.some((c) => nid(c.id) === x);
+  }
   function getItems() { return [...items]; }
 
   function add(cam) {
@@ -16,8 +23,16 @@
     save(); render(); return true;
   }
 
+  function emitCompareUpdated() {
+    try {
+      /* document에 건 리스너(상품 탭 등)가 받으려면 document로 디스패치해야 함(window만 쏘면 document 리스너에 안 들어감) */
+      document.dispatchEvent(new CustomEvent('picory-compare-updated', { bubbles: true }));
+    } catch (_) {}
+  }
+
   function remove(id) {
-    items = items.filter(c => c.id !== id);
+    const x = nid(id);
+    items = items.filter((c) => nid(c.id) !== x);
     save(); render();
   }
 
@@ -62,26 +77,30 @@
     const goBtn = document.getElementById('pcmpGo');
     const countEl = document.getElementById('pcmpCount');
 
-    if (!badge) return;
+    try {
+      if (!badge) return;
 
-    const count = items.length;
-    badge.textContent = count;
-    badge.style.display = count > 0 ? 'flex' : 'none';
-    if (countEl) countEl.textContent = count;
+      const count = items.length;
+      badge.textContent = count;
+      badge.style.display = count > 0 ? 'flex' : 'none';
+      if (countEl) countEl.textContent = count;
 
-    if (slots) {
-      slots.innerHTML = [0, 1, 2].map(i => renderSlot(items[i], i)).join('');
-      slots.querySelectorAll('.pcmp-slot__remove').forEach(btn => {
-        btn.addEventListener('click', () => remove(btn.dataset.cid));
-      });
-    }
+      if (slots) {
+        slots.innerHTML = [0, 1, 2].map(i => renderSlot(items[i], i)).join('');
+        slots.querySelectorAll('.pcmp-slot__remove').forEach(btn => {
+          btn.addEventListener('click', () => remove(nid(btn.getAttribute('data-cid'))));
+        });
+      }
 
-    if (goBtn) {
-      goBtn.disabled = count < 2;
-      goBtn.onclick = () => {
-        const ids = items.map(c => c.id).join(',');
-        window.location.href = 'compare.html?ids=' + ids;
-      };
+      if (goBtn) {
+        goBtn.disabled = count < 2;
+        goBtn.onclick = () => {
+          const ids = items.map(c => c.id).join(',');
+          window.location.href = 'compare.html?ids=' + ids;
+        };
+      }
+    } finally {
+      emitCompareUpdated();
     }
   }
 
