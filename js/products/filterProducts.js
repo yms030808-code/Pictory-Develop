@@ -13,8 +13,7 @@ export function filterProductsByCategory(products, categoryKey) {
  * @param {string} [searchQuery]
  */
 export function filterProductsByCategoryAndSearch(products, categoryKey, searchQuery) {
-  let list = filterProductsByCategory(products, categoryKey);
   const sq = String(searchQuery || '').trim();
-  if (!sq) return list;
-  return list.filter((p) => productMatchesQuery(p, sq));
+  if (!sq) return filterProductsByCategory(products, categoryKey);
+  return products.filter((p) => productMatchesQuery(p, sq));
 }

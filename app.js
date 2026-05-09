@@ -116,7 +116,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function normalize(value) {
-      return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+      let normalized = String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+      const brandAliases = {
+        소니: 'sony',
+        캐논: 'canon',
+        후지필름: 'fujifilm',
+        후지: 'fujifilm',
+        니콘: 'nikon',
+        리코: 'ricoh',
+        디제이아이: 'dji',
+      };
+      Object.entries(brandAliases).forEach(([ko, en]) => {
+        normalized = normalized.split(ko).join(en);
+      });
+      return normalized;
     }
 
     function getLabel(p) {
@@ -130,9 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const qStr = String(picked || '').trim();
       if (!qStr) return;
       pushRecentCamera(qStr, '검색', qStr);
-      const detailUrl = new URL('price.html', window.location.href);
-      detailUrl.searchParams.set('q', qStr);
-      window.location.href = detailUrl.href;
+      const resultsUrl = new URL('products.html', window.location.href);
+      resultsUrl.searchParams.set('q', qStr);
+      window.location.href = resultsUrl.href;
     }
 
     function navSearchInputs() {

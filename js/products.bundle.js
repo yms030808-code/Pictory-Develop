@@ -211,10 +211,9 @@
     return products.filter((product) => Array.isArray(product.categories) && product.categories.includes(categoryKey));
   }
   function filterProductsByCategoryAndSearch(products, categoryKey, searchQuery) {
-    let list = filterProductsByCategory(products, categoryKey);
     const sq = String(searchQuery || "").trim();
-    if (!sq) return list;
-    return list.filter((p) => productMatchesQuery(p, sq));
+    if (!sq) return filterProductsByCategory(products, categoryKey);
+    return products.filter((p) => productMatchesQuery(p, sq));
   }
 
   // js/products/utils.js
@@ -612,12 +611,14 @@
     const sortValue = document.getElementById("productSortValue");
     if (!navRoot || !gridRoot) return;
     let sortKey = getStoredSort();
+    let activeSearchQuery = qParam;
     const hashKey = getCategoryKeyFromHash();
     const initialKey = hashKey || PICORY_PRODUCT_CATEGORIES[0].key;
     const nav = mountCategoryNav(navRoot, PICORY_PRODUCT_CATEGORIES, {
       initialKey,
       onChange: (key) => {
-        refreshProductGrid(gridRoot, emptyEl, key, sortKey, getSearchQueryFromUrl());
+        activeSearchQuery = "";
+        refreshProductGrid(gridRoot, emptyEl, key, sortKey, "");
         history.replaceState(null, "", `#${encodeURIComponent(key)}`);
       }
     });
@@ -630,11 +631,11 @@
         onChange: (v) => {
           sortKey = v;
           setStoredSort(v);
-          refreshProductGrid(gridRoot, emptyEl, nav.getActiveKey(), sortKey, getSearchQueryFromUrl());
+          refreshProductGrid(gridRoot, emptyEl, nav.getActiveKey(), sortKey, activeSearchQuery);
         }
       });
     }
-    refreshProductGrid(gridRoot, emptyEl, initialKey, sortKey, qParam);
+    refreshProductGrid(gridRoot, emptyEl, initialKey, sortKey, activeSearchQuery);
     if (hashKey) {
       requestAnimationFrame(() => {
         document.getElementById("product-catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });

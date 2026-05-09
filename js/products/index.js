@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!navRoot || !gridRoot) return;
 
   let sortKey = getStoredSort();
+  let activeSearchQuery = qParam;
 
   const hashKey = getCategoryKeyFromHash();
   const initialKey = hashKey || PICORY_PRODUCT_CATEGORIES[0].key;
@@ -148,7 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const nav = mountCategoryNav(navRoot, PICORY_PRODUCT_CATEGORIES, {
     initialKey,
     onChange: (key) => {
-      refreshProductGrid(gridRoot, emptyEl, key, sortKey, getSearchQueryFromUrl());
+      activeSearchQuery = '';
+      refreshProductGrid(gridRoot, emptyEl, key, sortKey, '');
       history.replaceState(null, '', `#${encodeURIComponent(key)}`);
     },
   });
@@ -162,12 +164,12 @@ document.addEventListener('DOMContentLoaded', () => {
       onChange: (v) => {
         sortKey = v;
         setStoredSort(v);
-        refreshProductGrid(gridRoot, emptyEl, nav.getActiveKey(), sortKey, getSearchQueryFromUrl());
+        refreshProductGrid(gridRoot, emptyEl, nav.getActiveKey(), sortKey, activeSearchQuery);
       },
     });
   }
 
-  refreshProductGrid(gridRoot, emptyEl, initialKey, sortKey, qParam);
+  refreshProductGrid(gridRoot, emptyEl, initialKey, sortKey, activeSearchQuery);
 
   if (hashKey) {
     requestAnimationFrame(() => {
