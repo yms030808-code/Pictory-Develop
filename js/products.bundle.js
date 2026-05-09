@@ -664,7 +664,7 @@
         btn.classList.add("is-added");
       } else {
         const orig = btn.textContent;
-        btn.textContent = "최대 3개까지";
+        btn.textContent = "이미 담김";
         setTimeout(() => { btn.textContent = orig; }, 1600);
       }
     });

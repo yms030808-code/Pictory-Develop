@@ -16,17 +16,15 @@
       <a href="index.html" class="nav__logo">
         <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
       </a>
+      <ul class="nav__menu">
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
       <label class="nav__search" aria-label="검색">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
-      <ul class="nav__menu">
-        <li><a href="index.html" class="nav__link">홈</a></li>
-        <li><a href="products.html" class="nav__link">상품</a></li>
-        <li><a href="camera-explore.html" class="nav__link nav__link--active" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
-        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      </ul>
       <div class="nav__actions">
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
       </div>
@@ -38,9 +36,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <ul class="mobile-menu__list">
-      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
       <li><a href="products.html" class="mobile-menu__link">상품</a></li>
-      <li><a href="camera-explore.html" class="mobile-menu__link">카메라 탐색</a></li>
       <li><a href="community.html" class="mobile-menu__link">커뮤니티</a></li>
     </ul>
   </div>
@@ -48,9 +44,9 @@
   <main class="cam-search-page">
     <div class="container">
       <div style="margin-bottom:28px;">
-        <a href="camera-explore.html" style="display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--color-text-muted);text-decoration:none;margin-bottom:12px;">
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;color:var(--color-text-muted);text-decoration:none;margin-bottom:12px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-          카메라 탐색으로
+          홈으로
         </a>
         <h1 style="font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.04em;margin-bottom:8px;">맞춤 카메라 검색</h1>
         <p style="color:var(--color-text-secondary);font-size:0.95rem;">종류와 촬영 목적을 선택하면 조건에 맞는 카메라를 바로 보여드려요.</p>
@@ -132,7 +128,7 @@
       <div class="cam-search-results" id="searchResults" style="display:none;">
         <div class="cam-search-results__header">
           <h2 class="cam-search-results__title">검색 결과 <span id="resultCountLabel" style="color:var(--color-accent);"></span></h2>
-          <a href="camera-explore.html" style="font-size:0.82rem;color:var(--color-text-muted);">다른 방법으로 찾기</a>
+          <a href="index.html" style="font-size:0.82rem;color:var(--color-text-muted);">홈으로 돌아가기</a>
         </div>
         <div class="cam-search-result-grid" id="resultGrid"></div>
       </div>
@@ -249,7 +245,7 @@
             btn.classList.add('is-added');
             btn.textContent = '✓ 담김';
           } else {
-            btn.textContent = '최대 3개';
+            btn.textContent = '이미 담김';
             setTimeout(() => { btn.textContent = '+ 비교함 담기'; }, 1500);
           }
         });

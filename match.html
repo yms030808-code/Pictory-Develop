@@ -16,17 +16,15 @@
       <a href="index.html" class="nav__logo">
         <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
       </a>
+      <ul class="nav__menu">
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
       <label class="nav__search" aria-label="검색">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
-      <ul class="nav__menu">
-        <li><a href="index.html" class="nav__link">홈</a></li>
-        <li><a href="products.html" class="nav__link">상품</a></li>
-        <li><a href="camera-explore.html" class="nav__link nav__link--active" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
-        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      </ul>
       <div class="nav__actions">
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
       </div>
@@ -38,9 +36,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <ul class="mobile-menu__list">
-      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
       <li><a href="products.html" class="mobile-menu__link">상품</a></li>
-      <li><a href="camera-explore.html" class="mobile-menu__link">카메라 탐색</a></li>
       <li><a href="community.html" class="mobile-menu__link">커뮤니티</a></li>
     </ul>
   </div>
@@ -375,7 +371,7 @@
             btn.textContent = '✓ 담김';
             btn.classList.add('is-added');
           } else {
-            btn.textContent = '최대 3개';
+            btn.textContent = '이미 담김';
             setTimeout(() => { btn.textContent = '+ 비교함 담기'; btn.classList.remove('is-added'); }, 1500);
           }
         });

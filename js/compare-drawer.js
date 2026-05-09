@@ -1,10 +1,9 @@
 (function () {
   'use strict';
   const KEY = 'picory-compare-v1';
-  const MAX = 3;
   let items = [];
 
-  function load() { try { items = JSON.parse(localStorage.getItem(KEY)) || []; } catch { items = []; } items = items.slice(0, MAX); }
+  function load() { try { items = JSON.parse(localStorage.getItem(KEY)) || []; } catch { items = []; } }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch {} }
 
   function nid(id) {
@@ -18,7 +17,7 @@
   function getItems() { return [...items]; }
 
   function add(cam) {
-    if (items.length >= MAX || has(cam.id)) return false;
+    if (has(cam.id)) return false;
     items.push(cam);
     save(); render(); return true;
   }
@@ -86,7 +85,8 @@
       if (countEl) countEl.textContent = count;
 
       if (slots) {
-        slots.innerHTML = [0, 1, 2].map(i => renderSlot(items[i], i)).join('');
+        const slotsToRender = items.length ? items : [null, null, null];
+        slots.innerHTML = slotsToRender.map((item, i) => renderSlot(item, i)).join('');
         slots.querySelectorAll('.pcmp-slot__remove').forEach(btn => {
           btn.addEventListener('click', () => remove(nid(btn.getAttribute('data-cid'))));
         });
@@ -115,7 +115,7 @@
         <div class="pcmp-drawer__hd">
           <div>
             <span class="pcmp-drawer__title">비교함</span>
-            <span class="pcmp-drawer__sub"><span id="pcmpCount">0</span>/3개</span>
+            <span class="pcmp-drawer__sub"><span id="pcmpCount">0</span>개 선택됨</span>
           </div>
           <button id="pcmpClose" class="pcmp-drawer__close" aria-label="닫기" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>

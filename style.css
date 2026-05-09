@@ -745,6 +745,10 @@ body.page-recommend .spinner {
   color: var(--color-text);
 }
 
+.landing-hero--after-explore {
+  padding-top: var(--space-xl);
+}
+
 .landing-banner {
   position: relative;
   overflow: hidden;
@@ -1336,6 +1340,10 @@ body.page-recommend .spinner {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 18px;
+}
+
+body.page-landing .landing-section .landing-grid {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .landing-card {
@@ -6330,6 +6338,7 @@ a.product-card__link:hover .product-card__thumb {
   flex: 1;
   padding: 16px;
   display: flex; flex-direction: column; gap: 10px;
+  overflow-y: auto;
 }
 /* Filled slot */
 .pcmp-slot--filled {
@@ -6396,6 +6405,9 @@ html[data-theme="dark"] .pcmp-slot__remove:hover { background: rgba(239,68,68,0.
   background: linear-gradient(180deg, #fff 0%, var(--color-bg) 100%);
   text-align: center;
 }
+body.page-landing .explore-hero--home {
+  padding-bottom: var(--space-xl);
+}
 html[data-theme="dark"] .explore-hero { background: linear-gradient(180deg, #141414 0%, var(--color-bg) 100%); }
 .explore-hero__eyebrow {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em;
@@ -6412,6 +6424,9 @@ html[data-theme="dark"] .explore-hero { background: linear-gradient(180deg, #141
 .explore-cards {
   display: grid; grid-template-columns: repeat(2, 1fr);
   gap: 20px; padding: 0 0 var(--space-3xl);
+}
+.explore-entry-section {
+  background: var(--color-bg);
 }
 .explore-card {
   display: flex; flex-direction: column;
@@ -6444,6 +6459,19 @@ html[data-theme="dark"] .explore-hero { background: linear-gradient(180deg, #141
 }
 .explore-card__title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.035em; line-height: 1.2; margin-bottom: 10px; }
 .explore-card__desc { color: var(--color-text-secondary); font-size: 0.9rem; line-height: 1.65; flex: 1; }
+.explore-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 16px;
+}
+.explore-card__chips span {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
 .explore-card__cta {
   display: inline-flex; align-items: center; gap: 6px;
   margin-top: 24px; font-size: 0.85rem; font-weight: 700; color: var(--color-accent);
@@ -6782,6 +6810,51 @@ html[data-theme="dark"] .match-result-card { background: var(--color-surface); }
 .cmp-error { text-align: center; padding: 60px 20px; color: var(--color-text-muted); font-size: 1rem; }
 .cmp-error a { color: var(--color-accent); text-decoration: underline; }
 
+.cmp-picker {
+  margin-bottom: 24px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+.cmp-picker__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.cmp-picker__title {
+  font-weight: 700;
+  color: var(--color-text);
+}
+.cmp-picker__hint {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+}
+.cmp-picker__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cmp-picker__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+.cmp-picker__option.is-active {
+  border-color: var(--color-accent);
+  background: rgba(255, 101, 0, 0.12);
+  color: var(--color-accent);
+}
+
 /* Header cards row */
 .cmp-cards {
   display: grid;
@@ -6864,10 +6937,14 @@ html[data-theme="dark"] .match-result-card { background: var(--color-surface); }
 }
 
 @media (max-width: 640px) {
+  body.page-landing .landing-section .landing-grid { grid-template-columns: 1fr; }
   .cmp-cards { grid-template-columns: 1fr; }
+  .cmp-picker__header { flex-direction: column; gap: 4px; }
   .cmp-table { font-size: 0.8rem; }
 }
 html[data-theme="dark"] .cmp-card { background: var(--color-surface); }
+html[data-theme="dark"] .cmp-picker { background: var(--color-surface); }
+html[data-theme="dark"] .cmp-picker__option { background: rgba(255,255,255,0.04); }
 html[data-theme="dark"] .cmp-table tbody tr:hover { background: rgba(255,255,255,0.03); }
 
 /* ================================================

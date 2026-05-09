@@ -16,17 +16,15 @@
       <a href="index.html" class="nav__logo">
         <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
       </a>
+      <ul class="nav__menu">
+        <li><a href="products.html" class="nav__link">상품</a></li>
+        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
+        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
+      </ul>
       <label class="nav__search" aria-label="검색">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
-      <ul class="nav__menu">
-        <li><a href="index.html" class="nav__link">홈</a></li>
-        <li><a href="products.html" class="nav__link">상품</a></li>
-        <li><a href="camera-explore.html" class="nav__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-        <li><a href="glossary.html" class="nav__link">용어 사전</a></li>
-        <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
-      </ul>
       <div class="nav__actions">
         <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
@@ -42,9 +40,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <ul class="mobile-menu__list">
-      <li><a href="index.html" class="mobile-menu__link">홈</a></li>
       <li><a href="products.html" class="mobile-menu__link">상품</a></li>
-      <li><a href="camera-explore.html" class="mobile-menu__link" data-nav-badge="explore">카메라 탐색<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       <li><a href="community.html" class="mobile-menu__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       <li><a href="#" class="mobile-menu__link" data-bookmark-nav>북마크</a></li>
     </ul>
@@ -62,6 +58,13 @@
       </div>
 
       <div id="cmpContent">
+        <div id="cmpPicker" class="cmp-picker hidden">
+          <div class="cmp-picker__header">
+            <span class="cmp-picker__title">표시할 카메라 선택</span>
+            <span class="cmp-picker__hint">한 번에 최대 3개까지 비교 화면에 표시됩니다.</span>
+          </div>
+          <div id="cmpPickerList" class="cmp-picker__list"></div>
+        </div>
         <!-- Cards row -->
         <div id="cmpCards" class="cmp-cards"></div>
         <!-- Spec table -->
@@ -155,41 +158,114 @@
       { label: '가격대', key: 'priceSummary' },
     ];
 
+    var visibleIds = [];
+
+    function uniqueIds(ids) {
+      var seen = {};
+      return ids.filter(function(id) {
+        if (seen[id]) return false;
+        seen[id] = true;
+        return true;
+      });
+    }
+
     function getCamerasToCompare() {
       var params = new URLSearchParams(location.search);
-      var ids = (params.get('ids') || '').split(',').filter(Boolean);
+      var ids = uniqueIds((params.get('ids') || '').split(',').filter(Boolean));
       if (!ids.length) {
-        try { var stored = JSON.parse(localStorage.getItem('picory-compare-v1')) || []; ids = stored.map(function(c){ return c.id; }); } catch(e){}
+        try {
+          var stored = JSON.parse(localStorage.getItem('picory-compare-v1')) || [];
+          ids = uniqueIds(stored.map(function(c){ return c.id; }));
+        } catch(e){}
       }
       return ids.map(function(id){ return CAMERAS.find(function(c){ return c.id === id; }); }).filter(Boolean);
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
 
     function formatPrice(n) {
       return n ? n.toLocaleString('ko-KR') + '원' : '-';
     }
 
+    function syncVisibleIds(cams) {
+      var available = cams.map(function(c){ return c.id; });
+      visibleIds = visibleIds.filter(function(id){ return available.indexOf(id) !== -1; });
+      if (!visibleIds.length) visibleIds = available.slice(0, 3);
+      if (visibleIds.length > 3) visibleIds = visibleIds.slice(0, 3);
+      return visibleIds;
+    }
+
+    function updateUrl(cams) {
+      var ids = cams.map(function(c){ return c.id; }).join(',');
+      history.replaceState(null, '', ids ? '?ids=' + encodeURIComponent(ids).replace(/%2C/g, ',') : location.pathname);
+    }
+
+    function renderPicker(cams) {
+      var picker = document.getElementById('cmpPicker');
+      var list = document.getElementById('cmpPickerList');
+      if (!picker || !list) return;
+      picker.classList.toggle('hidden', cams.length <= 3);
+      if (cams.length <= 3) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = cams.map(function(cam) {
+        var active = visibleIds.indexOf(cam.id) !== -1;
+        return '<button type="button" class="cmp-picker__option' + (active ? ' is-active' : '') + '" data-cid="' + escapeHtml(cam.id) + '" aria-pressed="' + (active ? 'true' : 'false') + '">' +
+          escapeHtml(cam.brand + ' ' + cam.model) +
+        '</button>';
+      }).join('');
+      list.querySelectorAll('.cmp-picker__option').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = btn.getAttribute('data-cid');
+          var isActive = visibleIds.indexOf(id) !== -1;
+          if (isActive) {
+            if (visibleIds.length > 1) visibleIds = visibleIds.filter(function(v){ return v !== id; });
+          } else {
+            if (visibleIds.length >= 3) visibleIds.shift();
+            visibleIds.push(id);
+          }
+          render();
+        });
+      });
+    }
+
     function render() {
-      var cams = getCamerasToCompare();
+      var allCams = getCamerasToCompare();
       var errorEl = document.getElementById('cmpError');
       var contentEl = document.getElementById('cmpContent');
-      if (!cams.length) {
+      if (!allCams.length) {
         errorEl.classList.remove('hidden');
         contentEl.style.display = 'none';
         return;
       }
+      errorEl.classList.add('hidden');
+      contentEl.style.display = '';
+      syncVisibleIds(allCams);
+      renderPicker(allCams);
+      var cams = visibleIds.map(function(id) {
+        return allCams.find(function(c){ return c.id === id; });
+      }).filter(Boolean);
 
       /* ── Header cards ── */
       var cardsHtml = cams.map(function(cam) {
         return '<div class="cmp-card">' +
           '<div class="cmp-card__img">' +
-            '<img src="' + cam.thumbnail + '" alt="' + cam.model + '" onerror="this.style.display=\'none\'">' +
+            '<img src="' + escapeHtml(cam.thumbnail) + '" alt="' + escapeHtml(cam.model) + '" onerror="this.style.display=\'none\'">' +
           '</div>' +
           '<div class="cmp-card__body">' +
-            '<span class="cmp-card__brand">' + cam.brand + '</span>' +
-            '<strong class="cmp-card__model">' + cam.model + '</strong>' +
+            '<span class="cmp-card__brand">' + escapeHtml(cam.brand) + '</span>' +
+            '<strong class="cmp-card__model">' + escapeHtml(cam.model) + '</strong>' +
             '<span class="cmp-card__price">' + formatPrice(cam.priceKrw) + '</span>' +
           '</div>' +
-          '<button class="cmp-card__remove" data-cid="' + cam.id + '" type="button" aria-label="' + cam.model + ' 제거">' +
+          '<button class="cmp-card__remove" data-cid="' + escapeHtml(cam.id) + '" type="button" aria-label="' + escapeHtml(cam.model) + ' 제거">' +
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
           '</button>' +
         '</div>';
@@ -210,23 +286,22 @@
       document.querySelectorAll('.cmp-card__remove').forEach(function(btn) {
         btn.addEventListener('click', function() {
           if (window.PicoryCompare) window.PicoryCompare.remove(btn.dataset.cid);
-          var newCams = getCamerasToCompare().filter(function(c){ return c.id !== btn.dataset.cid; });
-          var newIds = newCams.map(function(c){ return c.id; }).join(',');
-          history.replaceState(null, '', newIds ? '?ids=' + newIds : location.pathname);
+          var newCams = allCams.filter(function(c){ return c.id !== btn.dataset.cid; });
+          visibleIds = visibleIds.filter(function(id){ return id !== btn.dataset.cid; });
+          updateUrl(newCams);
           render();
         });
       });
 
       /* ── Spec table ── */
-      var colCount = cams.length;
       var theadHtml = '<tr><th class="cmp-th-label"></th>' +
-        cams.map(function(c){ return '<th>' + c.brand + '<br><span class="cmp-th-model">' + c.model + '</span></th>'; }).join('') +
+        cams.map(function(c){ return '<th>' + escapeHtml(c.brand) + '<br><span class="cmp-th-model">' + escapeHtml(c.model) + '</span></th>'; }).join('') +
         '</tr>';
       document.getElementById('cmpThead').innerHTML = theadHtml;
 
       var tbodyHtml = SPEC_ROWS.map(function(row) {
-        var cells = cams.map(function(c){ return '<td>' + (c[row.key] || '-') + '</td>'; }).join('');
-        return '<tr><td class="cmp-td-label">' + row.label + '</td>' + cells + '</tr>';
+        var cells = cams.map(function(c){ return '<td>' + escapeHtml(c[row.key] || '-') + '</td>'; }).join('');
+        return '<tr><td class="cmp-td-label">' + escapeHtml(row.label) + '</td>' + cells + '</tr>';
       }).join('');
       document.getElementById('cmpTbody').innerHTML = tbodyHtml;
     }
