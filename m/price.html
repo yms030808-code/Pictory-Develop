@@ -58,6 +58,18 @@
 
   <section class="section section--dark" id="price">
     <div class="container">
+      <div class="product-detail" id="productDetail">
+        <div class="product-detail__header">
+          <p class="product-detail__brand" id="detailBrand">Brand</p>
+          <h1 class="product-detail__name" id="detailName">카메라 모델명</h1>
+          <p class="product-detail__tagline" id="detailTagline">한 줄 소개가 여기에 표시됩니다.</p>
+        </div>
+        <div class="product-detail__img-row">
+          <img class="product-detail__img" id="detailImg" src="" alt="">
+        </div>
+        <hr class="product-detail__divider">
+      </div>
+
       <div class="section__header">
         <h2 class="section__title">통합 시세 비교</h2>
         <p class="section__desc">흩어진 가격 정보를 한눈에. 당근, 중고나라, 번개장터, 공식 판매처를 실시간으로 모아봐요.</p>
@@ -167,5 +179,62 @@
   <script src="../js/theme.js"></script>
   <script src="../app.js"></script>
   <script src="../js/price.bundle.js"></script>
+  <script>
+  (function () {
+    function compact(value) {
+      return String(value || '').toLowerCase().replace(/[\s\-_.]/g, '');
+    }
+
+    function findProduct(query) {
+      const products = Array.isArray(window.PICORY_PRODUCT_MOCK) ? window.PICORY_PRODUCT_MOCK : [];
+      const qn = compact(query);
+      if (!qn) return null;
+      return products.find((product) => {
+        const label = compact(`${product.brand} ${product.model}`);
+        const id = compact(product.id);
+        return label.includes(qn) || qn.includes(label) || id.includes(qn) || qn.includes(id);
+      }) || null;
+    }
+
+    function renderDetail(query) {
+      const product = findProduct(query);
+      const detail = document.getElementById('productDetail');
+      if (!product || !detail) return;
+
+      const name = `${product.brand} ${product.model}`;
+      detail.classList.add('is-visible');
+      document.getElementById('detailBrand').textContent = product.brand;
+      document.getElementById('detailName').textContent = product.model;
+      document.getElementById('detailTagline').textContent = product.description || '';
+
+      const img = document.getElementById('detailImg');
+      img.src = `../images/cameras/${product.id}.png`;
+      img.alt = name;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(location.search);
+      renderDetail(params.get('q'));
+
+      const searchInput = document.getElementById('priceSearchInput');
+      const searchBtn = document.getElementById('priceSearchBtn');
+      const suggestEl = document.getElementById('priceSearchSuggest');
+
+      searchBtn?.addEventListener('click', () => renderDetail(searchInput?.value));
+      searchInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') renderDetail(searchInput.value);
+      });
+      suggestEl?.addEventListener('click', (e) => {
+        const target = e.target instanceof Element ? e.target : null;
+        const picked = target?.closest('button[data-q]')?.getAttribute('data-q');
+        if (picked) setTimeout(() => renderDetail(picked), 0);
+      });
+      window.addEventListener('popstate', () => {
+        const nextParams = new URLSearchParams(location.search);
+        renderDetail(nextParams.get('q'));
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
