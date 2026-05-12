@@ -19,7 +19,10 @@
   function add(cam) {
     if (has(cam.id)) return false;
     items.push(cam);
-    save(); render(); return true;
+    save();
+    render();
+    showCompareAddedPrompt();
+    return true;
   }
 
   function emitCompareUpdated() {
@@ -43,6 +46,27 @@
   function closeDrawer() {
     document.getElementById('pcmpDrawer').classList.remove('is-open');
     document.getElementById('pcmpOverlay').classList.remove('is-open');
+  }
+
+  function startFloatGlow() {
+    const btn = document.getElementById('pcmpFloatBtn');
+    if (!btn) return;
+    btn.classList.remove('pcmp-float--glow');
+    void btn.offsetWidth;
+    btn.classList.add('pcmp-float--glow');
+  }
+
+  function closeAddedPrompt() {
+    document.getElementById('pcmpConfirm')?.classList.remove('is-open');
+  }
+
+  function showCompareAddedPrompt() {
+    const confirmEl = document.getElementById('pcmpConfirm');
+    if (!confirmEl) {
+      if (window.confirm('비교함에 추가되었습니다. 비교 시작하시겠습니까?')) startFloatGlow();
+      return;
+    }
+    confirmEl.classList.add('is-open');
   }
 
   function renderSlot(cam, index) {
@@ -108,8 +132,16 @@
     const html = `
       <button id="pcmpFloatBtn" class="pcmp-float" aria-label="비교함 열기" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="pcmp-float__label">비교함</span>
         <span id="pcmpBadge" class="pcmp-float__badge" style="display:none">0</span>
       </button>
+      <div id="pcmpConfirm" class="pcmp-confirm" role="dialog" aria-modal="false" aria-label="비교함 추가 확인">
+        <p class="pcmp-confirm__text">비교함에 추가되었습니다. 비교 시작하시겠습니까?</p>
+        <div class="pcmp-confirm__actions">
+          <button id="pcmpConfirmYes" class="pcmp-confirm__btn pcmp-confirm__btn--yes" type="button">예</button>
+          <button id="pcmpConfirmNo" class="pcmp-confirm__btn" type="button">나중에 할게요</button>
+        </div>
+      </div>
       <div id="pcmpOverlay" class="pcmp-overlay"></div>
       <aside id="pcmpDrawer" class="pcmp-drawer" aria-label="비교함">
         <div class="pcmp-drawer__hd">
@@ -132,10 +164,23 @@
     `;
     document.body.insertAdjacentHTML('beforeend', html);
 
-    document.getElementById('pcmpFloatBtn').addEventListener('click', openDrawer);
+    document.getElementById('pcmpFloatBtn').addEventListener('click', () => {
+      document.getElementById('pcmpFloatBtn')?.classList.remove('pcmp-float--glow');
+      openDrawer();
+    });
     document.getElementById('pcmpClose').addEventListener('click', closeDrawer);
     document.getElementById('pcmpOverlay').addEventListener('click', closeDrawer);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+    document.getElementById('pcmpConfirmYes').addEventListener('click', () => {
+      closeAddedPrompt();
+      startFloatGlow();
+    });
+    document.getElementById('pcmpConfirmNo').addEventListener('click', closeAddedPrompt);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeAddedPrompt();
+        closeDrawer();
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {

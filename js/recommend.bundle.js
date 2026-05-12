@@ -18,7 +18,7 @@
       priceSummary: "\uC57D 2,190,000\uC6D0\uB300 \xB7 \uC815\uAC00 \uAE30\uC900",
       platform: "\uB124\uC774\uBC84 \uC1FC\uD551 \xB7 \uCFE0\uD321 \xB7 \uACF5\uC2DD\uBAB0",
       thumbnail: "/images/cameras/fujifilm-x100vi.png",
-      categories: ["trending", "emotional", "community-picks"]
+      categories: ["trending", "emotional", "travel"]
     },
     {
       id: "canon-eos-r10",

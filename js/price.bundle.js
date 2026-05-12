@@ -22,7 +22,7 @@
       priceSummary: "\uC57D 2,190,000\uC6D0\uB300 \xB7 \uC815\uAC00 \uAE30\uC900",
       platform: "\uB124\uC774\uBC84 \uC1FC\uD551 \xB7 \uCFE0\uD321 \xB7 \uACF5\uC2DD\uBAB0",
       thumbnail: "/images/cameras/fujifilm-x100vi.png",
-      categories: ["trending", "emotional", "community-picks"]
+      categories: ["trending", "emotional", "travel"]
     },
     {
       id: "canon-eos-r10",
@@ -155,8 +155,132 @@
       platform: "\uB124\uC774\uBC84 \xB7 \uCFE0\uD321 \xB7 \uACF5\uC2DD",
       thumbnail: "/images/cameras/canon-eos-r50-v.png",
       categories: ["vlog", "beginner", "trending"]
+    },
+    {
+      id: "nikon-z50ii",
+      brand: "Nikon",
+      model: "Z50II",
+      priceKrw: 129e4,
+      popularity: 89,
+      description: "EXPEED 7과 피사체 인식 AF를 갖춘 APS-C 미러리스로 가족·여행·영상까지 균형이 좋습니다.",
+      priceSummary: "약 1,290,000원대 ~",
+      platform: "네이버 · 중고나라 · 공식몰",
+      thumbnail: "https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_z50ii/c12f842d4d1a40beb20e7264c1ceccda.png",
+      categories: ["beginner", "travel", "trending"]
+    },
+    {
+      id: "canon-eos-r8",
+      brand: "Canon",
+      model: "EOS R8",
+      priceKrw: 189e4,
+      popularity: 86,
+      description: "가벼운 풀프레임 바디에 빠른 AF와 4K 60p를 담아 인물·여행용으로 접근성이 좋습니다.",
+      priceSummary: "약 1,890,000원대 ~",
+      platform: "쿠팡 · 네이버 · 다나와",
+      thumbnail: "https://img.photographyblog.com/reviews/canon_eos_r8/sample_images/canon_eos_r8_01.jpg",
+      categories: ["travel", "emotional", "value"]
+    },
+    {
+      id: "sony-rx100-vii",
+      brand: "Sony",
+      model: "RX100 VII",
+      priceKrw: 149e4,
+      popularity: 84,
+      description: "작은 바디에 빠른 AF와 고배율 줌을 담은 프리미엄 컴팩트로 여행 기록에 강합니다.",
+      priceSummary: "약 1,490,000원대 ~",
+      platform: "네이버 · 쿠팡 · 중고",
+      thumbnail: "https://img.photographyblog.com/reviews/sony_cyber_shot_rx100_vii/sample_images/sony_cyber_shot_rx100_vii_01.jpg",
+      categories: ["travel", "value", "vlog"]
+    },
+    {
+      id: "panasonic-lumix-s9",
+      brand: "Panasonic",
+      model: "Lumix S9",
+      priceKrw: 199e4,
+      popularity: 83,
+      description: "LUT 기반 컬러 워크플로와 작은 풀프레임 바디로 영상·일상 스냅에 어울립니다.",
+      priceSummary: "약 1,990,000원대 ~",
+      platform: "공식몰 · 네이버 · 중고",
+      thumbnail: "https://img.photographyblog.com/reviews/panasonic_lumix_s9/sample_images/panasonic_lumix_s9_01.jpg",
+      categories: ["vlog", "emotional", "travel"]
+    },
+    {
+      id: "panasonic-lumix-gh7",
+      brand: "Panasonic",
+      model: "Lumix GH7",
+      priceKrw: 279e4,
+      popularity: 85,
+      description: "마이크로포서즈 영상 플래그십으로 고급 코덱과 손떨림 보정, 긴 촬영 안정성이 강점입니다.",
+      priceSummary: "약 2,790,000원대 ~",
+      platform: "공식몰 · 다나와 · 네이버",
+      thumbnail: "https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/5275401087/7345797023.jpg",
+      categories: ["vlog", "trending"]
+    },
+    {
+      id: "om-system-om-3",
+      brand: "OM System",
+      model: "OM-3",
+      priceKrw: 239e4,
+      popularity: 81,
+      description: "클래식한 디자인에 방진방적과 강력한 손떨림 보정을 더한 여행·아웃도어형 미러리스입니다.",
+      priceSummary: "약 2,390,000원대 ~",
+      platform: "공식몰 · 네이버 · 중고",
+      thumbnail: "https://4.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/1564684221/4315193761.jpg",
+      categories: ["travel", "vintage", "emotional"]
+    },
+    {
+      id: "fujifilm-x-m5",
+      brand: "Fujifilm",
+      model: "X-M5",
+      priceKrw: 119e4,
+      popularity: 88,
+      description: "작은 바디와 필름 시뮬레이션, 영상 친화 UI를 갖춘 입문·브이로그용 X 시리즈입니다.",
+      priceSummary: "약 1,190,000원대 ~",
+      platform: "공식몰 · 쿠팡 · 네이버",
+      thumbnail: "https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/6845601350/1452105376.jpg",
+      categories: ["beginner", "vlog", "emotional"]
+    },
+    {
+      id: "leica-d-lux-8",
+      brand: "Leica",
+      model: "D-Lux 8",
+      priceKrw: 239e4,
+      popularity: 77,
+      description: "밝은 줌렌즈와 클래식한 조작계를 갖춘 프리미엄 컴팩트로 일상 스냅에 잘 맞습니다.",
+      priceSummary: "약 2,390,000원대 ~",
+      platform: "공식몰 · 네이버 · 중고",
+      thumbnail: "https://4.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/leica_dlux8/cd1fcfa8664d44b38cb04577f0b2ada4.png",
+      categories: ["vintage", "emotional", "travel"]
+    },
+    {
+      id: "sigma-fp-l",
+      brand: "Sigma",
+      model: "fp L",
+      priceKrw: 299e4,
+      popularity: 72,
+      description: "초소형 풀프레임 바디와 61MP 센서가 특징인 모듈형 카메라로 사진·시네마 작업에 독특합니다.",
+      priceSummary: "약 2,990,000원대 ~",
+      platform: "공식몰 · 다나와 · 중고",
+      thumbnail: "https://img.photographyblog.com/reviews/sigma_fp_l/sample_images/sigma_fp_l_01.jpg",
+      categories: ["emotional", "vintage"]
+    },
+    {
+      id: "kodak-pixpro-fz55",
+      brand: "Kodak",
+      model: "Pixpro FZ55",
+      priceKrw: 23e4,
+      popularity: 74,
+      description: "가볍고 저렴한 CCD 감성 컴팩트로 휴대폰과 다른 색감의 일상 기록용으로 찾는 모델입니다.",
+      priceSummary: "약 230,000원대 ~",
+      platform: "쿠팡 · 네이버 · 중고",
+      thumbnail: "https://m.media-amazon.com/images/I/71lI8A2AvzL._AC_SL1500_.jpg",
+      categories: ["value", "vintage", "travel"]
     }
   ];
+  try {
+    window.PICORY_PRODUCT_MOCK = PICORY_PRODUCT_MOCK;
+  } catch {
+  }
 
   // js/products/searchNormalize.js
   var KOREAN_BRANDS = {

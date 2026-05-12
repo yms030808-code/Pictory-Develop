@@ -2,6 +2,7 @@
  * 시세 비교 페이지 — 카탈로그 연동 검색, 자동완성, URL ?q=, 차트
  */
 import { escapeAttr, escapeHtml } from '../products/utils.js';
+import { PICORY_PRODUCT_MOCK } from '../products/mockData.js';
 import {
   buildExternalListingUrl,
   buildPriceListingsFromProducts,
@@ -12,6 +13,12 @@ import {
 import { chartInsightText, renderPriceChart } from './chart.js';
 
 const DEFAULT_QUERY = '';
+
+try {
+  window.PICORY_PRODUCT_MOCK = PICORY_PRODUCT_MOCK;
+} catch (_) {
+  /* noop */
+}
 
 function parsePriceNumber(wonStr) {
   const n = parseInt(String(wonStr).replace(/[^0-9]/g, ''), 10);

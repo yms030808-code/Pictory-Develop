@@ -8,7 +8,7 @@
     "description": "고정 렌즈와 필름 시뮬레이션으로 스냅·일상 기록에 강한 풀프레임급 인기 모델입니다.",
     "priceSummary": "약 2,190,000원대 · 정가 기준",
     "thumbnail": "images/cameras/fujifilm-x100vi.png",
-    "categories": ["trending", "emotional", "community-picks"],
+    "categories": ["trending", "emotional", "travel"],
     "colorProfile": { "warmth": 10, "saturationRange": 58, "greenShift": 9 },
     "localRecommend": {
       "lens": "고정 23mm F2 (내장)",

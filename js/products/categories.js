@@ -9,5 +9,4 @@ export const PICORY_PRODUCT_CATEGORIES = [
   { key: 'vlog', label: '브이로그' },
   { key: 'value', label: '가성비' },
   { key: 'vintage', label: '빈티지/CCD' },
-  { key: 'community-picks', label: '많이 고른 카메라' },
 ];

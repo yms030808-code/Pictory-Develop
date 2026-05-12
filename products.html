@@ -60,27 +60,58 @@
           <p class="section__desc product-catalog__desc">상단 카테고리를 선택하면 해당 분류에 맞는 카메라만 모아볼 수 있어요. 카드를 누르면 <strong>통합 시세 비교</strong> 페이지로 이동해 당근·중고·번개·쇼핑몰 시세를 볼 수 있어요.</p>
         </div>
         <div class="product-catalog__sort-wrap">
-          <span class="product-catalog__sort-label" id="productSortLabel">정렬</span>
-          <div class="product-catalog__sort-ui" id="productSortRoot">
-            <button
-              type="button"
-              class="product-catalog__sort-trigger"
-              id="productSortTrigger"
-              aria-expanded="false"
-              aria-haspopup="listbox"
-              aria-labelledby="productSortLabel productSortValue"
-            >
-              <span id="productSortValue" class="product-catalog__sort-value">추천순</span>
-              <span class="product-catalog__sort-chevron" aria-hidden="true">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-              </span>
-            </button>
-            <ul class="product-catalog__sort-list" id="productSortList" role="listbox" hidden>
-              <li class="product-catalog__sort-option" role="option" data-value="recommend" tabindex="-1">추천순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="popular" tabindex="-1">인기순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
-            </ul>
+          <div class="product-catalog__control">
+            <span class="product-catalog__sort-label" id="productColorLabel">색상</span>
+            <div class="product-catalog__sort-ui" id="productColorRoot">
+              <button
+                type="button"
+                class="product-catalog__sort-trigger"
+                id="productColorTrigger"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="productColorLabel productColorValue"
+              >
+                <span id="productColorValue" class="product-catalog__sort-value">전체</span>
+                <span class="product-catalog__sort-chevron" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+              </button>
+              <ul class="product-catalog__sort-list" id="productColorList" role="listbox" hidden>
+                <li class="product-catalog__sort-option" role="option" data-value="all" tabindex="-1">전체</li>
+                <li class="product-catalog__sort-option" role="option" data-value="black" tabindex="-1">블랙</li>
+                <li class="product-catalog__sort-option" role="option" data-value="silver" tabindex="-1">실버</li>
+                <li class="product-catalog__sort-option" role="option" data-value="white" tabindex="-1">화이트</li>
+                <li class="product-catalog__sort-option" role="option" data-value="gray" tabindex="-1">그레이</li>
+                <li class="product-catalog__sort-option" role="option" data-value="blue" tabindex="-1">블루</li>
+                <li class="product-catalog__sort-option" role="option" data-value="red" tabindex="-1">레드</li>
+                <li class="product-catalog__sort-option" role="option" data-value="green" tabindex="-1">그린</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="product-catalog__control">
+            <span class="product-catalog__sort-label" id="productSortLabel">정렬</span>
+            <div class="product-catalog__sort-ui" id="productSortRoot">
+              <button
+                type="button"
+                class="product-catalog__sort-trigger"
+                id="productSortTrigger"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="productSortLabel productSortValue"
+              >
+                <span id="productSortValue" class="product-catalog__sort-value">추천순</span>
+                <span class="product-catalog__sort-chevron" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+              </button>
+              <ul class="product-catalog__sort-list" id="productSortList" role="listbox" hidden>
+                <li class="product-catalog__sort-option" role="option" data-value="recommend" tabindex="-1">추천순</li>
+                <li class="product-catalog__sort-option" role="option" data-value="popular" tabindex="-1">인기순</li>
+                <li class="product-catalog__sort-option" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
+                <li class="product-catalog__sort-option" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

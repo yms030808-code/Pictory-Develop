@@ -81,21 +81,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.__PICORY_GLOBAL_SEARCH_SUGGEST__) return;
     window.__PICORY_GLOBAL_SEARCH_SUGGEST__ = true;
 
-    const CATALOG_SRC = '/js/catalog.global.js';
+    function catalogSrc() {
+      const appScript =
+        document.querySelector('script[src$="/app.js"]') ||
+        document.querySelector('script[src$="app.js"]');
+      const base = appScript?.src || window.location.href;
+      return new URL('js/catalog.global.js', base).href;
+    }
 
     function ensureCatalogLoaded() {
       if (Array.isArray(window.PICORY_CATALOG) && window.PICORY_CATALOG.length) return Promise.resolve();
       return new Promise((resolve) => {
-        const existing = document.querySelector(`script[src="${CATALOG_SRC}"]`);
+        const src = catalogSrc();
+        const existing = Array.from(document.scripts).find((script) => script.src === src);
         if (existing) {
+          if (existing.dataset.picoryCatalogLoaded === 'true') {
+            resolve();
+            return;
+          }
           existing.addEventListener('load', () => resolve());
           existing.addEventListener('error', () => resolve());
           return;
         }
         const s = document.createElement('script');
-        s.src = CATALOG_SRC;
+        s.src = src;
         s.async = true;
-        s.onload = () => resolve();
+        s.onload = () => {
+          s.dataset.picoryCatalogLoaded = 'true';
+          resolve();
+        };
         s.onerror = () => resolve();
         document.head.appendChild(s);
       });
@@ -115,8 +129,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return escapeHtml(value).replace(/"/g, '&quot;');
     }
 
-    function normalize(value) {
-      let normalized = String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    function normalizeSearchQuery(value) {
+      let normalized = String(value || '').toLowerCase().trim();
+      if (!normalized) return '';
       const brandAliases = {
         소니: 'sony',
         캐논: 'canon',
@@ -124,12 +139,27 @@ document.addEventListener('DOMContentLoaded', () => {
         후지: 'fujifilm',
         니콘: 'nikon',
         리코: 'ricoh',
+        코닥: 'kodak',
+        올림푸스: 'olympus',
+        'om 시스템': 'om system',
+        'om시스템': 'om system',
         디제이아이: 'dji',
+        파나소닉: 'panasonic',
+        시그마: 'sigma',
+        탐론: 'tamron',
+        삼양: 'samyang',
       };
       Object.entries(brandAliases).forEach(([ko, en]) => {
-        normalized = normalized.split(ko).join(en);
+        if (normalized.includes(ko)) normalized = normalized.split(ko).join(en);
       });
-      return normalized;
+      if (/\bx100v\b/i.test(normalized) && !/x100vi/.test(normalized)) {
+        normalized = normalized.replace(/\bx100v\b/g, 'x100vi');
+      }
+      return normalized.replace(/\s+/g, ' ').trim();
+    }
+
+    function compactAlnum(value) {
+      return String(value || '').toLowerCase().replace(/[^a-z0-9가-힣]/g, '');
     }
 
     function getLabel(p) {
@@ -139,11 +169,51 @@ document.addEventListener('DOMContentLoaded', () => {
       return [brand, name || model].filter(Boolean).join(' ').trim();
     }
 
+    function productMatchesQuery(product, rawQuery) {
+      const q = normalizeSearchQuery(rawQuery);
+      if (!q) return true;
+      const full = normalizeSearchQuery(`${product?.brand || ''} ${product?.model || ''} ${product?.id || ''}`);
+      const fullCompact = compactAlnum(full);
+      return q.split(/\s+/).filter(Boolean).every((word) => {
+        if (full.includes(word)) return true;
+        const compactWord = compactAlnum(word);
+        return compactWord.length >= 2 && fullCompact.includes(compactWord);
+      });
+    }
+
+    function searchCatalogProducts(query, limit = 12) {
+      const qRaw = String(query || '').trim();
+      if (!qRaw) return [];
+      const q = normalizeSearchQuery(qRaw);
+      if (!q) return [];
+      const list = Array.isArray(window.PICORY_CATALOG) ? window.PICORY_CATALOG : [];
+      return list
+        .map((p) => {
+          const label = getLabel(p);
+          const labelNorm = normalizeSearchQuery(label);
+          const id = String(p?.id || '').toLowerCase();
+          let score = -1;
+          if (productMatchesQuery(p, qRaw)) {
+            if (labelNorm === q) score = 100;
+            else if (labelNorm.startsWith(q)) score = 80;
+            else if (labelNorm.includes(q)) score = 50;
+            else if (normalizeSearchQuery(p?.brand).startsWith(q)) score = 40;
+            else if (id.includes(q.replace(/\s/g, ''))) score = 25;
+            else score = 30;
+          }
+          return { p, score };
+        })
+        .filter((item) => item.score >= 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit)
+        .map((item) => item.p);
+    }
+
     function goSearch(picked) {
       const qStr = String(picked || '').trim();
       if (!qStr) return;
       pushRecentCamera(qStr, '검색', qStr);
-      const resultsUrl = new URL('products.html', window.location.href);
+      const resultsUrl = new URL('price.html', window.location.href);
       resultsUrl.searchParams.set('q', qStr);
       window.location.href = resultsUrl.href;
     }
@@ -188,8 +258,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const ul = document.createElement('ul');
       ul.className = 'price-search__suggest';
       ul.setAttribute('role', 'listbox');
+      ul.setAttribute('aria-label', '카탈로그 상품');
       ul.hidden = true;
       host.appendChild(ul);
+      input.setAttribute('autocomplete', 'off');
+      input.setAttribute('aria-autocomplete', 'list');
+      input.setAttribute('aria-expanded', 'false');
 
       function syncPos() {
         const wrapRect = wrap.getBoundingClientRect();
@@ -225,22 +299,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       function compute() {
-        const q = normalize(input.value);
-        if (!q) {
+        const q = input.value;
+        if (!q.trim()) {
           close();
           return;
         }
-        const list = Array.isArray(window.PICORY_CATALOG) ? window.PICORY_CATALOG : [];
-        const items = list
-          .filter((p) => {
-            const label = normalize(getLabel(p));
-            return (
-              label.includes(q) ||
-              normalize(p?.brand).includes(q) ||
-              normalize(p?.model).includes(q)
-            );
-          })
-          .slice(0, 7);
+        const items = searchCatalogProducts(q, 12);
         if (!items.length) {
           close();
           return;
