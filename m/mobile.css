@@ -1237,10 +1237,6 @@ body.page-mobile.page-mypage .mypage-sidebar__stats li {
   padding: 5px 0;
 }
 
-body.page-mobile.page-mypage .mypage-sidebar__hint {
-  font-size: 0.72rem;
-}
-
 body.page-mobile.page-mypage .mypage-summary-grid {
   gap: 8px;
 }
@@ -1279,19 +1275,21 @@ body.page-mobile.page-mypage .mypage-panel[data-mypage-panel="home"] .mypage-emp
   font-size: 0.78rem;
 }
 
-/* 마이페이지: 탭 6개를 한 줄(커뮤니티 옆에 설정) — flex-wrap 때문에 두 줄로 내려가던 것 방지 */
-body.page-mobile.page-mypage .mypage-tabs {
+/* 마이페이지: 사이드바 세로 탭 — 동일 너비·최소 높이 */
+body.page-mobile.page-mypage .mypage-tabs--sidebar {
+  flex-direction: column;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-x: visible;
   gap: 6px;
-  padding-bottom: 2px;
-  scrollbar-width: thin;
+  padding-bottom: 0;
 }
 
-body.page-mobile.page-mypage .mypage-tab {
-  flex: 0 0 auto;
+body.page-mobile.page-mypage .mypage-tabs--sidebar .mypage-tab {
+  flex: none;
+  width: 100%;
+  min-height: 40px;
   padding: 8px 10px;
-  font-size: clamp(0.68rem, 2.6vw, 0.78rem);
-  white-space: nowrap;
+  font-size: clamp(0.72rem, 2.8vw, 0.82rem);
+  white-space: normal;
+  word-break: keep-all;
 }

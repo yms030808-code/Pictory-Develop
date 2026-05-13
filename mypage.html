@@ -44,33 +44,15 @@
         <aside class="mypage-sidebar" aria-label="내 프로필">
           <div class="mypage-sidebar__card card">
             <div class="mypage-profile mypage-profile--sidebar mypage-profile--opens-settings" role="presentation">
-              <img class="mypage-profile__avatar" src="images/mypage-profile-default.svg" width="80" height="80" alt="프로필 이미지">
+              <img class="mypage-profile__avatar" id="mypageProfileAvatarImg" src="images/mypage-profile-default.svg" width="80" height="80" alt="프로필 이미지">
               <div class="mypage-profile__meta mypage-profile__meta--sidebar">
                 <h1 id="mypageNickname">하늘필름</h1>
                 <p class="mypage-profile__sub" id="mypageProfileSub"></p>
               </div>
             </div>
             <button type="button" class="btn btn--outline btn--sm mypage-sidebar__logout" id="mypageLogoutBtn">로그아웃</button>
-            <ul class="mypage-sidebar__stats" aria-label="활동 요약">
-              <li>
-                <span class="mypage-sidebar__stat-label">북마크</span>
-                <span class="mypage-sidebar__stat-value" id="mypageStatBookmarks">0</span>
-              </li>
-              <li>
-                <span class="mypage-sidebar__stat-label">아카이브</span>
-                <span class="mypage-sidebar__stat-value" id="mypageStatArchive">0</span>
-              </li>
-              <li>
-                <span class="mypage-sidebar__stat-label">최근 본 카메라</span>
-                <span class="mypage-sidebar__stat-value" id="mypageStatRecent">0</span>
-              </li>
-            </ul>
-            <p class="mypage-sidebar__hint">프로필 영역을 누르면 설정으로 이동해요.</p>
           </div>
-        </aside>
-
-        <div class="mypage-main">
-          <nav class="mypage-tabs" aria-label="마이페이지 탭">
+          <nav class="mypage-tabs mypage-tabs--sidebar" aria-label="마이페이지 탭">
             <button class="mypage-tab is-active" data-mypage-tab="home" type="button">홈</button>
             <button class="mypage-tab" data-mypage-tab="recommend" type="button">내 추천</button>
             <button class="mypage-tab" data-mypage-tab="bookmark" type="button">북마크</button>
@@ -78,7 +60,9 @@
             <button class="mypage-tab" data-mypage-tab="community" type="button">커뮤니티</button>
             <button class="mypage-tab" data-mypage-tab="settings" type="button">설정</button>
           </nav>
-    
+        </aside>
+
+        <div class="mypage-main">
           <div class="mypage-panel is-active" data-mypage-panel="home">
             <section class="mypage-summary-grid">
               <article class="mypage-stat card"><strong>최근 추천 결과</strong><span>아직 없음</span></article>
@@ -209,12 +193,118 @@
           <div class="mypage-panel" data-mypage-panel="settings">
             <section class="mypage-section card">
               <h2>설정</h2>
-              <p class="mypage-muted">프로필 영역을 누르거나 아래 버튼으로 이동할 수 있어요. 세부 화면은 준비 중입니다.</p>
-              <div class="mypage-settings">
-                <button type="button" class="btn btn--outline">계정 설정</button>
-                <button type="button" class="btn btn--outline">알림 설정</button>
-                <button type="button" class="btn btn--outline">취향 재설정</button>
-                <button type="button" class="btn btn--outline">개인정보 설정</button>
+              <p id="settingsGuestNotice" class="mypage-settings-guest-note hidden">로그인한 회원만 계정과 알림 설정을 변경할 수 있어요.</p>
+              <nav class="mypage-settings-tabs" aria-label="설정 구분">
+                <button type="button" class="mypage-settings-tab is-active" data-settings-tab="account">계정</button>
+                <button type="button" class="mypage-settings-tab" data-settings-tab="notifications">알림</button>
+                <button type="button" class="mypage-settings-tab" data-settings-tab="privacy">개인정보</button>
+              </nav>
+              <div class="mypage-settings-panels">
+                <div class="mypage-settings-panel is-active" data-settings-panel="account">
+                  <div class="mypage-settings-stack">
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">프로필 이미지</h3>
+                      <p class="mypage-muted mypage-settings-block__lead">사진을 고른 뒤 원형 미리보기 안에서 드래그해 영역을 맞추고 확대·축소할 수 있어요.</p>
+                      <div class="mypage-settings-avatar-tools">
+                        <img src="images/mypage-profile-default.svg" alt="" width="96" height="96" class="mypage-settings-avatar-preview" id="settingsAvatarPreview">
+                        <div class="mypage-settings-avatar-buttons">
+                          <input type="file" id="settingsAvatarFile" accept="image/*" hidden>
+                          <button type="button" class="btn btn--outline btn--sm" id="settingsAvatarPickBtn">사진 선택</button>
+                          <button type="button" class="btn btn--ghost btn--sm" id="settingsAvatarClearBtn">기본 이미지로</button>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">표시 이름</h3>
+                      <p class="mypage-muted mypage-settings-block__lead">마이페이지 왼쪽 프로필과 서비스 화면에 보이는 이름입니다.</p>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">표시 이름</span>
+                        <input type="text" id="settingsDisplayNameInput" autocomplete="nickname" maxlength="40" placeholder="닉네임">
+                      </label>
+                      <button type="button" class="btn btn--outline btn--sm" id="settingsSaveDisplayNameBtn">표시 이름 저장</button>
+                    </section>
+
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">아이디</h3>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">아이디</span>
+                        <input type="text" id="settingsAccountIdInput" autocomplete="username" maxlength="80">
+                      </label>
+                      <button type="button" class="btn btn--outline btn--sm" id="settingsSaveIdBtn">아이디 저장</button>
+                    </section>
+
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">비밀번호</h3>
+                      <p class="mypage-muted mypage-settings-block__lead">현재 비밀번호 확인 후 새 비밀번호로 변경할 수 있어요.</p>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">현재 비밀번호</span>
+                        <div class="auth-password-wrap">
+                          <input type="password" id="settingsCurrentPassword" autocomplete="current-password">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                        </div>
+                      </label>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">새 비밀번호</span>
+                        <div class="auth-password-wrap">
+                          <input type="password" id="settingsNewPassword" autocomplete="new-password">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                        </div>
+                      </label>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">새 비밀번호 확인</span>
+                        <div class="auth-password-wrap">
+                          <input type="password" id="settingsNewPasswordConfirm" autocomplete="new-password">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                        </div>
+                      </label>
+                      <button type="button" class="btn btn--outline btn--sm" id="settingsSavePasswordBtn">비밀번호 변경</button>
+                    </section>
+
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">이메일 연결</h3>
+                      <p class="mypage-muted mypage-settings-block__lead">연결된 이메일은 알림 발송 등에 사용할 수 있어요.</p>
+                      <label class="mypage-settings-field">
+                        <span class="mypage-settings-field__label">이메일 주소</span>
+                        <input type="email" id="settingsEmailInput" autocomplete="email" placeholder="example@email.com" maxlength="120">
+                      </label>
+                      <div class="mypage-settings-actions">
+                        <button type="button" class="btn btn--primary btn--sm" id="settingsSaveEmailBtn">이메일 저장</button>
+                        <button type="button" class="btn btn--outline btn--sm hidden" id="settingsRemoveEmailBtn">연결 해제</button>
+                      </div>
+                    </section>
+
+                    <section class="mypage-settings-block mypage-settings-block--danger">
+                      <h3 class="mypage-settings-block__title">계정 삭제</h3>
+                      <p class="mypage-muted mypage-settings-block__lead">계정과 로컬에 저장된 데모 회원 정보가 삭제되며 되돌릴 수 없어요.</p>
+                      <button type="button" class="btn btn--outline btn--sm mypage-settings-danger-btn" id="settingsDeleteAccountBtn">계정 삭제</button>
+                    </section>
+                  </div>
+                </div>
+                <div class="mypage-settings-panel" data-settings-panel="notifications">
+                  <div class="mypage-settings-stack">
+                    <section class="mypage-settings-block">
+                      <h3 class="mypage-settings-block__title">이메일 알림</h3>
+                      <div class="mypage-settings-toggle-row">
+                        <span class="mypage-settings-toggle-row__label" id="settingsPriceEmailNotifyLabel">시세·가격 정보 등 이 사이트의 알림을 이메일로 받습니다.</span>
+                        <label class="mypage-settings-toggle">
+                          <input type="checkbox" id="settingsPriceEmailNotify" class="mypage-settings-toggle__input" aria-labelledby="settingsPriceEmailNotifyLabel">
+                          <span class="mypage-settings-toggle__slider" aria-hidden="true"></span>
+                        </label>
+                      </div>
+                      <p class="mypage-muted mypage-settings-hint" id="settingsNotifyEmailHint"></p>
+                    </section>
+                  </div>
+                </div>
+                <div class="mypage-settings-panel" data-settings-panel="privacy">
+                  <p class="mypage-muted">개인정보 처리방침·데이터 다운로드 등 상세 기능은 서비스 확장 시 제공할 예정이에요.</p>
+                </div>
               </div>
             </section>
           </div>
@@ -245,6 +335,32 @@
       </button>
     </div>
   </aside>
+
+  <div id="avatarCropModal" class="avatar-crop-modal" hidden role="presentation">
+    <div class="avatar-crop-modal__backdrop" tabindex="-1" data-avatar-crop-dismiss></div>
+    <div class="avatar-crop-modal__dialog card" role="dialog" aria-modal="true" aria-labelledby="avatarCropTitle">
+      <div class="avatar-crop-modal__header">
+        <h3 id="avatarCropTitle" class="avatar-crop-modal__title">프로필 이미지 자르기</h3>
+        <button type="button" class="avatar-crop-modal__close" data-avatar-crop-dismiss aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <p class="mypage-muted avatar-crop-modal__hint">원 안의 영역이 프로필 사진으로 저장됩니다. 드래그해 위치를 조정하고 슬라이더로 확대·축소하세요.</p>
+      <div class="avatar-crop-stage">
+        <div id="avatarCropViewport" class="avatar-crop-viewport">
+          <img id="avatarCropImage" class="avatar-crop-viewport__img" alt="" width="0" height="0" draggable="false">
+        </div>
+      </div>
+      <label class="avatar-crop-zoom">
+        <span class="avatar-crop-zoom__label">확대</span>
+        <input type="range" id="avatarCropZoom" min="100" max="400" value="100" step="5">
+      </label>
+      <div class="avatar-crop-modal__actions">
+        <button type="button" class="btn btn--outline btn--sm" id="avatarCropCancel">취소</button>
+        <button type="button" class="btn btn--primary btn--sm" id="avatarCropApply">적용</button>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container">
