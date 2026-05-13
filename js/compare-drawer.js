@@ -1,6 +1,7 @@
 (function () {
   'use strict';
   const KEY = 'picory-compare-v1';
+  const SESSION_KEY = 'picoryAuthSession';
   let items = [];
 
   function load() { try { items = JSON.parse(localStorage.getItem(KEY)) || []; } catch { items = []; } }
@@ -58,6 +59,17 @@
 
   function closeAddedPrompt() {
     document.getElementById('pcmpConfirm')?.classList.remove('is-open');
+  }
+
+  function isLoggedIn() {
+    return Boolean(localStorage.getItem(SESSION_KEY));
+  }
+
+  function requireLoginForLargeCompare() {
+    if (items.length < 3 || isLoggedIn()) return true;
+    alert('카메라 3대 이상 비교는 로그인 후 이용할 수 있어요. 로그인 페이지로 이동합니다.');
+    window.location.href = window.PicoryAuthReturn?.buildAuthUrl?.('compare') || 'auth.html?needLogin=compare';
+    return false;
   }
 
   function showCompareAddedPrompt() {
@@ -119,6 +131,7 @@
       if (goBtn) {
         goBtn.disabled = count < 2;
         goBtn.onclick = () => {
+          if (!requireLoginForLargeCompare()) return;
           const ids = items.map(c => c.id).join(',');
           window.location.href = 'compare.html?ids=' + ids;
         };

@@ -10,9 +10,85 @@ document.addEventListener('DOMContentLoaded', () => {
   const communityStorageKey = 'picoryCommunityPosts';
   const bookmarkStorageKey = 'picoryBookmarks';
   const recentCameraStorageKey = 'picoryRecentCameras';
+  const authReturnStorageKey = 'picoryAuthReturn';
+  const communityLikesStorageKey = 'picoryCommunityLikes';
+  const communityCommentsStorageKey = 'picoryCommunityComments';
 
   function isPicorySessionActive() {
     return Boolean(localStorage.getItem(sessionStorageKey));
+  }
+
+  function currentReturnPath() {
+    return `${window.location.pathname.split('/').pop() || 'index.html'}${window.location.search}${window.location.hash}`;
+  }
+
+  function buildAuthUrl(reason) {
+    const url = new URL('auth.html', window.location.href);
+    if (reason) url.searchParams.set('needLogin', reason);
+    if (!window.location.pathname.endsWith('auth.html')) {
+      const returnTo = currentReturnPath();
+      const scrollY = Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0));
+      url.searchParams.set('returnTo', returnTo);
+      url.searchParams.set('scrollY', String(scrollY));
+      try {
+        localStorage.setItem(authReturnStorageKey, JSON.stringify({ returnTo, scrollY }));
+      } catch (_) {
+        /* noop */
+      }
+    }
+    return `${url.pathname.split('/').pop()}${url.search}${url.hash}`;
+  }
+
+  window.PicoryAuthReturn = { buildAuthUrl };
+
+  function restoreAuthReturnScroll() {
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(authReturnStorageKey) || 'null');
+    } catch (_) {
+      saved = null;
+    }
+    if (!saved || typeof saved !== 'object') return;
+    const here = currentReturnPath();
+    if (String(saved.returnTo || '') !== here) return;
+    const y = Number(saved.scrollY);
+    if (!Number.isFinite(y) || y <= 0) {
+      localStorage.removeItem(authReturnStorageKey);
+      return;
+    }
+    const startedAt = Date.now();
+    const maxWaitMs = 2500;
+    const scrollBack = () => {
+      window.scrollTo({ top: y, behavior: 'auto' });
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const reached = Math.abs((window.scrollY || window.pageYOffset || 0) - Math.min(y, maxScroll)) < 4;
+      const timedOut = Date.now() - startedAt > maxWaitMs;
+      if (!reached && !timedOut) {
+        setTimeout(scrollBack, 100);
+        return;
+      }
+      try {
+        localStorage.removeItem(authReturnStorageKey);
+      } catch (_) {
+        /* noop */
+      }
+    };
+    requestAnimationFrame(scrollBack);
+    window.addEventListener('load', () => {
+      setTimeout(scrollBack, 0);
+      setTimeout(scrollBack, 300);
+    }, { once: true });
+  }
+
+  function captureAuthLinkReturn() {
+    document.addEventListener('click', (event) => {
+      const link = event.target?.closest?.('a[href]');
+      if (!link || isPicorySessionActive()) return;
+      const href = link.getAttribute('href') || '';
+      if (!/(^|\/)auth\.html(?:[?#]|$)/.test(href)) return;
+      if (window.location.pathname.endsWith('auth.html')) return;
+      link.setAttribute('href', buildAuthUrl());
+    }, true);
   }
 
   /** 북마크 기능: 미로그인 시 로그인 페이지로 이동 후(또는 로그인 페이지에서) 토스트 안내 */
@@ -22,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.dispatchEvent(new CustomEvent('picory-bookmark-auth-needed'));
       return false;
     }
-    window.location.href = 'auth.html?needLogin=bookmark';
+    window.location.href = buildAuthUrl('bookmark');
     return false;
   }
 
@@ -69,12 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
       existingLogout?.remove();
     } else {
       loginLink.textContent = '로그인';
-      loginLink.setAttribute('href', 'auth.html');
+      loginLink.setAttribute('href', buildAuthUrl());
+      loginLink.addEventListener('click', () => {
+        loginLink.setAttribute('href', buildAuthUrl());
+      }, { once: true });
       existingLogout?.remove();
     }
   }
 
   updateAuthNavButton();
+  captureAuthLinkReturn();
+  restoreAuthReturnScroll();
 
   // ===== Global Search Suggest (상품/브랜드 연관검색어) =====
   (function initGlobalSearchSuggest() {
@@ -1449,12 +1530,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const authorHandle = `@${authorNickname || '게스트'}`;
     const likes = Math.floor(Math.random() * 60) + 1;
+    const communityPostId = `community-${Date.now()}`;
     const safeModel = escapeHtml(cameraModel);
     const safeCategoryLabel = escapeHtml(uploadCategoryLabel);
 
     const newCard = document.createElement('article');
     newCard.className = 'gallery-card card';
     newCard.dataset.communityTags = `${uploadCategoryKey} daily`;
+    newCard.dataset.communityPostId = communityPostId;
     newCard.innerHTML = `
       <div class="gallery-card__img">
         <img class="gallery-card__photo" src="${uploadImageDataUrl}" alt="${safeModel} 업로드 이미지" width="1200" height="800" loading="lazy">
@@ -1480,6 +1563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeFilterChip = communityFilters?.querySelector('.filter-chip--active[data-community-filter]');
     const activeFilter = activeFilterChip?.getAttribute('data-community-filter') || 'all';
     communityGalleryGrid?.prepend(newCard);
+    enhanceCommunityCards();
     applyCommunityGalleryFilter(activeFilter);
 
     // 커뮤니티 업로드 항목은 마이페이지 아카이브에도 함께 저장
@@ -1507,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw = localStorage.getItem(communityStorageKey);
       const list = raw ? JSON.parse(raw) : [];
       list.push({
-        id: `community-${Date.now()}`,
+        id: communityPostId,
         imageDataUrl: uploadImageDataUrl,
         cameraModel,
         categoryLabel: uploadCategoryLabel,
@@ -1574,6 +1658,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = document.createElement('article');
         card.className = 'gallery-card card';
         card.dataset.communityTags = communityTags;
+        card.dataset.communityPostId = String(post.id || `community-${model}-${post.createdAt || ''}`).replace(/\s+/g, '-');
         card.innerHTML = `
           <div class="gallery-card__img">
             <img class="gallery-card__photo" src="${imageSrc}" alt="${model} 업로드 이미지" width="1200" height="800" loading="lazy">
@@ -1598,6 +1683,308 @@ document.addEventListener('DOMContentLoaded', () => {
         communityGalleryGrid.prepend(card);
       });
   }
+
+  function readJsonList(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function escapeAttr(value) {
+    return escapeHtml(value).replace(/"/g, '&quot;');
+  }
+
+  function writeJsonList(key, list, maxItems = 160) {
+    try {
+      localStorage.setItem(key, JSON.stringify(list.slice(-maxItems)));
+    } catch (_) {
+      /* noop */
+    }
+  }
+
+  function getCommunityUser() {
+    try {
+      const raw = localStorage.getItem(sessionStorageKey);
+      const session = raw ? JSON.parse(raw) : null;
+      if (session?.id || session?.nickname) {
+        return {
+          id: String(session.id || session.nickname || 'member'),
+          nickname: String(session.nickname || session.id || '회원'),
+        };
+      }
+    } catch (_) {
+      /* noop */
+    }
+    return { id: 'guest', nickname: '게스트' };
+  }
+
+  function communityPostFromCard(card) {
+    const img = card.querySelector('.gallery-card__photo');
+    const cameraModel = card.querySelector('.gallery-card__camera-tag')?.textContent?.trim() || '커뮤니티 사진';
+    const authorHandle = card.querySelector('.gallery-card__author')?.textContent?.trim() || '@guest';
+    return {
+      postId: card.dataset.communityPostId || '',
+      imageSrc: img?.getAttribute('src') || '',
+      imageAlt: img?.getAttribute('alt') || cameraModel,
+      cameraModel,
+      authorHandle,
+    };
+  }
+
+  function formatCommunityTime(isoString) {
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('ko-KR', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+
+  function ensureCommunityPostIds() {
+    if (!communityGalleryGrid) return;
+    communityGalleryGrid.querySelectorAll('.gallery-card').forEach((card, index) => {
+      if (card.dataset.communityPostId) return;
+      const imgSrc = card.querySelector('.gallery-card__photo')?.getAttribute('src') || '';
+      const camera = card.querySelector('.gallery-card__camera-tag')?.textContent?.trim() || `post-${index}`;
+      const stable = `${camera}-${imgSrc || index}`.toLowerCase().replace(/[^a-z0-9가-힣]+/g, '-').replace(/^-|-$/g, '');
+      card.dataset.communityPostId = `static-${stable || index}`;
+    });
+  }
+
+  function renderCommunityCommentsForCard(card) {
+    const postId = card.dataset.communityPostId;
+    const listEl = card.querySelector('.gallery-card__comment-list');
+    if (!postId || !listEl) return;
+    renderCommunityComments(postId, listEl);
+  }
+
+  function renderCommunityComments(postId, listEl) {
+    if (!postId || !listEl) return;
+    const comments = readJsonList(communityCommentsStorageKey)
+      .filter((item) => item?.postId === postId)
+      .slice(-20);
+    if (!comments.length) {
+      listEl.innerHTML = '<p class="gallery-card__comment-empty">아직 댓글이 없어요.</p>';
+      return;
+    }
+    listEl.innerHTML = comments
+      .map((item) => `
+        <article class="gallery-card__comment">
+          <strong>@${escapeHtml(item.nickname || '게스트')}</strong>
+          <span>${escapeHtml(item.text || '')}</span>
+        </article>
+      `)
+      .join('');
+  }
+
+  function communityCommentCount(postId) {
+    if (!postId) return 0;
+    return readJsonList(communityCommentsStorageKey).filter((item) => item?.postId === postId).length;
+  }
+
+  function renderCommunityCommentCount(card) {
+    const countEl = card.querySelector('[data-comment-count]');
+    if (!countEl) return;
+    countEl.textContent = String(communityCommentCount(card.dataset.communityPostId));
+  }
+
+  function renderCommunityLikeState(card) {
+    const likeBtn = card.querySelector('.gallery-card__like-btn');
+    if (!likeBtn) return;
+    const user = getCommunityUser();
+    const postId = card.dataset.communityPostId;
+    const baseLikes = Number(likeBtn.dataset.baseLikes || '0') || 0;
+    const liked = readJsonList(communityLikesStorageKey).some((item) => item?.postId === postId && item?.userId === user.id);
+    likeBtn.classList.toggle('is-liked', liked);
+    likeBtn.setAttribute('aria-pressed', liked ? 'true' : 'false');
+    const countEl = likeBtn.querySelector('[data-like-count]');
+    if (countEl) countEl.textContent = String(baseLikes + (liked ? 1 : 0));
+  }
+
+  function enhanceCommunityCards() {
+    if (!communityGalleryGrid) return;
+    ensureCommunityPostIds();
+    communityGalleryGrid.querySelectorAll('.gallery-card').forEach((card) => {
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', '커뮤니티 게시물 자세히 보기');
+      const likesEl = card.querySelector('.gallery-card__likes');
+      if (likesEl && !likesEl.classList.contains('gallery-card__like-btn')) {
+        const count = parseInt(likesEl.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+        likesEl.outerHTML = `
+          <span class="gallery-card__actions">
+            <button type="button" class="gallery-card__likes gallery-card__like-btn" data-base-likes="${count}" aria-pressed="false" aria-label="좋아요">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span data-like-count>${count}</span>
+            </button>
+            <span class="gallery-card__comments-count" aria-label="댓글 수">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>
+              <span data-comment-count>0</span>
+            </span>
+          </span>
+        `;
+      }
+
+      card.querySelector('.gallery-card__comments')?.remove();
+      renderCommunityLikeState(card);
+      renderCommunityCommentCount(card);
+    });
+  }
+
+  function syncCommunityPostState(postId) {
+    if (!postId) return;
+    const sourceCard = communityGalleryGrid?.querySelector(`.gallery-card[data-community-post-id="${CSS.escape(postId)}"]`);
+    if (sourceCard) {
+      renderCommunityLikeState(sourceCard);
+      renderCommunityCommentCount(sourceCard);
+    }
+    const modalCard = document.querySelector(`.community-post-modal .gallery-card[data-community-post-id="${CSS.escape(postId)}"]`);
+    if (modalCard) {
+      renderCommunityLikeState(modalCard);
+      renderCommunityComments(postId, modalCard.querySelector('.gallery-card__comment-list'));
+    }
+  }
+
+  function toggleCommunityLike(card) {
+    if (!card) return;
+    const user = getCommunityUser();
+    const post = communityPostFromCard(card);
+    let likes = readJsonList(communityLikesStorageKey);
+    const existingIndex = likes.findIndex((item) => item?.postId === post.postId && item?.userId === user.id);
+    if (existingIndex >= 0) {
+      likes.splice(existingIndex, 1);
+      addActivityLog(`${post.cameraModel} 커뮤니티 사진 좋아요를 취소했어요.`);
+    } else {
+      likes.push({
+        ...post,
+        userId: user.id,
+        nickname: user.nickname,
+        likedAt: new Date().toISOString(),
+      });
+      addActivityLog(`${post.cameraModel} 커뮤니티 사진을 좋아요 했어요.`);
+    }
+    writeJsonList(communityLikesStorageKey, likes);
+    syncCommunityPostState(post.postId);
+  }
+
+  function ensureCommunityPostModal() {
+    let modal = document.getElementById('communityPostModal');
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.id = 'communityPostModal';
+    modal.className = 'community-post-modal';
+    modal.hidden = true;
+    modal.innerHTML = `
+      <div class="community-post-modal__backdrop" data-community-modal-close></div>
+      <article class="community-post-modal__card" role="dialog" aria-modal="true" aria-label="커뮤니티 게시물">
+        <button type="button" class="community-post-modal__close" data-community-modal-close aria-label="닫기">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="community-post-modal__body"></div>
+      </article>
+    `;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', (event) => {
+      if (event.target.closest('[data-community-modal-close]')) {
+        modal.hidden = true;
+      }
+      const likeBtn = event.target.closest('.gallery-card__like-btn');
+      if (likeBtn) {
+        const card = likeBtn.closest('.gallery-card');
+        toggleCommunityLike(card);
+      }
+    });
+    modal.addEventListener('submit', (event) => {
+      const form = event.target.closest('.gallery-card__comment-form');
+      if (!form) return;
+      event.preventDefault();
+      const card = form.closest('.gallery-card');
+      const input = form.querySelector('.gallery-card__comment-input');
+      const text = String(input?.value || '').trim();
+      if (!card || !text) return;
+      const user = getCommunityUser();
+      const post = communityPostFromCard(card);
+      const comments = readJsonList(communityCommentsStorageKey);
+      comments.push({
+        id: `comment-${Date.now()}`,
+        ...post,
+        text,
+        userId: user.id,
+        nickname: user.nickname,
+        createdAt: new Date().toISOString(),
+      });
+      writeJsonList(communityCommentsStorageKey, comments, 240);
+      input.value = '';
+      syncCommunityPostState(post.postId);
+      addActivityLog(`${post.cameraModel} 커뮤니티 사진에 댓글을 남겼어요.`);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') modal.hidden = true;
+    });
+    return modal;
+  }
+
+  function openCommunityPostModal(sourceCard) {
+    if (!sourceCard) return;
+    const modal = ensureCommunityPostModal();
+    const body = modal.querySelector('.community-post-modal__body');
+    const post = communityPostFromCard(sourceCard);
+    const settingsHtml = sourceCard.querySelector('.gallery-card__settings')?.innerHTML || '';
+    const baseLikes = sourceCard.querySelector('.gallery-card__like-btn')?.dataset.baseLikes || '0';
+    body.innerHTML = `
+      <div class="gallery-card card" data-community-post-id="${escapeAttr(post.postId)}">
+        <div class="gallery-card__img">
+          <img class="gallery-card__photo" src="${escapeAttr(post.imageSrc)}" alt="${escapeAttr(post.imageAlt)}">
+          <div class="gallery-card__overlay">
+            <span class="gallery-card__camera-tag">${escapeHtml(post.cameraModel)}</span>
+          </div>
+        </div>
+        <div class="gallery-card__info">
+          <div class="gallery-card__settings" aria-label="촬영 설정">${settingsHtml}</div>
+          <div class="gallery-card__meta">
+            <span class="gallery-card__author">${escapeHtml(post.authorHandle)}</span>
+            <button type="button" class="gallery-card__likes gallery-card__like-btn" data-base-likes="${escapeAttr(baseLikes)}" aria-pressed="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <span data-like-count>${escapeHtml(baseLikes)}</span>
+            </button>
+          </div>
+          <div class="gallery-card__comments">
+            <h4>댓글</h4>
+            <div class="gallery-card__comment-list" aria-live="polite"></div>
+            <form class="gallery-card__comment-form">
+              <input type="text" class="gallery-card__comment-input" placeholder="댓글을 남겨보세요" aria-label="댓글 입력">
+              <button type="submit">등록</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+    modal.hidden = false;
+    syncCommunityPostState(post.postId);
+    setTimeout(() => body.querySelector('.gallery-card__comment-input')?.focus(), 0);
+  }
+
+  communityGalleryGrid?.addEventListener('click', (event) => {
+    const likeBtn = event.target.closest('.gallery-card__like-btn');
+    if (likeBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      toggleCommunityLike(likeBtn.closest('.gallery-card'));
+      return;
+    }
+    if (event.target.closest('.gallery-card__camera-tag')) return;
+    const card = event.target.closest('.gallery-card');
+    if (card) openCommunityPostModal(card);
+  });
+
+  communityGalleryGrid?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const card = event.target.closest('.gallery-card');
+    if (!card || event.target.closest('.gallery-card__like-btn, .gallery-card__camera-tag')) return;
+    event.preventDefault();
+    openCommunityPostModal(card);
+  });
 
   function applyCommunityGalleryFilter(filterKey) {
     if (!communityGalleryGrid) return;
@@ -1625,6 +2012,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderPersistedCommunityPosts();
+  enhanceCommunityCards();
   applyCommunityGalleryFilter('all');
 
   // ===== Mobile Hamburger Menu =====

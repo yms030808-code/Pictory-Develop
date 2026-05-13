@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const userStorageKey = 'picoryAuthDemoUser';
   const sessionStorageKey = 'picoryAuthSession';
   const activityLogStorageKey = 'picoryActivityLogs';
+  const authReturnStorageKey = 'picoryAuthReturn';
   const authToast = document.getElementById('authToast');
   let toastTimer;
 
@@ -56,6 +57,44 @@ document.addEventListener('DOMContentLoaded', () => {
       loginLink.setAttribute('href', 'auth.html');
       existingLogout?.remove();
     }
+  };
+
+  const getAuthReturnDestination = () => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      let rawReturnTo = String(params.get('returnTo') || '').trim();
+      let scrollY = Math.max(0, Math.round(Number(params.get('scrollY')) || 0));
+      if (!rawReturnTo) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(authReturnStorageKey) || 'null');
+          rawReturnTo = String(saved?.returnTo || '').trim();
+          scrollY = Math.max(0, Math.round(Number(saved?.scrollY) || 0));
+        } catch (_) {
+          rawReturnTo = '';
+        }
+      }
+      if (!rawReturnTo || /^https?:\/\//i.test(rawReturnTo)) return null;
+      const url = new URL(rawReturnTo, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname.endsWith('/auth.html')) return null;
+      const returnTo = `${url.pathname.split('/').pop() || 'index.html'}${url.search}${url.hash}`;
+      return { returnTo, scrollY };
+    } catch (_) {
+      return null;
+    }
+  };
+
+  const redirectAfterLogin = () => {
+    const destination = getAuthReturnDestination();
+    if (destination?.returnTo) {
+      try {
+        localStorage.setItem(authReturnStorageKey, JSON.stringify(destination));
+      } catch (_) {
+        /* noop */
+      }
+      window.location.href = destination.returnTo;
+      return;
+    }
+    window.location.href = 'mypage.html';
   };
 
   const setPanel = (targetPanel) => {
@@ -156,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addActivityLog(`${parsedUser.nickname} 계정으로 로그인했어요.`);
         applyAuthNavState();
         window.setTimeout(() => {
-          window.location.href = 'mypage.html';
+          redirectAfterLogin();
         }, 900);
       } else {
         alert('아이디 또는 비밀번호가 올바르지 않습니다.');
@@ -207,24 +246,33 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     addActivityLog(`${nickname} 닉네임으로 회원가입을 완료했어요.`);
-    alert('회원가입이 완료되었습니다. 로그인해 주세요.');
-    setPanel('login');
-    if (loginForm) {
-      const usernameField = loginForm.elements.namedItem('username');
-      if (usernameField) usernameField.value = signupId;
-    }
+    localStorage.setItem(
+      sessionStorageKey,
+      JSON.stringify({
+        id: signupId,
+        nickname,
+      })
+    );
+    applyAuthNavState();
+    alert('회원가입이 완료되었습니다. 마이페이지로 이동합니다.');
+    window.location.href = 'mypage.html';
   });
 
   updateSignupSubmitState();
   updateLoginSubmitState();
   applyAuthNavState();
 
-  const bookmarkLoginMessage = '북마크는 로그인 후 이용할 수 있어요.';
+  const loginMessages = {
+    bookmark: '북마크는 로그인 후 이용할 수 있어요.',
+    reviews: '후기 더보기는 로그인 후 이용할 수 있어요.',
+    compare: '카메라 3대 이상 비교는 로그인 후 이용할 수 있어요.',
+  };
 
   try {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('needLogin') === 'bookmark') {
-      showToast(bookmarkLoginMessage, 4000);
+    const needLogin = params.get('needLogin');
+    if (needLogin && loginMessages[needLogin]) {
+      showToast(loginMessages[needLogin], 4000);
       const url = new URL(window.location.href);
       url.searchParams.delete('needLogin');
       const qs = url.searchParams.toString();
@@ -235,6 +283,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('picory-bookmark-auth-needed', () => {
-    showToast(bookmarkLoginMessage, 4000);
+    showToast(loginMessages.bookmark, 4000);
   });
 });

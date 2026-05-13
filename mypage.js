@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const bookmarkStorageKey = 'picoryBookmarks';
   const archiveStorageKey = 'picoryArchivePosts';
   const communityStorageKey = 'picoryCommunityPosts';
+  const communityLikesStorageKey = 'picoryCommunityLikes';
+  const communityCommentsStorageKey = 'picoryCommunityComments';
   const nicknameEl = document.getElementById('mypageNickname');
   const profileSubEl = document.getElementById('mypageProfileSub');
   const recentCameraListEl = document.getElementById('mypageRecentCameraList');
@@ -27,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveCategorySelect = document.getElementById('mypageArchiveCategorySelect');
   const archiveShareCommunity = document.getElementById('mypageArchiveShareCommunity');
   const archiveUploadBtn = document.getElementById('mypageArchiveUploadBtn');
+  const communityPanel = document.querySelector('[data-mypage-panel="community"]');
+  const communityEmptyState = communityPanel?.querySelector('.mypage-empty-state');
+  const communityActivityEl = document.getElementById('mypageCommunityActivity');
+  const likedPostsListEl = document.getElementById('mypageLikedPostsList');
+  const commentsListEl = document.getElementById('mypageCommentsList');
   const archiveFileInput = document.createElement('input');
   archiveFileInput.type = 'file';
   archiveFileInput.accept = 'image/*';
@@ -96,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const sessionRaw = localStorage.getItem(sessionStorageKey);
+  let currentUser = { id: 'guest', nickname: '게스트' };
   if (sessionRaw) {
     try {
       const session = JSON.parse(sessionRaw);
@@ -103,6 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (profileSubEl) {
         profileSubEl.textContent = session.id ? `아이디 ${session.id}` : '';
       }
+      currentUser = {
+        id: String(session.id || session.nickname || 'member'),
+        nickname: String(session.nickname || session.id || '회원'),
+      };
     } catch (error) {
       /* noop */
     }
@@ -152,6 +164,61 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {
       /* noop */
     }
+  };
+
+  const readJsonList = (key) => {
+    try {
+      const raw = localStorage.getItem(key);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const renderCommunityActivity = () => {
+    if (!communityActivityEl || !likedPostsListEl || !commentsListEl) return;
+    const likedPosts = readJsonList(communityLikesStorageKey)
+      .filter((item) => item?.userId === currentUser.id)
+      .slice()
+      .reverse();
+    const comments = readJsonList(communityCommentsStorageKey)
+      .filter((item) => item?.userId === currentUser.id)
+      .slice()
+      .reverse();
+
+    const hasActivity = likedPosts.length > 0 || comments.length > 0;
+    communityActivityEl.hidden = !hasActivity;
+    communityEmptyState?.classList.toggle('hidden', hasActivity);
+
+    likedPostsListEl.innerHTML = likedPosts.length
+      ? likedPosts.map((item) => `
+        <article class="mypage-community-photo-card card">
+          <a href="community.html" class="mypage-community-photo-card__link" aria-label="${escapeHtml(item.cameraModel || '커뮤니티 사진')} 게시글 보러가기">
+            <div class="mypage-community-photo-card__img">
+              <img src="${String(item.imageSrc || '')}" alt="${escapeHtml(item.imageAlt || item.cameraModel || '좋아요한 게시글')}" loading="lazy">
+            </div>
+            <div class="mypage-community-photo-card__info">
+              <strong>${escapeHtml(item.cameraModel || '커뮤니티 사진')}</strong>
+              <span>${escapeHtml(item.authorHandle || '@guest')} · ${formatTime(item.likedAt)}</span>
+            </div>
+          </a>
+        </article>
+      `).join('')
+      : '<p class="mypage-muted">아직 좋아요한 게시물이 없어요.</p>';
+
+    commentsListEl.innerHTML = comments.length
+      ? comments.map((item) => `
+        <article class="mypage-community-item mypage-community-item--comment">
+          <img src="${String(item.imageSrc || '')}" alt="${escapeHtml(item.imageAlt || item.cameraModel || '댓글을 남긴 게시글')}" loading="lazy">
+          <div>
+            <strong>${escapeHtml(item.cameraModel || '커뮤니티 사진')}</strong>
+            <blockquote>${escapeHtml(item.text || '')}</blockquote>
+            <p>${escapeHtml(item.authorHandle || '@guest')} 게시글 · ${formatTime(item.createdAt)}</p>
+          </div>
+        </article>
+      `).join('')
+      : '<p class="mypage-muted">아직 작성한 댓글이 없어요.</p>';
   };
 
   const syncSidebarStats = () => {
@@ -373,6 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderRecentCameras();
+  renderCommunityActivity();
   syncSidebarStats();
 
   const renderArchive = () => {
