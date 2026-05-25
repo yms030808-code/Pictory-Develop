@@ -7944,7 +7944,21 @@ html[data-theme="dark"] .match-result-card { background: var(--color-surface); }
   background: var(--color-surface); border: 1px solid var(--color-border);
   border-radius: var(--radius-lg); padding: 18px 16px; text-align: center;
 }
-.spec-card__icon { font-size: 1.5rem; margin-bottom: 8px; }
+.spec-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--color-text-secondary);
+}
+
+.spec-card__icon .ph-duotone {
+  --ph-duotone-color-secondary: var(--color-accent);
+  --ph-duotone-opacity: 0.45;
+  color: var(--color-accent);
+}
 .spec-card__label { font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
 .spec-card__value { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
 .product-detail__gallery { margin-bottom: 40px; }
