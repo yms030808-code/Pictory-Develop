@@ -738,6 +738,73 @@ body.page-recommend .spinner {
   border-top-color: var(--color-accent);
 }
 
+/* Camera aperture loader (recommend upload / analysis) */
+.aperture-loader {
+  --aperture-size: 88px;
+  --aperture-bg: #050505;
+  --aperture-stroke: #f2f2f2;
+  position: relative;
+  width: var(--aperture-size);
+  height: var(--aperture-size);
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.aperture-loader__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.aperture-loader__bg {
+  fill: var(--aperture-bg);
+  stroke: none;
+}
+
+.aperture-loader__rim {
+  fill: none;
+  stroke: var(--aperture-stroke);
+  stroke-width: 1.4;
+  pointer-events: none;
+}
+
+.aperture-loader__blade {
+  fill: none;
+  stroke: var(--aperture-stroke);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.upload-zone.upload-zone--analyzing {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+  pointer-events: none;
+  animation: upload-zone-analyzing 2.2s ease-in-out infinite;
+}
+
+body.page-recommend .result-section {
+  scroll-margin-top: 80px;
+}
+
+@keyframes upload-zone-analyzing {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .upload-zone.upload-zone--analyzing {
+    animation: none;
+  }
+}
+
 /* ===== Landing Home ===== */
 .landing-hero {
   padding: 112px 0 44px;
@@ -1435,6 +1502,228 @@ html[data-theme="dark"] .landing-card__label {
 body.page-landing {
   background: var(--color-bg);
   color: var(--color-text);
+}
+
+/* Viewfinder spotlight — all pages (via app.js + home-spotlight.js) */
+.home-spotlight {
+  --spotlight-x: 50vw;
+  --spotlight-y: 50vh;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.home-spotlight.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.home-spotlight__glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle 200px at var(--spotlight-x) var(--spotlight-y),
+    rgba(255, 240, 210, 0.16) 0%,
+    rgba(255, 200, 130, 0.08) 32%,
+    transparent 62%
+  );
+}
+
+.home-spotlight__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 45%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.1) 70%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  pointer-events: none;
+}
+
+.home-spotlight__finder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 92px;
+  height: 92px;
+  transform: translate(var(--spotlight-x), var(--spotlight-y)) translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  will-change: transform;
+}
+
+.home-spotlight.is-active .home-spotlight__finder {
+  opacity: 1;
+}
+
+.home-spotlight__shutter-curtain {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home-spotlight.is-shutter-pulse .home-spotlight__shutter-curtain {
+  animation: home-spotlight-curtain 0.24s ease-out;
+}
+
+.home-spotlight__flash {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 110px;
+  height: 110px;
+  margin: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.45) 38%,
+    transparent 72%
+  );
+}
+
+.home-spotlight__flash.is-play {
+  animation: home-spotlight-flash 0.22s ease-out forwards;
+}
+
+.home-spotlight__finder.is-snapping {
+  animation: home-spotlight-finder-snap 0.2s ease-out;
+}
+
+@keyframes home-spotlight-curtain {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.22;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes home-spotlight-flash {
+  0% {
+    opacity: 0.85;
+    transform: translate(-50%, -50%) scale(0.55);
+  }
+  45% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+}
+
+@keyframes home-spotlight-finder-snap {
+  0%,
+  100% {
+    transform: translate(var(--spotlight-x), var(--spotlight-y)) translate(-50%, -50%) scale(1);
+  }
+  40% {
+    transform: translate(var(--spotlight-x), var(--spotlight-y)) translate(-50%, -50%) scale(0.86);
+  }
+}
+
+html[data-theme="dark"] .home-spotlight__shutter-curtain {
+  background: #f8f8f8;
+}
+
+html[data-theme="dark"] .home-spotlight.is-shutter-pulse .home-spotlight__shutter-curtain {
+  animation-name: home-spotlight-curtain-dark;
+}
+
+@keyframes home-spotlight-curtain-dark {
+  0% {
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.home-spotlight__corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #ff5c00;
+}
+
+.home-spotlight__corner--tl {
+  top: 0;
+  left: 0;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+}
+
+.home-spotlight__corner--tr {
+  top: 0;
+  right: 0;
+  border-top: 1.5px solid;
+  border-right: 1.5px solid;
+}
+
+.home-spotlight__corner--bl {
+  bottom: 0;
+  left: 0;
+  border-bottom: 1.5px solid;
+  border-left: 1.5px solid;
+}
+
+.home-spotlight__corner--br {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1.5px solid;
+  border-right: 1.5px solid;
+}
+
+html[data-theme="dark"] .home-spotlight__glow {
+  background: radial-gradient(
+    circle 180px at var(--spotlight-x) var(--spotlight-y),
+    rgba(255, 248, 235, 0.12) 0%,
+    rgba(255, 200, 120, 0.05) 38%,
+    transparent 62%
+  );
+}
+
+html[data-theme="dark"] .home-spotlight__vignette {
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 45%,
+    transparent 26%,
+    rgba(0, 0, 0, 0.35) 72%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+html[data-theme="dark"] .home-spotlight__corner {
+  border-color: #ffb080;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-spotlight {
+    transition-duration: 0.15s;
+  }
+
+  .home-spotlight.is-shutter-pulse .home-spotlight__shutter-curtain,
+  .home-spotlight__flash.is-play,
+  .home-spotlight__finder.is-snapping {
+    animation: none;
+  }
 }
 
 body.page-landing .nav {
@@ -6698,6 +6987,11 @@ html[data-theme="dark"] body.page-recommend .hero {
 
 html[data-theme="dark"] .recommend-card__img {
   background: #000000;
+}
+
+html[data-theme="dark"] .aperture-loader {
+  --aperture-bg: #000000;
+  --aperture-stroke: #ffffff;
 }
 
 html[data-theme="dark"] .recommend-card__actions .recommend-card__bookmark-btn {
