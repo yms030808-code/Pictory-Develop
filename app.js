@@ -2235,6 +2235,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function boot() {
     const spotlight = createSpotlight();
+    document.getElementById('homeSpotlightIris')?.remove();
     const glow = document.getElementById('homeSpotlightGlow');
     const finder = document.getElementById('homeSpotlightFinder');
     if (!glow) return;
@@ -2278,10 +2279,37 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.addEventListener('mouseleave', hide, { passive: true });
     window.addEventListener('blur', hide);
 
+    let audioCtx = null;
+
+    const playShutterClick = () => {
+      if (prefersReducedMotion()) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const t = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(880, t);
+        osc.frequency.exponentialRampToValueAtTime(180, t + 0.07);
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.06, t + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.1);
+      } catch (_) {
+        /* optional sound */
+      }
+    };
+
     const triggerShutter = (x, y) => {
-      if (shutterLock || prefersReducedMotion()) return;
+      if (shutterLock) return;
       shutterLock = true;
       paintGlow(x, y);
+      if (!active) show();
+      active = true;
 
       const flash = document.createElement('div');
       flash.className = 'home-spotlight__flash';
@@ -2295,26 +2323,23 @@ document.addEventListener('DOMContentLoaded', () => {
       spotlight.classList.add('is-shutter-pulse');
       finder?.classList.add('is-snapping');
       requestAnimationFrame(() => flash.classList.add('is-play'));
+      playShutterClick();
 
       window.setTimeout(() => {
         flash.remove();
         finder?.classList.remove('is-snapping');
         spotlight.classList.remove('is-shutter-pulse');
         shutterLock = false;
-      }, 260);
+      }, 320);
     };
 
-    document.addEventListener(
-      'click',
-      (e) => {
-        if (e.button !== 0) return;
-        if (!isInZone(e.clientX, e.clientY)) return;
-        if (!active) show();
-        active = true;
-        triggerShutter(e.clientX, e.clientY);
-      },
-      { passive: true },
-    );
+    const onShutterPointer = (e) => {
+      if (e.button !== 0) return;
+      if (!isInZone(e.clientX, e.clientY)) return;
+      triggerShutter(e.clientX, e.clientY);
+    };
+
+    document.addEventListener('pointerdown', onShutterPointer, { passive: true });
   }
 
   if (document.readyState === 'loading') {
