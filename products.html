@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="site-grid.css">
+  <link rel="stylesheet" href="cards-grids.css">
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
@@ -22,12 +24,12 @@
         <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       </ul>
       <label class="nav__search" aria-label="검색">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="pictory-icon" data-pictory-icon="search" aria-hidden="true"></span>
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
       <div class="nav__actions">
         <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span class="pictory-icon pictory-icon--sm" data-pictory-icon="favorite" aria-hidden="true"></span>
           북마크
         </button>
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
@@ -62,54 +64,54 @@
         <div class="product-catalog__sort-wrap">
           <div class="product-catalog__control">
             <span class="product-catalog__sort-label" id="productColorLabel">색상</span>
-            <div class="product-catalog__sort-ui" id="productColorRoot">
+            <div class="product-catalog__sort-ui picory-dropdown" id="productColorRoot">
               <button
                 type="button"
-                class="product-catalog__sort-trigger"
+                class="product-catalog__sort-trigger picory-dropdown__trigger"
                 id="productColorTrigger"
                 aria-expanded="false"
                 aria-haspopup="listbox"
                 aria-labelledby="productColorLabel productColorValue"
               >
-                <span id="productColorValue" class="product-catalog__sort-value">전체</span>
-                <span class="product-catalog__sort-chevron" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                <span id="productColorValue" class="product-catalog__sort-value picory-dropdown__value">전체</span>
+                <span class="product-catalog__sort-chevron picory-dropdown__chevron" aria-hidden="true">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
                 </span>
               </button>
-              <ul class="product-catalog__sort-list" id="productColorList" role="listbox" hidden>
-                <li class="product-catalog__sort-option" role="option" data-value="all" tabindex="-1">전체</li>
-                <li class="product-catalog__sort-option" role="option" data-value="black" tabindex="-1">블랙</li>
-                <li class="product-catalog__sort-option" role="option" data-value="silver" tabindex="-1">실버</li>
-                <li class="product-catalog__sort-option" role="option" data-value="white" tabindex="-1">화이트</li>
-                <li class="product-catalog__sort-option" role="option" data-value="gray" tabindex="-1">그레이</li>
-                <li class="product-catalog__sort-option" role="option" data-value="blue" tabindex="-1">블루</li>
-                <li class="product-catalog__sort-option" role="option" data-value="red" tabindex="-1">레드</li>
-                <li class="product-catalog__sort-option" role="option" data-value="green" tabindex="-1">그린</li>
+              <ul class="product-catalog__sort-list picory-dropdown__menu" id="productColorList" role="listbox" hidden>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="all" tabindex="-1">전체</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="black" tabindex="-1">블랙</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="silver" tabindex="-1">실버</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="white" tabindex="-1">화이트</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="gray" tabindex="-1">그레이</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="blue" tabindex="-1">블루</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="red" tabindex="-1">레드</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="green" tabindex="-1">그린</li>
               </ul>
             </div>
           </div>
 
           <div class="product-catalog__control">
             <span class="product-catalog__sort-label" id="productSortLabel">정렬</span>
-            <div class="product-catalog__sort-ui" id="productSortRoot">
+            <div class="product-catalog__sort-ui picory-dropdown" id="productSortRoot">
               <button
                 type="button"
-                class="product-catalog__sort-trigger"
+                class="product-catalog__sort-trigger picory-dropdown__trigger"
                 id="productSortTrigger"
                 aria-expanded="false"
                 aria-haspopup="listbox"
                 aria-labelledby="productSortLabel productSortValue"
               >
-                <span id="productSortValue" class="product-catalog__sort-value">추천순</span>
-                <span class="product-catalog__sort-chevron" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                <span id="productSortValue" class="product-catalog__sort-value picory-dropdown__value">추천순</span>
+                <span class="product-catalog__sort-chevron picory-dropdown__chevron" aria-hidden="true">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
                 </span>
               </button>
-              <ul class="product-catalog__sort-list" id="productSortList" role="listbox" hidden>
-                <li class="product-catalog__sort-option" role="option" data-value="recommend" tabindex="-1">추천순</li>
-                <li class="product-catalog__sort-option" role="option" data-value="popular" tabindex="-1">인기순</li>
-                <li class="product-catalog__sort-option" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
-                <li class="product-catalog__sort-option" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
+              <ul class="product-catalog__sort-list picory-dropdown__menu" id="productSortList" role="listbox" hidden>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="recommend" tabindex="-1">추천순</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="popular" tabindex="-1">인기순</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
+                <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
               </ul>
             </div>
           </div>
@@ -170,6 +172,7 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/pictory-icons.js"></script>
   <script src="js/compare-drawer.js"></script>
   <script src="app.js"></script>
   <script src="js/products.bundle.js"></script>

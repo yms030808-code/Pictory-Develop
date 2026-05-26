@@ -1,0 +1,211 @@
+/* ================================================
+   Pictory 12-column layout (1920 desktop frame)
+   Margins per page · 24px gutter · flexible rows
+   ================================================ */
+
+:root {
+  --frame-width: 1920px;
+  --grid-columns: 12;
+  --grid-gutter: 24px;
+}
+
+/* Page margins (design spec) */
+body.page-landing,
+body.page-community,
+body.page-mypage {
+  --site-margin: 160px;
+}
+
+body.page-search {
+  --site-margin: 120px;
+}
+
+body.auth-page {
+  --site-margin: 590px;
+}
+
+body.page-products {
+  --site-margin: 220px;
+}
+
+/* Fluid margin: full spec at 1920px, scales down on smaller viewports */
+body.page-landing,
+body.page-community,
+body.page-search,
+body.page-products,
+body.page-mypage,
+body.auth-page {
+  --site-margin-fluid: clamp(
+    1rem,
+    calc(var(--site-margin) * 100vw / var(--frame-width)),
+    var(--site-margin)
+  );
+}
+
+/* Nav + main containers share the same horizontal grid */
+body.page-landing .nav__inner,
+body.page-community .nav__inner,
+body.page-search .nav__inner,
+body.page-products .nav__inner,
+body.page-mypage .nav__inner,
+body.auth-page .nav__inner {
+  width: 100%;
+  max-width: var(--frame-width);
+  margin-inline: auto;
+  padding-inline: var(--site-margin-fluid);
+}
+
+body.page-landing .container,
+body.page-community .container,
+body.page-search .container,
+body.page-products .container,
+body.page-mypage .container {
+  width: 100%;
+  max-width: var(--frame-width);
+  margin-inline: auto;
+  padding-inline: var(--site-margin-fluid);
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--grid-gutter);
+  align-content: start;
+}
+
+/* Direct children span full 12 columns; inner card grids stay flexible */
+body.page-landing .container > *,
+body.page-community .container > *,
+body.page-search .container > *,
+body.page-products .container > *,
+body.page-mypage .container > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* Auth: centered narrow column inside wide side margins */
+body.auth-page .auth-shell {
+  width: 100%;
+  max-width: var(--frame-width);
+  margin-inline: auto;
+  padding: 116px var(--site-margin-fluid) 40px;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--grid-gutter);
+  justify-items: center;
+  align-content: start;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+body.auth-page .auth-card {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 28rem;
+  justify-self: center;
+}
+
+/* Footer containers on grid pages */
+body.page-landing .footer .container,
+body.page-community .footer .container,
+body.page-search .footer .container,
+body.page-products .footer .container,
+body.page-mypage .footer .container,
+body.auth-page .footer .container {
+  width: 100%;
+  max-width: var(--frame-width);
+  margin-inline: auto;
+  padding-inline: var(--site-margin-fluid);
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+}
+
+body.page-landing .footer .container > *,
+body.page-community .footer .container > *,
+body.page-search .footer .container > *,
+body.page-products .footer .container > *,
+body.page-mypage .footer .container > *,
+body.auth-page .footer .container > * {
+  grid-column: 1 / -1;
+}
+
+/* Optional: 3-up explore cards align to 4 columns each on wide screens */
+@media (min-width: 1100px) {
+  body.page-landing .explore-cards {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    row-gap: var(--grid-gutter);
+  }
+
+  body.page-landing .explore-cards > .explore-card {
+    grid-column: span 4;
+  }
+}
+
+/* Column span utilities (optional) */
+.col-span-12 { grid-column: 1 / -1; }
+.col-span-8 { grid-column: span 8; }
+.col-span-6 { grid-column: span 6; }
+.col-span-4 { grid-column: span 4; }
+
+@media (max-width: 900px) {
+  .col-span-8,
+  .col-span-6,
+  .col-span-4 {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mypage: sidebar + main on 12-column grid (keeps relative panel layout) */
+@media (min-width: 901px) {
+  body.page-mypage .mypage-layout {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    row-gap: var(--grid-gutter);
+    align-items: start;
+  }
+
+  body.page-mypage .mypage-sidebar {
+    grid-column: span 3;
+  }
+
+  body.page-mypage .mypage-main {
+    grid-column: span 9;
+  }
+}
+
+/* Search: filters + results area within 12 columns */
+@media (min-width: 901px) {
+  body.page-search .cam-search-layout {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    row-gap: var(--grid-gutter);
+    align-items: start;
+  }
+
+  body.page-search .cam-search-layout > :first-child {
+    grid-column: span 8;
+  }
+
+  body.page-search .cam-search-layout > :last-child {
+    grid-column: span 4;
+  }
+}
+
+/* Products: sticky category nav aligns with page margins */
+body.page-products .product-catalog-nav-wrapper .container {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  width: 100%;
+  max-width: var(--frame-width);
+  margin-inline: auto;
+  padding-inline: var(--site-margin-fluid);
+}
+
+body.page-products .product-catalog-nav-wrapper .container > * {
+  grid-column: 1 / -1;
+}

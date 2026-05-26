@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../cards-grids.css">
   <link rel="stylesheet" href="mobile.css">
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="../picory-nav-badges-pre.js"></script>
@@ -69,25 +70,25 @@
           <h1 class="section__title">상품 카탈로그</h1>
           <div class="product-catalog__sort-wrap">
           <span class="product-catalog__sort-label" id="productSortLabel">정렬</span>
-          <div class="product-catalog__sort-ui" id="productSortRoot">
+          <div class="product-catalog__sort-ui picory-dropdown" id="productSortRoot">
             <button
               type="button"
-              class="product-catalog__sort-trigger"
+              class="product-catalog__sort-trigger picory-dropdown__trigger"
               id="productSortTrigger"
               aria-expanded="false"
               aria-haspopup="listbox"
               aria-labelledby="productSortLabel productSortValue"
             >
-              <span id="productSortValue" class="product-catalog__sort-value">추천순</span>
-              <span class="product-catalog__sort-chevron" aria-hidden="true">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              <span id="productSortValue" class="product-catalog__sort-value picory-dropdown__value">추천순</span>
+              <span class="product-catalog__sort-chevron picory-dropdown__chevron" aria-hidden="true">
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
               </span>
             </button>
-            <ul class="product-catalog__sort-list" id="productSortList" role="listbox" hidden>
-              <li class="product-catalog__sort-option" role="option" data-value="recommend" tabindex="-1">추천순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="popular" tabindex="-1">인기순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
-              <li class="product-catalog__sort-option" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
+            <ul class="product-catalog__sort-list picory-dropdown__menu" id="productSortList" role="listbox" hidden>
+              <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="recommend" tabindex="-1">추천순</li>
+              <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="popular" tabindex="-1">인기순</li>
+              <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="price-desc" tabindex="-1">가격높은순</li>
+              <li class="product-catalog__sort-option picory-dropdown__item" role="option" data-value="price-asc" tabindex="-1">가격낮은순</li>
             </ul>
           </div>
         </div>

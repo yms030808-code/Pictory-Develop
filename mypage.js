@@ -31,6 +31,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveUploadZone = document.getElementById('mypageArchiveUploadZone');
   const archiveModelInput = document.getElementById('mypageArchiveModelInput');
   const archiveCategorySelect = document.getElementById('mypageArchiveCategorySelect');
+  const archiveCategoryRoot = document.getElementById('mypageArchiveCategoryRoot');
+  const archiveCategoryTrigger = document.getElementById('mypageArchiveCategoryTrigger');
+  const archiveCategoryList = document.getElementById('mypageArchiveCategoryList');
+  const archiveCategoryValue = document.getElementById('mypageArchiveCategoryValue');
+  let archiveCategoryDropdown = null;
+  let archiveEditCategoryDropdown = null;
+
+  if (
+    typeof window.mountPicoryDropdown === 'function' &&
+    archiveCategoryTrigger &&
+    archiveCategoryList
+  ) {
+    archiveCategoryDropdown = window.mountPicoryDropdown({
+      root: archiveCategoryRoot,
+      trigger: archiveCategoryTrigger,
+      list: archiveCategoryList,
+      valueEl: archiveCategoryValue,
+      hiddenInput: archiveCategorySelect,
+      initialValue: archiveCategorySelect?.value || '일상',
+    });
+  }
   const archiveShareCommunity = document.getElementById('mypageArchiveShareCommunity');
   const archiveUploadBtn = document.getElementById('mypageArchiveUploadBtn');
   const communityPanel = document.querySelector('[data-mypage-panel="community"]');
@@ -557,13 +578,29 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="form-group" style="margin-bottom: 14px;">
             <label class="form-label">카테고리</label>
-            <select class="form-input" id="archiveEditCategorySelect">
-              <option value="일상">일상</option>
-              <option value="인물">인물</option>
-              <option value="풍경">풍경</option>
-              <option value="야경">야경</option>
-              <option value="음식">음식</option>
-            </select>
+            <div class="picory-dropdown mypage-archive-category" id="archiveEditCategoryRoot">
+              <input type="hidden" id="archiveEditCategorySelect" value="일상">
+              <button
+                type="button"
+                class="picory-dropdown__trigger"
+                id="archiveEditCategoryTrigger"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+                aria-labelledby="archiveEditCategoryValue"
+              >
+                <span id="archiveEditCategoryValue" class="picory-dropdown__value">일상</span>
+                <span class="picory-dropdown__chevron" aria-hidden="true">
+                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
+                </span>
+              </button>
+              <ul class="picory-dropdown__menu" id="archiveEditCategoryList" role="listbox" hidden>
+                <li class="picory-dropdown__item" role="option" data-value="일상" tabindex="-1">일상</li>
+                <li class="picory-dropdown__item" role="option" data-value="인물" tabindex="-1">인물</li>
+                <li class="picory-dropdown__item" role="option" data-value="풍경" tabindex="-1">풍경</li>
+                <li class="picory-dropdown__item" role="option" data-value="야경" tabindex="-1">야경</li>
+                <li class="picory-dropdown__item" role="option" data-value="음식" tabindex="-1">음식</li>
+              </ul>
+            </div>
           </div>
           <div style="display:flex; gap:8px; justify-content:flex-end;">
             <button type="button" class="btn btn--outline btn--sm" data-archive-edit-cancel>취소</button>
@@ -659,6 +696,24 @@ document.addEventListener('DOMContentLoaded', () => {
       renderArchive();
       alert('수정 내용을 저장했어요.');
     });
+
+    if (typeof window.mountPicoryDropdown === 'function') {
+      const editRoot = overlay.querySelector('#archiveEditCategoryRoot');
+      const editTrigger = overlay.querySelector('#archiveEditCategoryTrigger');
+      const editList = overlay.querySelector('#archiveEditCategoryList');
+      const editValue = overlay.querySelector('#archiveEditCategoryValue');
+      const editHidden = overlay.querySelector('#archiveEditCategorySelect');
+      if (editTrigger && editList) {
+        archiveEditCategoryDropdown = window.mountPicoryDropdown({
+          root: editRoot,
+          trigger: editTrigger,
+          list: editList,
+          valueEl: editValue,
+          hiddenInput: editHidden,
+          initialValue: '일상',
+        });
+      }
+    }
 
     archiveEditOverlay = overlay;
     return overlay;
@@ -780,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
     archiveImageDataUrl = '';
     archiveFileInput.value = '';
     if (archiveModelInput) archiveModelInput.value = '';
-    if (archiveCategorySelect) archiveCategorySelect.value = '일상';
+    archiveCategoryDropdown?.setValue('일상');
     if (archiveShareCommunity) archiveShareCommunity.checked = false;
     alert(
       shouldShareToCommunity

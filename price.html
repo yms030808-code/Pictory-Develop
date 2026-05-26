@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css">
+  <link rel="stylesheet" href="cards-grids.css">
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
@@ -23,12 +23,12 @@
         <li><a href="community.html" class="nav__link" data-nav-badge="community">커뮤니티<span class="nav__link-badge" aria-hidden="true"></span></a></li>
       </ul>
       <label class="nav__search" aria-label="검색">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="pictory-icon" data-pictory-icon="search" aria-hidden="true"></span>
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
       <div class="nav__actions">
         <button class="btn btn--ghost btn--sm" id="bookmarkBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span class="pictory-icon pictory-icon--sm" data-pictory-icon="favorite" aria-hidden="true"></span>
           북마크
         </button>
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
@@ -68,22 +68,22 @@
         <!-- 2. 주요 스펙 하이라이트 -->
         <div class="product-detail__specs" id="detailSpecs">
           <div class="spec-card">
-            <div class="spec-card__icon" aria-hidden="true"><i class="ph-duotone ph-aperture"></i></div>
+            <div class="spec-card__icon pictory-icon" data-pictory-icon="aperture" aria-hidden="true"></div>
             <p class="spec-card__label">센서</p>
             <p class="spec-card__value" id="specSensor">—</p>
           </div>
           <div class="spec-card">
-            <div class="spec-card__icon" aria-hidden="true"><i class="ph-duotone ph-film-strip"></i></div>
+            <div class="spec-card__icon pictory-icon" data-pictory-icon="film-strip" aria-hidden="true"></div>
             <p class="spec-card__label">영상</p>
             <p class="spec-card__value" id="specVideo">—</p>
           </div>
           <div class="spec-card">
-            <div class="spec-card__icon" aria-hidden="true"><i class="ph-duotone ph-scales"></i></div>
+            <div class="spec-card__icon pictory-icon" data-pictory-icon="scales" aria-hidden="true"></div>
             <p class="spec-card__label">무게</p>
             <p class="spec-card__value" id="specWeight">—</p>
           </div>
           <div class="spec-card">
-            <div class="spec-card__icon" aria-hidden="true"><i class="ph-duotone ph-battery-high"></i></div>
+            <div class="spec-card__icon pictory-icon" data-pictory-icon="battery-high" aria-hidden="true"></div>
             <p class="spec-card__label">배터리</p>
             <p class="spec-card__value" id="specBattery">—</p>
           </div>
@@ -166,7 +166,7 @@
         <h3 class="price-chart__title">최근 7개월 중고 시세 추이</h3>
         <div class="chart-container" id="chartContainer" aria-live="polite"></div>
         <p class="price-chart__insight" id="priceChartInsight">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF5C00" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#FF6500" stroke-width="2"/><path d="M12 16v-4M12 8h.01" stroke="#FF6500" stroke-width="2" stroke-linecap="round"/></svg>
           <span id="priceChartInsightText">검색된 중고 시세 추이를 확인해 보세요.</span>
         </p>
       </div>
@@ -222,6 +222,7 @@
   </footer>
 
   <script src="js/theme.js"></script>
+  <script src="js/pictory-icons.js"></script>
   <script src="js/compare-drawer.js"></script>
   <script src="app.js"></script>
   <script src="js/price.bundle.js"></script>

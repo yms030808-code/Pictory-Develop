@@ -4,6 +4,8 @@
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof PictoryIcons !== 'undefined') PictoryIcons.mount();
+
   const sessionStorageKey = 'picoryAuthSession';
   const activityLogStorageKey = 'picoryActivityLogs';
   const archiveStorageKey = 'picoryArchivePosts';
@@ -337,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const ul = document.createElement('ul');
-      ul.className = 'price-search__suggest';
+      ul.className = 'price-search__suggest picory-dropdown__menu';
       ul.setAttribute('role', 'listbox');
       ul.setAttribute('aria-label', '카탈로그 상품');
       ul.hidden = true;
@@ -1039,7 +1041,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let detailHref = `price.html?q=${encodeURIComponent(name)}`;
     if (card.classList.contains('product-card')) {
-      const linkEl = card.querySelector('.product-card__link');
+      const linkEl =
+        card.querySelector('.product-card__action-btn') ||
+        card.querySelector('.product-card__thumb-link');
       const h = linkEl && linkEl.getAttribute('href');
       if (h) detailHref = h;
     } else if (card.classList.contains('checklist-result__card')) {
@@ -2169,7 +2173,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', (e) => {
-    const productLink = e.target.closest('.product-card__link');
+    const productLink = e.target.closest(
+      '.product-card__thumb-link, .product-card__action-btn'
+    );
     if (productLink) {
       const card = productLink.closest('.product-card');
       const brand = card?.querySelector('.product-card__brand')?.textContent?.trim() || '';

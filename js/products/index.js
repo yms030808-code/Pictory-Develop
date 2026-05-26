@@ -152,10 +152,13 @@ function mountProductDropdownUi({ trigger, list, valueEl, initialKey, onChange, 
     });
   }
 
+  const rootEl = trigger.closest('.picory-dropdown, .product-catalog__sort-ui');
+
   function setOpen(open) {
     list.hidden = !open;
     trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
     trigger.classList.toggle('is-open', open);
+    rootEl?.classList.toggle('is-open', open);
   }
 
   function close() {

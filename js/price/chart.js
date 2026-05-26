@@ -14,10 +14,10 @@ function hashString(s) {
 
 const W = 600;
 const H = 200;
-const PAD_T = 24;
-const PAD_B = 28;
-const X0 = 36;
-const X1 = 564;
+const PAD_T = 20;
+const PAD_B = 36;
+const X0 = 8;
+const X1 = 592;
 const N = 7;
 
 /** 시세 목록·그래프 기준일 (buildListings.js LISTING_REF_DATE와 동일) */
@@ -177,7 +177,7 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
   const minV = Math.min(...lowValues);
   const maxV = Math.max(...highValues);
 
-  const { ticks, lo, hi } = yTicks(minV, maxV, 4);
+  const { lo, hi } = yTicks(minV, maxV, 4);
   const lowPoints = lowValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
   const highPoints = highValues.map((v, i) => ({ x: xAt(i), y: valueToY(v, lo, hi), v, i }));
 
@@ -187,13 +187,16 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
   const monthShort = monthLabelsRolling7();
   const monthFull = fullMonthLabels();
 
-  const yAxisHtml = ticks
-    .slice()
-    .reverse()
-    .map((t) => `<span>${formatWonMan(t)}</span>`)
+  const xAxisLabelsSvg = monthShort
+    .map(
+      (lab, i) =>
+        `<text class="chart__axis-label" x="${xAt(i)}" y="${H - 8}" text-anchor="middle">${escapeHtml(lab)}</text>`,
+    )
     .join('');
 
-  const xAxisHtml = monthShort.map((lab) => `<span>${escapeHtml(lab)}</span>`).join('');
+  const iconHigh = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z" fill="#3AFF28"/></svg>`;
+  const iconAvg = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="2" viewBox="0 0 9 2" fill="none" aria-hidden="true"><path d="M0 1.16667V0H8.16667V1.16667H0Z" fill="white"/></svg>`;
+  const iconLow = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M8.16667 7V5.83333H9.68333L6.65 2.82917L4.31667 5.1625L0 0.816667L0.816667 0L4.31667 3.5L6.65 1.16667L10.5 5.01667V3.5H11.6667V7H8.16667Z" fill="#EF4444"/></svg>`;
 
   const pointGroups = lowPoints
     .map((lowPoint, i) => {
@@ -201,48 +204,99 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
       return `
     <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
       <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
-      <circle cx="${highPoint.x}" cy="${highPoint.y}" r="3.5" fill="#20B15A" stroke="#fff" stroke-width="1.2"/>
-      <circle cx="${lowPoint.x}" cy="${lowPoint.y}" r="3.5" fill="#EF5B66" stroke="#fff" stroke-width="1.2"/>
+      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="5" fill="#3AFF28" stroke="#F3F3F4" stroke-width="2.5"/>
+      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5" fill="#EF4444" stroke="#F3F3F4" stroke-width="2.5"/>
     </g>`;
     })
     .join('');
 
-  const currentStats = `<div class="chart__current-card" role="status">
-    <div class="chart__current-row chart__current-row--high"><span><i></i>현 최고가</span><strong>${escapeHtml(formatWonFull(currentHigh))}</strong></div>
-    <div class="chart__current-row chart__current-row--avg"><span><i></i>현재 평균가</span><strong>${escapeHtml(formatWonFull(currentAvg))}</strong></div>
-    <div class="chart__current-row chart__current-row--low"><span><i></i>현 최저가</span><strong>${escapeHtml(formatWonFull(currentLow))}</strong></div>
-  </div>`;
+  const headerHtml = `
+    <header class="chart__header" role="group" aria-label="현재 시세 요약">
+      <div class="chart__header-fields">
+        <div class="chart__col chart__col--high">
+          <div class="chart__col-title">현 최고가</div>
+          <div class="chart__col-price">
+            ${iconHigh}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentHigh))}</span>
+          </div>
+        </div>
+        <div class="chart__col chart__col--avg">
+          <div class="chart__col-title">현재 평균가</div>
+          <div class="chart__col-price">
+            ${iconAvg}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentAvg))}</span>
+          </div>
+        </div>
+        <div class="chart__col chart__col--low">
+          <div class="chart__col-title">현 최저가</div>
+          <div class="chart__col-price">
+            ${iconLow}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span>
+          </div>
+        </div>
+      </div>
+    </header>`;
+
   const lastHigh = highPoints[N - 1];
   const lastLow = lowPoints[N - 1];
-  const highGuideY = lastHigh.y;
-  const lowGuideY = lastLow.y;
 
   mount.innerHTML = `
-    <div class="chart chart--range">
-      ${currentStats}
-      <div class="chart__y-axis" aria-hidden="true">${yAxisHtml}</div>
-      <div class="chart__area chart__area--interactive">
-        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" class="chart__svg" overflow="visible" focusable="false" aria-hidden="true" id="priceChartSvg">
-          <g class="chart__grid">
-            ${lowPoints.map((p) => `<line x1="${p.x}" y1="${PAD_T}" x2="${p.x}" y2="${H - PAD_B}" />`).join('')}
-          </g>
-          <line class="chart__guide chart__guide--high" x1="${X0}" y1="${highGuideY}" x2="${X1}" y2="${highGuideY}" />
-          <line class="chart__guide chart__guide--low" x1="${X0}" y1="${lowGuideY}" x2="${X1}" y2="${lowGuideY}" />
-          <polyline points="${highPolyline}" fill="none" stroke="#20B15A" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-          <polyline points="${lowPolyline}" fill="none" stroke="#EF5B66" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
-          <text class="chart__inline-label chart__inline-label--high" x="${X1 - 146}" y="${Math.max(PAD_T + 12, highGuideY - 12)}">최고가 ${escapeHtml(formatWonFull(currentHigh))}</text>
-          <text class="chart__inline-label chart__inline-label--low" x="${X1 - 146}" y="${Math.min(H - PAD_B - 6, lowGuideY + 22)}">최저가 ${escapeHtml(formatWonFull(currentLow))}</text>
-          ${pointGroups}
-        </svg>
-        <div class="chart__x-axis" aria-hidden="true">${xAxisHtml}</div>
-        <div class="chart-tooltip" id="chartTooltip" role="tooltip" aria-hidden="true"></div>
+    <div class="chart chart--comparison">
+      ${headerHtml}
+      <div class="chart__plot chart__plot--interactive">
+        <div class="chart__plot-inner">
+          <div class="chart__plot-canvas">
+            <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" class="chart__svg" overflow="visible" focusable="false" aria-hidden="true" id="priceChartSvg">
+              <polyline class="chart__line chart__line--high" points="${highPolyline}" fill="none"/>
+              <polyline class="chart__line chart__line--low" points="${lowPolyline}" fill="none"/>
+              ${pointGroups}
+              <g class="chart__x-labels" aria-hidden="true">${xAxisLabelsSvg}</g>
+            </svg>
+            <div class="chart-tooltip" id="chartTooltip" role="tooltip" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="chart__badges" aria-hidden="true">
+          <div class="chart__inline-label chart__inline-label--high" id="chartLabelHigh">최고가 ${escapeHtml(Math.round(currentHigh).toLocaleString('ko-KR'))}</div>
+          <div class="chart__inline-label chart__inline-label--low" id="chartLabelLow">최저가 ${escapeHtml(Math.round(currentLow).toLocaleString('ko-KR'))}</div>
+        </div>
       </div>
     </div>
   `;
 
   const svg = mount.querySelector('#priceChartSvg');
   const tooltip = mount.querySelector('#chartTooltip');
-  const area = mount.querySelector('.chart__area--interactive');
+  const area = mount.querySelector('.chart__plot--interactive');
+  const labelHigh = mount.querySelector('#chartLabelHigh');
+  const labelLow = mount.querySelector('#chartLabelLow');
+  const plotCanvas = mount.querySelector('.chart__plot-canvas');
+  const badgesEl = mount.querySelector('.chart__badges');
+
+  function syncChartLayout() {
+    if (!svg || !plotCanvas || !badgesEl || !labelHigh || !labelLow) return;
+    const canvasRect = plotCanvas.getBoundingClientRect();
+    const svgRect = svg.getBoundingClientRect();
+    const badgesRect = badgesEl.getBoundingClientRect();
+    if (!svgRect.height || !badgesRect.height) return;
+
+    const scaleY = svgRect.height / H;
+    const offsetTop = svgRect.top - badgesRect.top;
+    const highCenter = offsetTop + lastHigh.y * scaleY;
+    const lowCenter = offsetTop + lastLow.y * scaleY;
+    const labelHalf = labelHigh.offsetHeight / 2;
+
+    labelHigh.style.top = `${Math.max(4, Math.min(badgesRect.height - labelHigh.offsetHeight - 4, highCenter - labelHalf))}px`;
+    labelLow.style.top = `${Math.max(4, Math.min(badgesRect.height - labelLow.offsetHeight - 4, lowCenter - labelHalf))}px`;
+  }
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(syncChartLayout);
+  });
+  if (typeof ResizeObserver !== 'undefined' && area) {
+    const ro = new ResizeObserver(syncChartLayout);
+    ro.observe(area);
+  } else {
+    window.addEventListener('resize', syncChartLayout);
+  }
 
   let lastTipKey = '';
 

@@ -1,0 +1,120 @@
+/* Pictory icons — assets from /icons/ */
+
+.pictory-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 0;
+  vertical-align: middle;
+}
+
+.pictory-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Figma exports use #F3F3F4 — tune on light surfaces */
+.pictory-icon img {
+  filter: brightness(0.42);
+}
+
+html[data-theme="dark"] .pictory-icon img,
+.cam-search-panel .pictory-icon img,
+.cam-purpose-tile .pictory-icon img,
+.match-option .pictory-icon img,
+.section--dark .pictory-icon img,
+.product-detail .pictory-icon img,
+.nav .pictory-icon img {
+  filter: none;
+}
+
+.pictory-icon--sm {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.pictory-icon--lg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.pictory-icon--xl {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.pictory-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #303030;
+  flex-shrink: 0;
+}
+
+.pictory-icon-circle .pictory-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.pictory-icon-circle--accent,
+.btn--primary .pictory-icon-circle,
+.btn:hover .pictory-icon-circle {
+  background: var(--Orange-500, #ff6500);
+}
+
+.cam-purpose-tile__icon.pictory-icon,
+.cam-purpose-tile__icon .pictory-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.match-option__icon.pictory-icon,
+.match-option__icon .pictory-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.spec-card__icon.pictory-icon,
+.spec-card__icon .pictory-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.cam-no-results__icon .pictory-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.cam-count-btn.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.nav__search .pictory-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.btn .pictory-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.match-next-arrow {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: 0.25rem;
+}
