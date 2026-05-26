@@ -7646,34 +7646,13 @@ html[data-theme="dark"] .explore-hero { background: linear-gradient(180deg, #141
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
   line-height: 1;
-  color: var(--color-text-secondary);
-}
-
-.cam-purpose-tile__icon .ph-duotone {
-  --ph-duotone-color-secondary: var(--color-accent);
-  --ph-duotone-opacity: 0.45;
-  color: var(--color-accent);
-}
-
-.cam-purpose-tile:hover .cam-purpose-tile__icon,
-.cam-purpose-tile.is-active .cam-purpose-tile__icon {
-  color: var(--color-accent);
 }
 
 .cam-no-results__icon {
   display: flex;
   justify-content: center;
   margin-bottom: 12px;
-  font-size: 2.25rem;
-  color: var(--color-text-muted);
-}
-
-.cam-no-results__icon .ph-duotone {
-  --ph-duotone-color-secondary: var(--color-accent);
-  --ph-duotone-opacity: 0.35;
-  color: var(--color-text-muted);
 }
 .cam-purpose-tile__label { font-size: 0.78rem; font-weight: 600; }
 .cam-count-sidebar { position: sticky; top: 80px; }
@@ -7830,16 +7809,6 @@ html[data-theme="dark"] .match-strip-card__img { background: #222; }
   color: var(--color-text-secondary);
 }
 
-.match-option__icon .ph-duotone {
-  --ph-duotone-color-secondary: var(--color-accent);
-  --ph-duotone-opacity: 0.45;
-  color: var(--color-accent);
-}
-
-.match-option:hover .match-option__icon,
-.match-option.is-selected .match-option__icon {
-  color: var(--color-accent);
-}
 .match-quiz-nav { display: flex; align-items: center; justify-content: space-between; }
 .match-prev-btn {
   padding: 10px 18px; border-radius: var(--radius-md);
@@ -7948,17 +7917,17 @@ html[data-theme="dark"] .match-result-card { background: var(--color-surface); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto 8px;
   font-size: 1.75rem;
   line-height: 1;
-  margin-bottom: 8px;
-  color: var(--color-text-secondary);
 }
 
-.spec-card__icon .ph-duotone {
-  --ph-duotone-color-secondary: var(--color-accent);
-  --ph-duotone-opacity: 0.45;
-  color: var(--color-accent);
+.product-detail .spec-card__icon .ph-duotone {
+  color: #ffffff;
+  --ph-duotone-color-secondary: rgba(255, 255, 255, 0.7);
+  --ph-duotone-opacity: 0.5;
 }
+
 .spec-card__label { font-size: 0.72rem; font-weight: 600; color: var(--color-text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
 .spec-card__value { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
 .product-detail__gallery { margin-bottom: 40px; }

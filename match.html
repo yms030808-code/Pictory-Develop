@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/duotone/style.css">
+  <link rel="stylesheet" href="css/ds-icons.css">
   <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
@@ -147,56 +147,56 @@
         key: 'experience',
         text: '카메라를 얼마나 써보셨나요?',
         options: [
-          { icon:'plant', label:'처음이에요, 잘 모릅니다', value:'beginner' },
+          { icon:'psychiatry', label:'처음이에요, 잘 모릅니다', value:'beginner' },
           { icon:'camera', label:'몇 번 써본 적 있어요', value:'intermediate' },
-          { icon:'crosshair', label:'꽤 익숙하게 다뤄요', value:'advanced' },
+          { icon:'add_a_photo', label:'꽤 익숙하게 다뤄요', value:'advanced' },
         ]
       },
       {
         key: 'purpose',
         text: '주로 어떤 콘텐츠를 만들고 싶으세요?',
         options: [
-          { icon:'image', label:'사진 위주로 찍고 싶어요', value:'photo' },
-          { icon:'film-strip', label:'영상·브이로그가 메인이에요', value:'video' },
-          { icon:'sparkle', label:'사진과 영상 모두 해보고 싶어요', value:'both' },
+          { icon:'add_a_photo', label:'사진 위주로 찍고 싶어요', value:'photo' },
+          { icon:'movie', label:'영상·브이로그가 메인이에요', value:'video' },
+          { icon:'photo_library', label:'사진과 영상 모두 해보고 싶어요', value:'both' },
         ]
       },
       {
         key: 'portability',
         text: '휴대성과 화질, 어느 쪽이 더 중요한가요?',
         options: [
-          { icon:'backpack', label:'항상 들고 다닐 수 있어야 해요', value:'portable' },
-          { icon:'trophy', label:'화질이 최우선이에요', value:'quality' },
-          { icon:'scales', label:'적당히 균형이 맞으면 돼요', value:'balance' },
+          { icon:'flight', label:'항상 들고 다닐 수 있어야 해요', value:'portable' },
+          { icon:'account_balance', label:'화질이 최우선이에요', value:'quality' },
+          { icon:'balance', label:'적당히 균형이 맞으면 돼요', value:'balance' },
         ]
       },
       {
         key: 'video',
         text: '영상 촬영 기능이 중요한가요?',
         options: [
-          { icon:'check-circle', label:'네, 영상 기능이 있어야 해요', value:'yesVideo' },
-          { icon:'camera-slash', label:'아니요, 사진만 찍을 것 같아요', value:'noVideo' },
+          { icon:'movie', label:'네, 영상 기능이 있어야 해요', value:'yesVideo' },
+          { icon:'hangout_video_off', label:'아니요, 사진만 찍을 것 같아요', value:'noVideo' },
         ]
       },
       {
         key: 'budget',
         text: '예산은 어느 정도인가요?',
         options: [
-          { icon:'coins', label:'100만원 이하', value:'budget100' },
-          { icon:'credit-card', label:'100~150만원대', value:'budget150' },
-          { icon:'wallet', label:'150~250만원대', value:'budget200' },
-          { icon:'bank', label:'250만원 이상도 OK', value:'budget300' },
+          { icon:'database', label:'100만원 이하', value:'budget100' },
+          { icon:'credit_card', label:'100~150만원대', value:'budget150' },
+          { icon:'local_atm', label:'150~250만원대', value:'budget200' },
+          { icon:'account_balance', label:'250만원 이상도 OK', value:'budget300' },
         ]
       },
       {
         key: 'concern',
         text: '카메라 구매에서 가장 걱정되는 게 뭔가요?',
         options: [
-          { icon:'warning-circle', label:'조작이 너무 어려울 것 같아요', value:'complexity' },
-          { icon:'person-simple', label:'흔들림이 많이 나올 것 같아요', value:'shake' },
-          { icon:'battery-high', label:'배터리가 빨리 닳을 것 같아요', value:'battery' },
-          { icon:'aperture', label:'원하는 화질이 안 나올 것 같아요', value:'quality_c' },
-          { icon:'tag', label:'가격 대비 만족이 낮을 것 같아요', value:'price' },
+          { icon:'error', label:'조작이 너무 어려울 것 같아요', value:'complexity' },
+          { icon:'earthquake', label:'흔들림이 많이 나올 것 같아요', value:'shake' },
+          { icon:'battery_android_alert', label:'배터리가 빨리 닳을 것 같아요', value:'battery' },
+          { icon:'camera', label:'원하는 화질이 안 나올 것 같아요', value:'quality_c' },
+          { icon:'sell', label:'가격 대비 만족이 낮을 것 같아요', value:'price' },
         ]
       },
     ];
@@ -239,7 +239,7 @@
           ${q.options.map(opt => `
             <button class="match-option ${answers[q.key] === opt.value ? 'is-selected' : ''}"
               data-value="${opt.value}" type="button">
-              <span class="match-option__icon" aria-hidden="true"><i class="ph-duotone ph-${opt.icon}"></i></span>
+              <span class="match-option__icon" aria-hidden="true"><span class="material-symbols-rounded ds-icon">${opt.icon}</span></span>
               ${opt.label}
             </button>
           `).join('')}
