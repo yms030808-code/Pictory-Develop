@@ -13,7 +13,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '고정 렌즈와 필름 시뮬레이션으로 스냅·일상 기록에 강한 풀프레임급 인기 모델입니다.',
     priceSummary: '약 2,190,000원대 · 정가 기준',
     platform: '네이버 쇼핑 · 쿠팡 · 공식몰',
-    thumbnail: 'https://3.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/fujifilm_x100vi/c8ba669eb68e472f80ede0367b8e6e89.png',
+    thumbnail: '/images/cameras/fujifilm-x100vi.png',
     categories: ['trending', 'emotional', 'travel'],
   },
   {
@@ -37,7 +37,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '브이로그에 맞춘 자동 모드와 마이크 단자 구성이 강점인 APS-C 기종입니다.',
     priceSummary: '약 1,280,000원대 ~',
     platform: '네이버 · 공식 스토어 · 온라인 면세',
-    thumbnail: 'https://img.photographyblog.com/reviews/sony_zv_e10_ii/sample_images/sony_zv_e10_ii_01.jpg',
+    thumbnail: '/images/cameras/sony-zv-e10-ii.png',
     categories: ['vlog', 'beginner', 'trending'],
   },
   {
@@ -49,7 +49,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '40mm 화각의 스냅 특화 컴팩트로 주머니에 넣고 다니기 좋습니다.',
     priceSummary: '약 1,590,000원대 ~',
     platform: '공식몰 · 온라인 · 중고',
-    thumbnail: 'https://4.img-dpreview.com/files/p/TS170x100~products/ricoh_griiix/9fbbc130bbfc4b7db2d1983296469b4a.png',
+    thumbnail: '/images/cameras/ricoh-gr-iiix.png',
     categories: ['travel', 'emotional', 'trending'],
   },
   {
@@ -61,7 +61,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '풀프레임 센서를 작은 바디에 담아 인물·여행·브이로그까지 균형이 좋습니다.',
     priceSummary: '약 2,390,000원대 ~',
     platform: '다나와 · 쿠팡 · 오프라인 대리점',
-    thumbnail: 'https://1.img-dpreview.com/files/p/TS250x250~sample_galleries/0861943200/2323267263.jpg',
+    thumbnail: '/images/cameras/sony-a7c-ii.png',
     categories: ['trending', 'emotional', 'vlog'],
   },
   {
@@ -97,7 +97,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '3축 짐벌 일체형 포켓 캠으로 손떨림 보정이 강한 영상 기기입니다.',
     priceSummary: '약 649,000원대 ~',
     platform: '공식 스토어 · 쿠팡 · 면세',
-    thumbnail: 'https://img.photographyblog.com/reviews/dji_osmo_pocket_3/sample_images/dji_osmo_pocket_3_01.jpg',
+    thumbnail: '/images/cameras/dji-osmo-pocket-3.png',
     categories: ['vlog', 'travel', 'trending'],
   },
   {
@@ -109,7 +109,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '최신 APS-C AF 성능과 4K 120p(크롭) 등 영상 옵션이 풍부한 올라운더입니다.',
     priceSummary: '약 1,520,000원대 ~',
     platform: '다나와 · 네이버 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/sony_a6700/sample_images/sony_a6700_01.jpg',
+    thumbnail: '/images/cameras/sony-a6700.png',
     categories: ['trending', 'vlog', 'travel', 'beginner'],
   },
   {
@@ -121,7 +121,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '가볍고 가격 부담이 적어 첫 미러리스로 무난한 입문 모델입니다.',
     priceSummary: '약 980,000원대 ~',
     platform: '쿠팡 · 온라인 · 중고나라',
-    thumbnail: 'https://img.photographyblog.com/reviews/canon_eos_r50/sample_images/canon_eos_r50_01.jpg',
+    thumbnail: '/images/cameras/canon-eos-r50.png',
     categories: ['beginner', 'value', 'trending'],
   },
   {
@@ -145,7 +145,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '세로 영상·라이브에 맞춘 UI와 입문형 조작이 강점인 V 시리즈입니다.',
     priceSummary: '약 1,180,000원대 ~',
     platform: '네이버 · 쿠팡 · 공식',
-    thumbnail: 'https://img.photographyblog.com/reviews/canon_eos_r50_v/sample_images/canon_eos_r50_v_01.jpg',
+    thumbnail: '/images/cameras/canon-eos-r50-v.png',
     categories: ['vlog', 'beginner', 'trending'],
   },
   {
@@ -157,7 +157,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: 'EXPEED 7과 피사체 인식 AF를 갖춘 APS-C 미러리스로 가족·여행·영상까지 균형이 좋습니다.',
     priceSummary: '약 1,290,000원대 ~',
     platform: '네이버 · 중고나라 · 공식몰',
-    thumbnail: 'https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_z50ii/c12f842d4d1a40beb20e7264c1ceccda.png',
+    thumbnail: '/images/cameras/nikon-z50ii.png',
     categories: ['beginner', 'travel', 'trending'],
   },
   {
@@ -205,7 +205,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '마이크로포서즈 영상 플래그십으로 고급 코덱과 손떨림 보정, 긴 촬영 안정성이 강점입니다.',
     priceSummary: '약 2,790,000원대 ~',
     platform: '공식몰 · 다나와 · 네이버',
-    thumbnail: 'https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/5275401087/7345797023.jpg',
+    thumbnail: '/images/cameras/panasonic-lumix-gh7.png',
     categories: ['vlog', 'trending'],
   },
   {

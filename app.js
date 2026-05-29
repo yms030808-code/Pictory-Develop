@@ -2195,16 +2195,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-/* ===== Viewfinder spotlight (all pages) ===== */
+/* ===== Viewfinder spotlight (follow: all pages · shutter click: home only) ===== */
 (function initPicorySpotlight() {
   if (window.__picorySpotlightReady) return;
   window.__picorySpotlightReady = true;
 
+  const isHomePage = () => document.body.classList.contains('page-landing');
+
   const EXCLUDE =
     '.nav, .mobile-menu, .m-topbar, .footer, .bookmark-sidebar, .pcmp-float, .pcmp-overlay, .pcmp-confirm, .glossary-modal, .upload-modal, [role="dialog"], .home-spotlight';
 
-  const GLOW_SIZE_LIGHT = 200;
-  const GLOW_SIZE_DARK = 180;
+  const GLOW_SIZE_LIGHT = 158;
+  const GLOW_SIZE_DARK = 145;
 
   function createSpotlight() {
     let spotlight = document.getElementById('homeSpotlight');
@@ -2341,6 +2343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onShutterPointer = (e) => {
       if (e.button !== 0) return;
+      if (!isHomePage()) return;
       if (!isInZone(e.clientX, e.clientY)) return;
       triggerShutter(e.clientX, e.clientY);
     };

@@ -33,7 +33,7 @@
       description: "\uAC00\uBCBC\uC6B4 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uC870\uC791\uC774 \uB2E8\uC21C\uD574 \uC785\uBB38\uC6A9 \uBC14\uB514\uB85C \uB9CE\uC774 \uC120\uD0DD\uB429\uB2C8\uB2E4.",
       priceSummary: "\uC57D 920,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0\uB098\uB77C",
-      thumbnail: "/images/cameras/canon-eos-r10.png",
+      thumbnail: "https://www.kenrockwell.com/canon/eos-r/images/r10/D3S_0108-1200.jpg",
       categories: ["beginner", "value", "travel"]
     },
     {
@@ -81,7 +81,7 @@
       description: "\uD544\uB984 SLR \uAC10\uC131\uC758 \uB2E4\uC774\uC5BC \uC870\uC791\uACFC vari-angle LCD\uAC00 \uB9E4\uB825\uC778 APS-C \uBC14\uB514\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uACF5\uC2DD\uBAB0 \xB7 \uC911\uACE0\uB098\uB77C",
-      thumbnail: "/images/cameras/nikon-z-fc.png",
+      thumbnail: "https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_zfc/c12f842d4d1a40beb20e7264c1ceccda.png",
       categories: ["vintage", "emotional", "travel"]
     },
     {
@@ -93,7 +93,7 @@
       description: "1\uC778\uCE58 \uC13C\uC11C \uCEF4\uD329\uD2B8\uB85C 4K \uC601\uC0C1\uACFC \uC218\uC9C1 \uCD2C\uC601\uC5D0 \uC801\uD569\uD55C \uD734\uB300\uD615 \uAE30\uC885\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 950,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uC628\uB77C\uC778 \uBA74\uC138 \xB7 \uC911\uACE0",
-      thumbnail: "/images/cameras/canon-g7x-mark-iii.png",
+      thumbnail: "https://img.photographyblog.com/reviews/canon_power_shot_g7_x_mark_iii/sample_images/canon_power_shot_g7_x_mark_iii_01.jpg",
       categories: ["vlog", "travel", "value"]
     },
     {
@@ -141,7 +141,7 @@
       description: "\uC190\uB5A8\uB9BC \uBCF4\uC815\uACFC \uBC30\uD130\uB9AC \uC6A9\uB7C9\uC774 \uC88B\uC544 \uC0AC\uC9C4\xB7\uC601\uC0C1 \uACB8\uC6A9\uC73C\uB85C \uC778\uAE30\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,780,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
-      thumbnail: "/images/cameras/fujifilm-x-s20.png",
+      thumbnail: "https://img.photographyblog.com/reviews/fujifilm_x_s20/sample_images/fujifilm_x_s20_01.jpg",
       categories: ["emotional", "vlog", "beginner"]
     },
     {
@@ -162,10 +162,10 @@
       model: "Z50II",
       priceKrw: 129e4,
       popularity: 89,
-      description: "EXPEED 7과 피사체 인식 AF를 갖춘 APS-C 미러리스로 가족·여행·영상까지 균형이 좋습니다.",
-      priceSummary: "약 1,290,000원대 ~",
-      platform: "네이버 · 중고나라 · 공식몰",
-      thumbnail: "https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_z50ii/c12f842d4d1a40beb20e7264c1ceccda.png",
+      description: "EXPEED 7\uACFC \uD53C\uC0AC\uCCB4 \uC778\uC2DD AF\uB97C \uAC16\uCD98 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uAC00\uC871\xB7\uC5EC\uD589\xB7\uC601\uC0C1\uAE4C\uC9C0 \uADE0\uD615\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,290,000\uC6D0\uB300 ~",
+      platform: "\uB124\uC774\uBC84 \xB7 \uC911\uACE0\uB098\uB77C \xB7 \uACF5\uC2DD\uBAB0",
+      thumbnail: "/images/cameras/nikon-z50ii.png",
       categories: ["beginner", "travel", "trending"]
     },
     {
@@ -174,9 +174,9 @@
       model: "EOS R8",
       priceKrw: 189e4,
       popularity: 86,
-      description: "가벼운 풀프레임 바디에 빠른 AF와 4K 60p를 담아 인물·여행용으로 접근성이 좋습니다.",
-      priceSummary: "약 1,890,000원대 ~",
-      platform: "쿠팡 · 네이버 · 다나와",
+      description: "\uAC00\uBCBC\uC6B4 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 4K 60p\uB97C \uB2F4\uC544 \uC778\uBB3C\xB7\uC5EC\uD589\uC6A9\uC73C\uB85C \uC811\uADFC\uC131\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,890,000\uC6D0\uB300 ~",
+      platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uB2E4\uB098\uC640",
       thumbnail: "https://img.photographyblog.com/reviews/canon_eos_r8/sample_images/canon_eos_r8_01.jpg",
       categories: ["travel", "emotional", "value"]
     },
@@ -186,9 +186,9 @@
       model: "RX100 VII",
       priceKrw: 149e4,
       popularity: 84,
-      description: "작은 바디에 빠른 AF와 고배율 줌을 담은 프리미엄 컴팩트로 여행 기록에 강합니다.",
-      priceSummary: "약 1,490,000원대 ~",
-      platform: "네이버 · 쿠팡 · 중고",
+      description: "\uC791\uC740 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 \uACE0\uBC30\uC728 \uC90C\uC744 \uB2F4\uC740 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC5EC\uD589 \uAE30\uB85D\uC5D0 \uAC15\uD569\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,490,000\uC6D0\uB300 ~",
+      platform: "\uB124\uC774\uBC84 \xB7 \uCFE0\uD321 \xB7 \uC911\uACE0",
       thumbnail: "https://img.photographyblog.com/reviews/sony_cyber_shot_rx100_vii/sample_images/sony_cyber_shot_rx100_vii_01.jpg",
       categories: ["travel", "value", "vlog"]
     },
@@ -198,9 +198,9 @@
       model: "Lumix S9",
       priceKrw: 199e4,
       popularity: 83,
-      description: "LUT 기반 컬러 워크플로와 작은 풀프레임 바디로 영상·일상 스냅에 어울립니다.",
-      priceSummary: "약 1,990,000원대 ~",
-      platform: "공식몰 · 네이버 · 중고",
+      description: "LUT \uAE30\uBC18 \uCEEC\uB7EC \uC6CC\uD06C\uD50C\uB85C\uC640 \uC791\uC740 \uD480\uD504\uB808\uC784 \uBC14\uB514\uB85C \uC601\uC0C1\xB7\uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC5B4\uC6B8\uB9BD\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,990,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "https://img.photographyblog.com/reviews/panasonic_lumix_s9/sample_images/panasonic_lumix_s9_01.jpg",
       categories: ["vlog", "emotional", "travel"]
     },
@@ -210,10 +210,10 @@
       model: "Lumix GH7",
       priceKrw: 279e4,
       popularity: 85,
-      description: "마이크로포서즈 영상 플래그십으로 고급 코덱과 손떨림 보정, 긴 촬영 안정성이 강점입니다.",
-      priceSummary: "약 2,790,000원대 ~",
-      platform: "공식몰 · 다나와 · 네이버",
-      thumbnail: "https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/5275401087/7345797023.jpg",
+      description: "\uB9C8\uC774\uD06C\uB85C\uD3EC\uC11C\uC988 \uC601\uC0C1 \uD50C\uB798\uADF8\uC2ED\uC73C\uB85C \uACE0\uAE09 \uCF54\uB371\uACFC \uC190\uB5A8\uB9BC \uBCF4\uC815, \uAE34 \uCD2C\uC601 \uC548\uC815\uC131\uC774 \uAC15\uC810\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,790,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uB124\uC774\uBC84",
+      thumbnail: "/images/cameras/panasonic-lumix-gh7.png",
       categories: ["vlog", "trending"]
     },
     {
@@ -222,9 +222,9 @@
       model: "OM-3",
       priceKrw: 239e4,
       popularity: 81,
-      description: "클래식한 디자인에 방진방적과 강력한 손떨림 보정을 더한 여행·아웃도어형 미러리스입니다.",
-      priceSummary: "약 2,390,000원대 ~",
-      platform: "공식몰 · 네이버 · 중고",
+      description: "\uD074\uB798\uC2DD\uD55C \uB514\uC790\uC778\uC5D0 \uBC29\uC9C4\uBC29\uC801\uACFC \uAC15\uB825\uD55C \uC190\uB5A8\uB9BC \uBCF4\uC815\uC744 \uB354\uD55C \uC5EC\uD589\xB7\uC544\uC6C3\uB3C4\uC5B4\uD615 \uBBF8\uB7EC\uB9AC\uC2A4\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "https://4.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/1564684221/4315193761.jpg",
       categories: ["travel", "vintage", "emotional"]
     },
@@ -234,9 +234,9 @@
       model: "X-M5",
       priceKrw: 119e4,
       popularity: 88,
-      description: "작은 바디와 필름 시뮬레이션, 영상 친화 UI를 갖춘 입문·브이로그용 X 시리즈입니다.",
-      priceSummary: "약 1,190,000원대 ~",
-      platform: "공식몰 · 쿠팡 · 네이버",
+      description: "\uC791\uC740 \uBC14\uB514\uC640 \uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158, \uC601\uC0C1 \uCE5C\uD654 UI\uB97C \uAC16\uCD98 \uC785\uBB38\xB7\uBE0C\uC774\uB85C\uADF8\uC6A9 X \uC2DC\uB9AC\uC988\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uCFE0\uD321 \xB7 \uB124\uC774\uBC84",
       thumbnail: "https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/6845601350/1452105376.jpg",
       categories: ["beginner", "vlog", "emotional"]
     },
@@ -246,9 +246,9 @@
       model: "D-Lux 8",
       priceKrw: 239e4,
       popularity: 77,
-      description: "밝은 줌렌즈와 클래식한 조작계를 갖춘 프리미엄 컴팩트로 일상 스냅에 잘 맞습니다.",
-      priceSummary: "약 2,390,000원대 ~",
-      platform: "공식몰 · 네이버 · 중고",
+      description: "\uBC1D\uC740 \uC90C\uB80C\uC988\uC640 \uD074\uB798\uC2DD\uD55C \uC870\uC791\uACC4\uB97C \uAC16\uCD98 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC798 \uB9DE\uC2B5\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "https://4.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/leica_dlux8/cd1fcfa8664d44b38cb04577f0b2ada4.png",
       categories: ["vintage", "emotional", "travel"]
     },
@@ -258,9 +258,9 @@
       model: "fp L",
       priceKrw: 299e4,
       popularity: 72,
-      description: "초소형 풀프레임 바디와 61MP 센서가 특징인 모듈형 카메라로 사진·시네마 작업에 독특합니다.",
-      priceSummary: "약 2,990,000원대 ~",
-      platform: "공식몰 · 다나와 · 중고",
+      description: "\uCD08\uC18C\uD615 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC640 61MP \uC13C\uC11C\uAC00 \uD2B9\uC9D5\uC778 \uBAA8\uB4C8\uD615 \uCE74\uBA54\uB77C\uB85C \uC0AC\uC9C4\xB7\uC2DC\uB124\uB9C8 \uC791\uC5C5\uC5D0 \uB3C5\uD2B9\uD569\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,990,000\uC6D0\uB300 ~",
+      platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
       thumbnail: "https://img.photographyblog.com/reviews/sigma_fp_l/sample_images/sigma_fp_l_01.jpg",
       categories: ["emotional", "vintage"]
     },
@@ -270,17 +270,13 @@
       model: "Pixpro FZ55",
       priceKrw: 23e4,
       popularity: 74,
-      description: "가볍고 저렴한 CCD 감성 컴팩트로 휴대폰과 다른 색감의 일상 기록용으로 찾는 모델입니다.",
-      priceSummary: "약 230,000원대 ~",
-      platform: "쿠팡 · 네이버 · 중고",
+      description: "\uAC00\uBCCD\uACE0 \uC800\uB834\uD55C CCD \uAC10\uC131 \uCEF4\uD329\uD2B8\uB85C \uD734\uB300\uD3F0\uACFC \uB2E4\uB978 \uC0C9\uAC10\uC758 \uC77C\uC0C1 \uAE30\uB85D\uC6A9\uC73C\uB85C \uCC3E\uB294 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 230,000\uC6D0\uB300 ~",
+      platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "https://m.media-amazon.com/images/I/71lI8A2AvzL._AC_SL1500_.jpg",
       categories: ["value", "vintage", "travel"]
     }
   ];
-  try {
-    window.PICORY_PRODUCT_MOCK = PICORY_PRODUCT_MOCK;
-  } catch {
-  }
 
   // js/products/searchNormalize.js
   var KOREAN_BRANDS = {
@@ -540,12 +536,6 @@
   function formatWonFull(n) {
     return `${Math.round(n).toLocaleString("ko-KR")}\uC6D0`;
   }
-  function formatWonMan(n) {
-    const man = n / 1e4;
-    if (man >= 100) return `${Math.round(man)}\uB9CC`;
-    if (man >= 10) return `${(Math.round(man * 10) / 10).toFixed(1)}\uB9CC`;
-    return `${Math.round(man * 10) / 10}\uB9CC`;
-  }
   function yTicks(minV, maxV, count) {
     const pad = Math.max((maxV - minV) * 0.06, 5e4);
     let lo = minV - pad;
@@ -610,12 +600,9 @@
     const highPolyline = highPoints.map((p) => `${p.x},${p.y}`).join(" ");
     const monthShort = monthLabelsRolling7();
     const monthFull = fullMonthLabels();
-    const xAxisLabelsSvg = monthShort
-      .map(
-        (lab, i) =>
-          `<text class="chart__axis-label" x="${xAt(i)}" y="${H - 8}" text-anchor="middle">${escapeHtml(lab)}</text>`
-      )
-      .join("");
+    const xAxisLabelsSvg = monthShort.map(
+      (lab, i) => `<text class="chart__axis-label" x="${xAt(i)}" y="${H - 8}" text-anchor="middle">${escapeHtml(lab)}</text>`
+    ).join("");
     const iconHigh = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z" fill="#3AFF28"/></svg>`;
     const iconAvg = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="2" viewBox="0 0 9 2" fill="none" aria-hidden="true"><path d="M0 1.16667V0H8.16667V1.16667H0Z" fill="white"/></svg>`;
     const iconLow = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M8.16667 7V5.83333H9.68333L6.65 2.82917L4.31667 5.1625L0 0.816667L0.816667 0L4.31667 3.5L6.65 1.16667L10.5 5.01667V3.5H11.6667V7H8.16667Z" fill="#EF4444"/></svg>`;
@@ -633,15 +620,24 @@
       <div class="chart__header-fields">
         <div class="chart__col chart__col--high">
           <div class="chart__col-title">\uD604 \uCD5C\uACE0\uAC00</div>
-          <div class="chart__col-price">${iconHigh}<span class="chart__col-value">${escapeHtml(formatWonFull(currentHigh))}</span></div>
+          <div class="chart__col-price">
+            ${iconHigh}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentHigh))}</span>
+          </div>
         </div>
         <div class="chart__col chart__col--avg">
           <div class="chart__col-title">\uD604\uC7AC \uD3C9\uADE0\uAC00</div>
-          <div class="chart__col-price">${iconAvg}<span class="chart__col-value">${escapeHtml(formatWonFull(currentAvg))}</span></div>
+          <div class="chart__col-price">
+            ${iconAvg}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentAvg))}</span>
+          </div>
         </div>
         <div class="chart__col chart__col--low">
           <div class="chart__col-title">\uD604 \uCD5C\uC800\uAC00</div>
-          <div class="chart__col-price">${iconLow}<span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span></div>
+          <div class="chart__col-price">
+            ${iconLow}
+            <span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span>
+          </div>
         </div>
       </div>
     </header>`;
@@ -678,6 +674,7 @@
     const badgesEl = mount.querySelector(".chart__badges");
     function syncChartLayout() {
       if (!svg || !plotCanvas || !badgesEl || !labelHigh || !labelLow) return;
+      const canvasRect = plotCanvas.getBoundingClientRect();
       const svgRect = svg.getBoundingClientRect();
       const badgesRect = badgesEl.getBoundingClientRect();
       if (!svgRect.height || !badgesRect.height) return;
@@ -761,6 +758,10 @@
 
   // js/price/index.js
   var DEFAULT_QUERY = "";
+  try {
+    window.PICORY_PRODUCT_MOCK = PICORY_PRODUCT_MOCK;
+  } catch (_) {
+  }
   function parsePriceNumber(wonStr) {
     const n = parseInt(String(wonStr).replace(/[^0-9]/g, ""), 10);
     return Number.isFinite(n) ? n : null;
@@ -827,10 +828,10 @@
     }
     if (insightTextEl) insightTextEl.textContent = "";
   }
-  function applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl, forceQuery) {
+  function applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl) {
     const params = new URLSearchParams(window.location.search);
     const rawQ = params.get("q");
-    const query = (forceQuery != null ? forceQuery : (rawQ != null && rawQ.trim() !== "" ? rawQ : DEFAULT_QUERY)).trim();
+    const query = (rawQ != null && rawQ.trim() !== "" ? rawQ : DEFAULT_QUERY).trim();
     if (input) input.value = query;
     if (!query) {
       renderListings(
@@ -914,7 +915,7 @@
     const suggestEl = document.getElementById("priceSearchSuggest");
     if (!listContainer) return;
     const allListings = buildPriceListingsFromProducts();
-    const run = (forceQuery) => applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl, forceQuery);
+    const run = () => applyFromUrl(allListings, input, listContainer, summaryRoot, chartTitleEl, chartContainer, insightTextEl);
     function submitSearch() {
       const v = input?.value.trim() || "";
       try {
@@ -923,9 +924,8 @@
         else url.searchParams.delete("q");
         window.history.pushState({}, "", `${url.pathname}${url.search}`);
       } catch (_) {
-        /* file:// 프로토콜에서 pushState 실패 시 무시하고 forceQuery로 직접 렌더 */
       }
-      run(v || undefined);
+      run();
       if (suggestEl) suggestEl.hidden = true;
       input?.setAttribute("aria-expanded", "false");
     }

@@ -42,18 +42,7 @@ body.auth-page {
   );
 }
 
-/* Nav + main containers share the same horizontal grid */
-body.page-landing .nav__inner,
-body.page-community .nav__inner,
-body.page-search .nav__inner,
-body.page-products .nav__inner,
-body.page-mypage .nav__inner,
-body.auth-page .nav__inner {
-  width: 100%;
-  max-width: var(--frame-width);
-  margin-inline: auto;
-  padding-inline: var(--site-margin-fluid);
-}
+/* Header layout uses its own padding in style.css — not page margins */
 
 body.page-landing .container,
 body.page-community .container,

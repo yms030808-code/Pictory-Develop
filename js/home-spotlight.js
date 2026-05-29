@@ -1,15 +1,18 @@
 /**
  * 전역 뷰파인더 스포트라이트 (app.js가 로드되는 모든 화면)
+ * 클릭 찰칵 효과는 홈(page-landing)에서만
  */
 (function () {
   if (window.__picorySpotlightReady) return;
   window.__picorySpotlightReady = true;
 
+  const isHomePage = () => document.body.classList.contains('page-landing');
+
   const EXCLUDE =
     '.nav, .mobile-menu, .m-topbar, .footer, .bookmark-sidebar, .pcmp-float, .pcmp-overlay, .pcmp-confirm, .glossary-modal, .upload-modal, [role="dialog"], .home-spotlight';
 
-  const GLOW_SIZE_LIGHT = 200;
-  const GLOW_SIZE_DARK = 180;
+  const GLOW_SIZE_LIGHT = 158;
+  const GLOW_SIZE_DARK = 145;
 
   function createSpotlight() {
     let spotlight = document.getElementById('homeSpotlight');
@@ -130,6 +133,7 @@
       'click',
       (e) => {
         if (e.button !== 0) return;
+        if (!isHomePage()) return;
         if (!isInZone(e.clientX, e.clientY)) return;
         if (!active) {
           active = true;
