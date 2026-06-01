@@ -394,7 +394,8 @@
 
     function addFiles(files) {
       [...files].forEach(f => {
-        if (!f.type.startsWith('image/')) return;
+        // accept="image/*"가 이미 필터하므로 MIME 체크 불필요. 일부 환경(HEIC 등)에서 type이 빈 문자열이라 체크 제거
+        if (f.size === 0) return; // 빈 파일만 제외
         if (selectedFiles.some(x => x.name === f.name && x.size === f.size)) return;
         selectedFiles.push(f);
         const reader = new FileReader();
