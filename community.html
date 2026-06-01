@@ -206,20 +206,12 @@
         <div class="upload-previews" id="uploadPreviews" hidden>
           <div class="upload-previews__header">
             <span class="upload-previews__count" id="uploadPreviewCount">0장 선택됨</span>
-            <button type="button" class="upload-previews__add-more" id="uploadAddMoreBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              사진 더 추가
-            </button>
           </div>
           <div class="upload-preview-grid" id="uploadPreviewGrid"></div>
         </div>
 
-        <!-- 공통 설정 폼 -->
+        <!-- 설정 폼 -->
         <div class="upload-modal-form" id="uploadSettingsForm">
-          <p class="upload-settings-label">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            아래 설정은 선택한 <strong>모든 사진에 동일하게</strong> 적용됩니다.
-          </p>
           <div class="form-group">
             <label class="form-label">카메라 기종</label>
             <input type="text" class="form-input" id="uploadCamera" placeholder="예: Sony A7C II">
@@ -262,38 +254,57 @@
   </div>
 
   <!-- 저장 컬렉션 패널 -->
-  <div class="collections-panel" id="collectionsPanel" hidden>
-    <div class="collections-panel__header">
-      <h3 class="collections-panel__title">저장됨</h3>
-      <button type="button" class="collections-panel__close" id="collectionsClose" aria-label="닫기">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="collections-panel__body">
-      <!-- 새 컬렉션 추가 -->
-      <div class="collections-new" id="collectionsNewWrap">
+  <aside class="collections-panel" id="collectionsPanel" hidden aria-label="저장된 컬렉션">
+    <!-- 컬렉션 목록 뷰 -->
+    <div id="collectionsListView">
+      <div class="collections-panel__header">
+        <div class="collections-panel__header-left">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <h3 class="collections-panel__title">저장됨</h3>
+        </div>
+        <button type="button" class="collections-panel__close" id="collectionsClose" aria-label="닫기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="collections-panel__body">
         <button type="button" class="collections-new__btn" id="collectionsNewBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           새 컬렉션 만들기
         </button>
         <div class="collections-new__form hidden" id="collectionsNewForm">
           <input type="text" class="form-input" id="collectionsNewInput" placeholder="컬렉션 이름" maxlength="20">
-          <button type="button" class="btn btn--primary btn--sm" id="collectionsNewSave">추가</button>
+          <button type="button" class="btn btn--primary btn--sm" id="collectionsNewSave">만들기</button>
         </div>
+        <div class="collections-list" id="collectionsList"></div>
       </div>
-      <!-- 컬렉션 목록 -->
-      <div class="collections-list" id="collectionsList"></div>
     </div>
-  </div>
+
+    <!-- 컬렉션 상세 뷰 -->
+    <div id="collectionsDetailView" hidden>
+      <div class="collections-panel__header">
+        <button type="button" class="collections-panel__back" id="collectionsBack" aria-label="뒤로">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <h3 class="collections-panel__title" id="collectionsDetailTitle">컬렉션명</h3>
+        <button type="button" class="collections-panel__close" id="collectionsDetailClose" aria-label="닫기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="collections-panel__body">
+        <div class="collections-detail-grid" id="collectionsDetailGrid"></div>
+        <p class="collections-detail-empty" id="collectionsDetailEmpty" hidden>아직 저장된 게시물이 없어요.</p>
+      </div>
+    </div>
+  </aside>
   <div class="collections-overlay" id="collectionsOverlay" hidden></div>
 
-  <!-- 저장 컬렉션 선택 팝오버 -->
+  <!-- 저장 팝오버 -->
   <div class="save-to-collection" id="saveToCollection" hidden>
-    <p class="save-to-collection__title">컬렉션에 저장</p>
+    <div class="save-to-collection__header">컬렉션에 저장</div>
     <div class="save-to-collection__list" id="saveToCollectionList"></div>
     <button type="button" class="save-to-collection__new" id="saveToCollectionNew">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      새 컬렉션
+      새 컬렉션 만들기
     </button>
   </div>
 
@@ -360,7 +371,6 @@
     const previewWrap = document.getElementById('uploadPreviews');
     const previewGrid = document.getElementById('uploadPreviewGrid');
     const previewCount= document.getElementById('uploadPreviewCount');
-    const addMoreBtn  = document.getElementById('uploadAddMoreBtn');
     const submitBtn   = document.getElementById('uploadSubmitBtn');
     const catChips    = document.querySelectorAll('#uploadCategoryChips .filter-chip');
 
@@ -413,7 +423,6 @@
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-over'));
     dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('is-over'); addFiles(e.dataTransfer.files); });
     fileInput.addEventListener('change', () => addFiles(fileInput.files));
-    addMoreBtn.addEventListener('click', () => fileInput.click());
     uploadBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
@@ -431,59 +440,114 @@
 
     /* ── 북마크 컬렉션 ────────────────────────── */
     const COLL_KEY = 'pictory-collections-v1';
-    const SAVE_KEY = 'pictory-saved-posts-v1';
+
+    // 갤러리 포스트 데이터 (저장 시 이미지/정보 표시용)
+    const POST_DATA = {
+      p1: { img: 'images/community-fujifilm-xt5-gallery.jpg',  camera: 'Fujifilm X-T5',  tags: '음식/일상' },
+      p2: { img: 'images/community-canon-r6ii-gallery.jpg',    camera: 'Canon R6 II',     tags: '야경/일상' },
+      p3: { img: 'images/community-nikon-zf-gallery.jpg',      camera: 'Nikon Zf',        tags: '풍경/일상' },
+      p4: { img: 'images/community-portrait-gallery.jpg',      camera: 'Sony α7 IV',      tags: '인물'      },
+    };
 
     function loadCollections() {
-      try { return JSON.parse(localStorage.getItem(COLL_KEY)) || [{ id:'c0', name:'전체 저장', posts:[] }]; } catch { return [{ id:'c0', name:'전체 저장', posts:[] }]; }
+      try { return JSON.parse(localStorage.getItem(COLL_KEY)) || [{ id:'c0', name:'모든 저장', posts:[] }]; }
+      catch { return [{ id:'c0', name:'모든 저장', posts:[] }]; }
     }
     function saveCollections(data) { try { localStorage.setItem(COLL_KEY, JSON.stringify(data)); } catch {} }
 
     let collections = loadCollections();
 
-    // 저장됨 패널
-    const collPanel     = document.getElementById('collectionsPanel');
-    const collOverlay   = document.getElementById('collectionsOverlay');
-    const collClose     = document.getElementById('collectionsClose');
-    const collList      = document.getElementById('collectionsList');
-    const collNewBtn    = document.getElementById('collectionsNewBtn');
-    const collNewForm   = document.getElementById('collectionsNewForm');
-    const collNewInput  = document.getElementById('collectionsNewInput');
-    const collNewSave   = document.getElementById('collectionsNewSave');
-    const savedBtn      = document.getElementById('savedCollectionsBtn');
+    const collPanel      = document.getElementById('collectionsPanel');
+    const collOverlay    = document.getElementById('collectionsOverlay');
+    const collListView   = document.getElementById('collectionsListView');
+    const collDetailView = document.getElementById('collectionsDetailView');
+    const collClose      = document.getElementById('collectionsClose');
+    const collDetailClose= document.getElementById('collectionsDetailClose');
+    const collBack       = document.getElementById('collectionsBack');
+    const collList       = document.getElementById('collectionsList');
+    const collNewBtn     = document.getElementById('collectionsNewBtn');
+    const collNewForm    = document.getElementById('collectionsNewForm');
+    const collNewInput   = document.getElementById('collectionsNewInput');
+    const collNewSave    = document.getElementById('collectionsNewSave');
+    const detailTitle    = document.getElementById('collectionsDetailTitle');
+    const detailGrid     = document.getElementById('collectionsDetailGrid');
+    const detailEmpty    = document.getElementById('collectionsDetailEmpty');
+    const savedBtn       = document.getElementById('savedCollectionsBtn');
 
-    function renderCollectionsPanel() {
-      collList.innerHTML = collections.map(col => `
-        <div class="collection-item">
-          <div class="collection-item__thumb">
-            ${col.posts.length ? `<div class="collection-item__count">${col.posts.length}</div>` : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}
+    function openPanel() { collPanel.hidden = false; collOverlay.hidden = false; showListView(); }
+    function closePanel() { collPanel.hidden = true; collOverlay.hidden = true; savePopover.hidden = true; }
+    function showListView() { collListView.hidden = false; collDetailView.hidden = true; renderCollectionsList(); }
+    function showDetailView(col) {
+      collListView.hidden = true;
+      collDetailView.hidden = false;
+      detailTitle.textContent = col.name;
+      const posts = col.id === 'c0'
+        ? [...new Set(collections.flatMap(c => c.posts))]
+        : col.posts;
+      if (!posts.length) { detailGrid.innerHTML = ''; detailEmpty.hidden = false; return; }
+      detailEmpty.hidden = true;
+      detailGrid.innerHTML = posts.map(pid => {
+        const p = POST_DATA[pid];
+        if (!p) return '';
+        return `<div class="coll-detail-item">
+          <img src="${p.img}" alt="${p.camera}" loading="lazy">
+          <div class="coll-detail-item__overlay">
+            <span class="coll-detail-item__camera">${p.camera}</span>
+            <span class="coll-detail-item__tags">${p.tags}</span>
           </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderCollectionsList() {
+      collections = loadCollections();
+      // 모든 저장: 전체 컬렉션 합산
+      const allPosts = [...new Set(collections.flatMap(c => c.posts))];
+      const allCol = { id:'c0', name:'모든 저장', posts: allPosts };
+      const userCols = collections.filter(c => c.id !== 'c0');
+
+      const renderItem = col => {
+        const preview = col.posts[0] && POST_DATA[col.posts[0]]
+          ? `<img src="${POST_DATA[col.posts[0]].img}" alt="" class="collection-item__img">`
+          : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
+        return `<button type="button" class="collection-item" data-cid="${col.id}">
+          <div class="collection-item__thumb">${preview}</div>
           <div class="collection-item__info">
             <p class="collection-item__name">${col.name}</p>
-            <p class="collection-item__sub">${col.posts.length}개 저장됨</p>
+            <p class="collection-item__sub">${col.posts.length}개</p>
           </div>
-          ${col.id !== 'c0' ? `<button class="collection-item__del" data-cid="${col.id}" type="button" aria-label="삭제">×</button>` : ''}
-        </div>
-      `).join('');
+          <svg class="collection-item__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          ${col.id !== 'c0' ? `<span class="collection-item__del" data-del-cid="${col.id}" role="button" aria-label="삭제" tabindex="0">×</span>` : ''}
+        </button>`;
+      };
 
-      collList.querySelectorAll('.collection-item__del').forEach(btn => {
-        btn.addEventListener('click', () => {
-          collections = collections.filter(c => c.id !== btn.dataset.cid);
+      collList.innerHTML = renderItem(allCol) + userCols.map(renderItem).join('');
+
+      collList.querySelectorAll('.collection-item').forEach(btn => {
+        btn.addEventListener('click', e => {
+          if (e.target.closest('[data-del-cid]')) return;
+          const cid = btn.dataset.cid;
+          const col = cid === 'c0' ? allCol : collections.find(c => c.id === cid);
+          if (col) showDetailView(col);
+        });
+      });
+      collList.querySelectorAll('[data-del-cid]').forEach(el => {
+        el.addEventListener('click', e => {
+          e.stopPropagation();
+          collections = collections.filter(c => c.id !== el.dataset.delCid);
           saveCollections(collections);
-          renderCollectionsPanel();
+          renderCollectionsList();
         });
       });
     }
 
-    savedBtn.addEventListener('click', () => {
-      collections = loadCollections();
-      renderCollectionsPanel();
-      collPanel.hidden = false;
-      collOverlay.hidden = false;
-    });
-    collClose.addEventListener('click', () => { collPanel.hidden = true; collOverlay.hidden = true; });
-    collOverlay.addEventListener('click', () => { collPanel.hidden = true; collOverlay.hidden = true; });
+    savedBtn.addEventListener('click', openPanel);
+    collClose.addEventListener('click', closePanel);
+    collDetailClose.addEventListener('click', closePanel);
+    collBack.addEventListener('click', showListView);
+    collOverlay.addEventListener('click', closePanel);
 
-    collNewBtn.addEventListener('click', () => { collNewForm.classList.toggle('hidden'); collNewInput.focus(); });
+    collNewBtn.addEventListener('click', () => { collNewForm.classList.toggle('hidden'); if (!collNewForm.classList.contains('hidden')) collNewInput.focus(); });
     collNewSave.addEventListener('click', () => {
       const name = collNewInput.value.trim();
       if (!name) return;
@@ -491,10 +555,11 @@
       saveCollections(collections);
       collNewInput.value = '';
       collNewForm.classList.add('hidden');
-      renderCollectionsPanel();
+      renderCollectionsList();
     });
+    collNewInput.addEventListener('keydown', e => { if (e.key === 'Enter') collNewSave.click(); });
 
-    // 저장 버튼 팝오버
+    // 저장 팝오버
     const savePopover = document.getElementById('saveToCollection');
     const saveList    = document.getElementById('saveToCollectionList');
     const saveNewBtn  = document.getElementById('saveToCollectionNew');
@@ -504,19 +569,22 @@
       btn.addEventListener('click', e => {
         e.stopPropagation();
         currentPostData = { id: btn.dataset.postId, title: btn.dataset.postTitle };
-        renderSavePopover(btn);
+        openSavePopover(btn);
       });
     });
 
-    function renderSavePopover(anchor) {
+    function openSavePopover(anchor) {
       collections = loadCollections();
-      saveList.innerHTML = collections.map(col => {
-        const saved = col.posts.includes(currentPostData.id);
-        return `<button type="button" class="save-to-collection__option ${saved ? 'is-saved' : ''}" data-cid="${col.id}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="${saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-          ${col.name}
-        </button>`;
-      }).join('');
+      const userCols = collections.filter(c => c.id !== 'c0');
+      saveList.innerHTML = userCols.length
+        ? userCols.map(col => {
+            const saved = col.posts.includes(currentPostData.id);
+            return `<button type="button" class="save-to-collection__option ${saved ? 'is-saved' : ''}" data-cid="${col.id}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="${saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              ${col.name}${saved ? ' <span class="save-check">✓</span>' : ''}
+            </button>`;
+          }).join('')
+        : '<p class="save-to-collection__empty">아직 컬렉션이 없어요</p>';
 
       saveList.querySelectorAll('.save-to-collection__option').forEach(opt => {
         opt.addEventListener('click', () => {
@@ -526,7 +594,6 @@
           if (idx === -1) col.posts.push(currentPostData.id);
           else col.posts.splice(idx, 1);
           saveCollections(collections);
-          // 버튼 상태 업데이트
           const parentBtn = document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`);
           const anySaved = collections.some(c => c.posts.includes(currentPostData.id));
           parentBtn?.classList.toggle('is-saved', anySaved);
@@ -535,26 +602,24 @@
       });
 
       const rect = anchor.getBoundingClientRect();
-      savePopover.style.top = (rect.bottom + window.scrollY + 6) + 'px';
-      savePopover.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 200) + 'px';
+      savePopover.style.top  = (rect.bottom + window.scrollY + 8) + 'px';
+      savePopover.style.left = Math.min(rect.left + window.scrollX, window.innerWidth - 210) + 'px';
       savePopover.hidden = false;
     }
 
     saveNewBtn.addEventListener('click', () => {
       const name = prompt('새 컬렉션 이름을 입력하세요');
-      if (!name || !name.trim()) return;
+      if (!name?.trim()) return;
       const newCol = { id: 'c' + Date.now(), name: name.trim(), posts: [currentPostData.id] };
       collections.push(newCol);
       saveCollections(collections);
       savePopover.hidden = true;
-      const parentBtn = document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`);
-      parentBtn?.classList.add('is-saved');
+      document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`)?.classList.add('is-saved');
     });
 
     document.addEventListener('click', e => {
-      if (!savePopover.hidden && !savePopover.contains(e.target) && !e.target.closest('.gallery-card__save-btn')) {
+      if (!savePopover.hidden && !savePopover.contains(e.target) && !e.target.closest('.gallery-card__save-btn'))
         savePopover.hidden = true;
-      }
     });
   })();
   </script>
