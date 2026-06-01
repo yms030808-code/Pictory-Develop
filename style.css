@@ -5095,7 +5095,6 @@ html[data-theme="dark"] .bookmark-choice-banner {
 .glossary-hero {
   padding: calc(var(--space-3xl) + 72px) 0 var(--space-2xl);
   background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
 }
 .glossary-hero__eyebrow {
   font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
@@ -5111,7 +5110,7 @@ html[data-theme="dark"] .bookmark-choice-banner {
 
 .glossary-sticky {
   position: sticky; top: 64px; z-index: 20;
-  background: var(--color-bg); border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg);
   padding: 16px 0;
   backdrop-filter: blur(12px);
 }
@@ -5188,7 +5187,6 @@ html[data-theme="dark"] .bookmark-choice-banner {
 .glossary-card__desc strong { color: var(--color-text); font-weight: 600; }
 .glossary-card__example {
   background: var(--color-bg); border-radius: var(--radius-md);
-  border-left: 3px solid var(--color-accent);
   padding: 12px 14px;
 }
 .glossary-card__example-label {
