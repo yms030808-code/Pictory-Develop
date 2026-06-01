@@ -744,5 +744,30 @@
         document.getElementById("product-catalog")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
+
+    // 비교함 담기 버튼 이벤트 위임
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".product-card__compare-btn");
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const { id, brand, model, thumb } = btn.dataset;
+      if (!id || !window.PicoryCompare) return;
+      if (window.PicoryCompare.has(id)) {
+        btn.querySelector(".product-card__cta-text").textContent = "✓ 담김";
+        btn.classList.add("is-added");
+        return;
+      }
+      const added = window.PicoryCompare.add({ id, brand, model, thumbnail: thumb });
+      if (added) {
+        btn.querySelector(".product-card__cta-text").textContent = "✓ 담김";
+        btn.classList.add("is-added");
+      } else {
+        const textEl = btn.querySelector(".product-card__cta-text");
+        const orig = textEl.textContent;
+        textEl.textContent = "최대 3개까지";
+        setTimeout(() => { textEl.textContent = orig; btn.classList.remove("is-added"); }, 1600);
+      }
+    });
   });
 })();
