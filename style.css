@@ -9097,3 +9097,15 @@ html[data-theme="dark"] .product-catalog-nav__chip {
 .coll-detail-item {
   border: none; padding: 0; cursor: pointer;
 }
+
+/* 커뮤니티 업로드 버튼 (app.js 간섭 방지용 별도 클래스) */
+.btn--comm-upload {
+  background: linear-gradient(180deg, #FF8C50 0%, var(--color-accent) 100%);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 101, 0, 0.22);
+}
+.btn--comm-upload:hover {
+  background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(255, 101, 0, 0.34);
+}
