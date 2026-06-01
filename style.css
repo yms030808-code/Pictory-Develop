@@ -1499,18 +1499,7 @@ body.page-landing .landing-section .landing-grid {
     border-color 0.35s ease;
 }
 
-.landing-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--color-accent) 0%, #ff944d 100%);
-  transform: scaleY(0);
-  transform-origin: top center;
-  transition: transform 0.42s cubic-bezier(0.34, 1.15, 0.52, 1);
-}
+
 
 .landing-card.card:hover {
   transform: translateY(-6px);
@@ -1520,9 +1509,6 @@ body.page-landing .landing-section .landing-grid {
   border-color: rgba(255, 101, 0, 0.42);
 }
 
-.landing-card.card:hover::before {
-  transform: scaleY(1);
-}
 
 .landing-card.card:hover .landing-card__label {
   background: rgba(255, 101, 0, 0.22);
@@ -8001,13 +7987,6 @@ html[data-theme="dark"] .explore-hero { background: linear-gradient(180deg, #141
   box-shadow: 0 20px 48px rgba(255,101,0,0.14), 0 6px 18px rgba(0,0,0,0.08);
   border-color: rgba(255,101,0,0.4);
 }
-.explore-card::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--color-accent), #FF7730);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform 0.38s cubic-bezier(0.34,1.15,0.52,1);
-}
-.explore-card:hover::before { transform: scaleX(1); }
 .explore-card__badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
