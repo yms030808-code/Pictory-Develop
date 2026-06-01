@@ -922,6 +922,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pipelineEl) pipelineEl.classList.add('hidden');
       resultSection.classList.add('hidden');
 
+      let recommendPayload = null;
+
       try {
         const picory = await getPicoryRecommendModule();
 
@@ -936,6 +938,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const ranked = picory.rankByColorProfile(clientAnalysis.color, catalog);
         const data = picory.toApiShape(clientAnalysis.color, ranked);
         applyRecommendImageResult(data);
+        recommendPayload = {
+          imageDataUrl: dataUrl,
+          summary: data.summary,
+          moodTags: data.mood_tags,
+          items: data.items,
+        };
         markPipelineAllDone();
 
         const desc = document.getElementById('sectionRecommendDesc');
@@ -962,6 +970,22 @@ document.addEventListener('DOMContentLoaded', () => {
         resultSection.classList.remove('hidden');
         applyRecommendCameraThumbnails();
         window.syncPicoryBookmarks?.();
+
+        try {
+          const analysisFailed = Boolean(
+            errEl && !errEl.classList.contains('hidden') && errEl.textContent.trim(),
+          );
+          if (!analysisFailed) {
+            const saved = await window.PicoryRecommendHistory?.persistResult?.({
+              ...(recommendPayload || { imageDataUrl: dataUrl }),
+              root: resultSection,
+            });
+            if (saved) addActivityLog('AI 사진 추천 결과를 저장했어요.');
+          }
+        } catch (saveErr) {
+          console.warn('[recommend] history save failed', saveErr);
+        }
+
         requestAnimationFrame(() => {
           resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
@@ -1397,15 +1421,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadModal = document.getElementById('uploadModal');
   const uploadPostBtn = document.getElementById('uploadPostBtn');
   const closeUploadModal = document.getElementById('closeUploadModal');
+  const communityFilters = document.querySelector('#community .community-filters');
+  const communityGalleryGrid = document.querySelector('#communityGalleryGrid');
+  const uploadDropZone = document.getElementById('uploadDropZone');
   const uploadModalZone = document.getElementById('uploadModalZone');
-  const uploadSubmitBtn = uploadModal?.querySelector('.upload-modal-form .btn--primary');
-  const uploadInputs = uploadModal ? uploadModal.querySelectorAll('.form-input') : [];
-  const [cameraModelInput, apertureInput, shutterSpeedInput, isoInput, focalLengthInput] = uploadInputs;
-  const uploadFileInput = document.createElement('input');
-  uploadFileInput.type = 'file';
-  uploadFileInput.accept = 'image/*';
-  uploadFileInput.hidden = true;
-  uploadModal?.appendChild(uploadFileInput);
+  const uploadFileInputEl = document.getElementById('uploadFileInput');
+  const uploadPreviews = document.getElementById('uploadPreviews');
+  const uploadPreviewGrid = document.getElementById('uploadPreviewGrid');
+  const uploadPreviewCount = document.getElementById('uploadPreviewCount');
+  const uploadSubmitBtn =
+    document.getElementById('uploadSubmitBtn') ||
+    uploadModal?.querySelector('.upload-modal-form .btn--primary');
+  const cameraModelInput = document.getElementById('uploadCamera');
+  const apertureInput = document.getElementById('uploadAperture');
+  const shutterSpeedInput = document.getElementById('uploadShutter');
+  const isoInput = document.getElementById('uploadIso');
+  const focalLengthInput = document.getElementById('uploadFocal');
+  const uploadCaptionInput = document.getElementById('uploadCaption');
+  const legacyUploadInputs = uploadModal && !cameraModelInput
+    ? uploadModal.querySelectorAll('.upload-modal-form .form-input')
+    : [];
+  const legacyCameraInput = legacyUploadInputs[0] || null;
+  const legacyApertureInput = legacyUploadInputs[1] || null;
+  const legacyShutterInput = legacyUploadInputs[2] || null;
+  const legacyIsoInput = legacyUploadInputs[3] || null;
+  const legacyFocalInput = legacyUploadInputs[4] || null;
+  const uploadCategoryChips = uploadModal?.querySelectorAll(
+    '#uploadCategoryChips .filter-chip, .upload-modal-form .form-chips .filter-chip',
+  );
   const categoryLabelToKey = {
     인물: 'portrait',
     풍경: 'landscape',
@@ -1414,9 +1457,110 @@ document.addEventListener('DOMContentLoaded', () => {
     음식: 'food',
   };
   const uploadDefaultZoneHtml = uploadModalZone?.innerHTML || '';
+  const legacyUploadFileInput = document.createElement('input');
+  legacyUploadFileInput.type = 'file';
+  legacyUploadFileInput.accept = 'image/*';
+  legacyUploadFileInput.hidden = true;
+  uploadModal?.appendChild(legacyUploadFileInput);
   let uploadImageDataUrl = '';
+  /** @type {{ name: string, size: number, dataUrl: string }[]} */
+  let selectedUploadItems = [];
   let uploadCategoryKey = 'daily';
   let uploadCategoryLabel = '일상';
+  const usesMultiUploadUi = Boolean(uploadDropZone && uploadSubmitBtn && uploadFileInputEl);
+  const COMMUNITY_UPLOAD_MAX_PHOTOS = 12;
+  const COMMUNITY_UPLOAD_MAX_PX = 1024;
+  const COMMUNITY_UPLOAD_JPEG_QUALITY = 0.72;
+  let uploadItemSeq = 0;
+  let uploadBusy = false;
+  const uploadSubmitDefaultHtml = uploadSubmitBtn?.innerHTML || '사진 올리기';
+
+  function nextUploadItemId() {
+    uploadItemSeq += 1;
+    return `pick-${Date.now()}-${uploadItemSeq}`;
+  }
+
+  function scaleImageDimensions(width, height, maxPx) {
+    const w0 = Math.max(1, width || maxPx);
+    const h0 = Math.max(1, height || maxPx);
+    const scale = Math.min(1, maxPx / Math.max(w0, h0));
+    return {
+      w: Math.max(1, Math.round(w0 * scale)),
+      h: Math.max(1, Math.round(h0 * scale)),
+    };
+  }
+
+  function loadImageElement(src) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('IMAGE_DECODE'));
+      img.src = src;
+    });
+  }
+
+  async function compressCommunityImageFromFile(file, options = {}) {
+    const maxPx = options.maxPx ?? COMMUNITY_UPLOAD_MAX_PX;
+    const quality = options.quality ?? COMMUNITY_UPLOAD_JPEG_QUALITY;
+    const blobUrl = URL.createObjectURL(file);
+    try {
+      const img = await loadImageElement(blobUrl);
+      const { w, h } = scaleImageDimensions(img.naturalWidth, img.naturalHeight, maxPx);
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('CANVAS');
+      ctx.drawImage(img, 0, 0, w, h);
+      return canvas.toDataURL('image/jpeg', quality);
+    } finally {
+      URL.revokeObjectURL(blobUrl);
+    }
+  }
+
+  async function compressCommunityDataUrl(dataUrl, options = {}) {
+    const maxPx = options.maxPx ?? COMMUNITY_UPLOAD_MAX_PX;
+    const quality = options.quality ?? COMMUNITY_UPLOAD_JPEG_QUALITY;
+    const img = await loadImageElement(dataUrl);
+    const { w, h } = scaleImageDimensions(img.naturalWidth, img.naturalHeight, maxPx);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('CANVAS');
+    ctx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL('image/jpeg', quality);
+  }
+
+  async function prepareCommunityImageFromFile(file) {
+    const attempts = [
+      { maxPx: COMMUNITY_UPLOAD_MAX_PX, quality: COMMUNITY_UPLOAD_JPEG_QUALITY },
+      { maxPx: 768, quality: 0.64 },
+      { maxPx: 640, quality: 0.54 },
+      { maxPx: 480, quality: 0.48 },
+    ];
+    let lastErr = null;
+    for (const opts of attempts) {
+      try {
+        const dataUrl = await compressCommunityImageFromFile(file, opts);
+        if (dataUrl) return dataUrl;
+      } catch (err) {
+        lastErr = err;
+      }
+    }
+    throw lastErr || new Error('COMPRESS_FAILED');
+  }
+
+  function setUploadBusy(busy, label) {
+    uploadBusy = busy;
+    if (!uploadSubmitBtn) return;
+    uploadSubmitBtn.disabled = busy;
+    if (busy && label) {
+      uploadSubmitBtn.textContent = label;
+    } else if (!busy) {
+      uploadSubmitBtn.innerHTML = uploadSubmitDefaultHtml;
+    }
+  }
 
   function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
@@ -1429,19 +1573,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resetUploadModalForm() {
-    if (uploadModalZone) uploadModalZone.innerHTML = uploadDefaultZoneHtml;
     uploadImageDataUrl = '';
+    selectedUploadItems = [];
     uploadCategoryKey = 'daily';
     uploadCategoryLabel = '일상';
-    if (cameraModelInput) cameraModelInput.value = '';
-    if (apertureInput) apertureInput.value = '';
-    if (shutterSpeedInput) shutterSpeedInput.value = '';
-    if (isoInput) isoInput.value = '';
-    if (focalLengthInput) focalLengthInput.value = '';
-    uploadFileInput.value = '';
-    const chips = uploadModal?.querySelectorAll('.filter-chip');
-    chips?.forEach((chip) => {
-      chip.classList.toggle('filter-chip--active', chip.textContent?.trim() === uploadCategoryLabel);
+    if (uploadModalZone) uploadModalZone.innerHTML = uploadDefaultZoneHtml;
+    if (uploadPreviewGrid) uploadPreviewGrid.innerHTML = '';
+    if (uploadPreviews) uploadPreviews.hidden = true;
+    if (uploadPreviewCount) uploadPreviewCount.textContent = '0장 선택됨';
+    if (uploadDropZone) uploadDropZone.classList.remove('is-over');
+    const resetInput = (el) => {
+      if (el) el.value = '';
+    };
+    resetInput(cameraModelInput || legacyCameraInput);
+    resetInput(apertureInput || legacyApertureInput);
+    resetInput(shutterSpeedInput || legacyShutterInput);
+    resetInput(isoInput || legacyIsoInput);
+    resetInput(focalLengthInput || legacyFocalInput);
+    resetInput(uploadCaptionInput);
+    if (uploadFileInputEl) uploadFileInputEl.value = '';
+    legacyUploadFileInput.value = '';
+    uploadCategoryChips?.forEach((chip) => {
+      const key = chip.dataset.cat || categoryLabelToKey[chip.textContent?.trim() || ''] || '';
+      const isDaily = key === 'daily' || chip.textContent?.trim() === '일상';
+      chip.classList.toggle('filter-chip--active', isDaily);
     });
   }
 
@@ -1454,86 +1609,85 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  function updateUploadPreviewState() {
+    const n = selectedUploadItems.length;
+    if (uploadPreviews) uploadPreviews.hidden = n === 0;
+    if (uploadPreviewCount) {
+      uploadPreviewCount.textContent =
+        n > 0 ? `${n}장 선택됨 (최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장)` : '0장 선택됨';
+    }
+  }
+
+  function appendUploadPreviewItem(item) {
+    if (!uploadPreviewGrid) return;
+    const div = document.createElement('div');
+    div.className = 'upload-preview-item';
+    div.dataset.uploadItemId = item.id;
+    div.innerHTML = `<img src="${item.dataUrl}" alt="${escapeHtml(item.name)}">
+      <button type="button" class="upload-preview-item__remove" aria-label="제거">×</button>`;
+    div.querySelector('button')?.addEventListener('click', () => {
+      selectedUploadItems = selectedUploadItems.filter((x) => x.id !== item.id);
+      div.remove();
+      updateUploadPreviewState();
+    });
+    uploadPreviewGrid.appendChild(div);
+    updateUploadPreviewState();
+  }
+
+  async function addUploadFiles(fileList) {
+    const incoming = [...fileList].filter((file) => file && file.size > 0);
+    if (!incoming.length) return;
+
+    const slotsLeft = COMMUNITY_UPLOAD_MAX_PHOTOS - selectedUploadItems.length;
+    if (slotsLeft <= 0) {
+      alert(`한 번에 최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`);
+      return;
+    }
+
+    const batch = incoming.slice(0, slotsLeft);
+    if (incoming.length > batch.length) {
+      alert(`최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`);
+    }
+
+    setUploadBusy(true, '사진 처리 중…');
+    try {
+      for (const file of batch) {
+        try {
+          const dataUrl = await prepareCommunityImageFromFile(file);
+          const entry = {
+            id: nextUploadItemId(),
+            name: file.name,
+            size: file.size,
+            dataUrl,
+          };
+          selectedUploadItems.push(entry);
+          appendUploadPreviewItem(entry);
+        } catch (_) {
+          alert(`"${file.name}" 파일을 처리하지 못했습니다. 다른 형식(JPG/PNG)으로 시도해 주세요.`);
+        }
+      }
+    } finally {
+      setUploadBusy(false);
+    }
+  }
+
   function handleUploadImageFile(file) {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
+    if (file.type && !file.type.startsWith('image/')) {
       alert('이미지 파일만 업로드할 수 있어요.');
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      uploadImageDataUrl = String(reader.result || '');
-      setUploadPreview(file.name, uploadImageDataUrl);
-    };
-    reader.readAsDataURL(file);
+    prepareCommunityImageFromFile(file)
+      .then((dataUrl) => {
+        uploadImageDataUrl = dataUrl;
+        setUploadPreview(file.name, uploadImageDataUrl);
+      })
+      .catch(() => {
+        alert('이미지를 처리하지 못했습니다. 파일 크기를 줄이거나 JPG/PNG로 시도해 주세요.');
+      });
   }
 
-  uploadPostBtn?.addEventListener('click', () => {
-    resetUploadModalForm();
-    uploadModal.classList.remove('hidden');
-  });
-
-  closeUploadModal?.addEventListener('click', () => {
-    uploadModal.classList.add('hidden');
-  });
-
-  uploadModal?.addEventListener('click', (e) => {
-    if (e.target === uploadModal) {
-      uploadModal.classList.add('hidden');
-    }
-  });
-
-  // Upload modal category chips (single-select)
-  const uploadChips = uploadModal?.querySelectorAll('.filter-chip');
-  uploadChips?.forEach(chip => {
-    if (chip.textContent?.trim() === '일상') {
-      chip.classList.add('filter-chip--active');
-    }
-    chip.addEventListener('click', () => {
-      uploadChips.forEach(c => c.classList.remove('filter-chip--active'));
-      chip.classList.add('filter-chip--active');
-      uploadCategoryLabel = chip.textContent?.trim() || '일상';
-      uploadCategoryKey = categoryLabelToKey[uploadCategoryLabel] || 'daily';
-    });
-  });
-
-  uploadModalZone?.addEventListener('click', () => uploadFileInput.click());
-
-  uploadModalZone?.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadModalZone.classList.add('dragover');
-  });
-
-  uploadModalZone?.addEventListener('dragleave', () => {
-    uploadModalZone.classList.remove('dragover');
-  });
-
-  uploadModalZone?.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadModalZone.classList.remove('dragover');
-    handleUploadImageFile(e.dataTransfer?.files?.[0]);
-  });
-
-  uploadFileInput.addEventListener('change', () => {
-    handleUploadImageFile(uploadFileInput.files?.[0]);
-  });
-
-  uploadSubmitBtn?.addEventListener('click', () => {
-    if (!uploadImageDataUrl) {
-      alert('사진을 먼저 업로드해 주세요.');
-      return;
-    }
-    const cameraModel = cameraModelInput?.value?.trim();
-    if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
-      cameraModelInput?.focus();
-      return;
-    }
-
-    const aperture = apertureInput?.value?.trim() || '-';
-    const shutterSpeed = shutterSpeedInput?.value?.trim() || '-';
-    const iso = isoInput?.value?.trim() || '-';
-    const focalLength = focalLengthInput?.value?.trim() || '-';
+  function getAuthorHandle() {
     let authorNickname = '게스트';
     try {
       const sessionRaw = localStorage.getItem(sessionStorageKey);
@@ -1542,97 +1696,345 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {
       /* noop */
     }
-    const authorHandle = `@${authorNickname || '게스트'}`;
-    const likes = Math.floor(Math.random() * 60) + 1;
-    const communityPostId = `community-${Date.now()}`;
-    const safeModel = escapeHtml(cameraModel);
-    const safeCategoryLabel = escapeHtml(uploadCategoryLabel);
+    return `@${authorNickname || '게스트'}`;
+  }
 
-    const newCard = document.createElement('article');
-    newCard.className = 'gallery-card card';
-    newCard.dataset.communityTags = `${uploadCategoryKey} daily`;
-    newCard.dataset.communityPostId = communityPostId;
-    newCard.innerHTML = `
+  function buildCommunityCardElement(post) {
+    const model = escapeHtml(post.cameraModel || '업로드 이미지');
+    const category = escapeHtml(post.categoryLabel || '일상');
+    const author = escapeHtml(post.authorHandle || '@게스트');
+    const aperture = escapeHtml(post.aperture || '-');
+    const shutterSpeed = escapeHtml(post.shutterSpeed || '-');
+    const iso = escapeHtml(post.iso || '-');
+    const focalLength = escapeHtml(post.focalLength || '-');
+    const likes = Number(post.likes) > 0 ? Number(post.likes) : Math.floor(Math.random() * 60) + 1;
+    const caption = post.caption ? `<p class="gallery-card__caption">${escapeHtml(post.caption)}</p>` : '';
+    const card = document.createElement('article');
+    card.className = 'gallery-card card';
+    card.dataset.communityTags = String(post.communityTags || 'daily');
+    card.dataset.communityPostId = String(post.id || `community-${Date.now()}`);
+    card.innerHTML = `
       <div class="gallery-card__img">
-        <img class="gallery-card__photo" src="${uploadImageDataUrl}" alt="${safeModel} 업로드 이미지" width="1200" height="800" loading="lazy">
+        <img class="gallery-card__photo" src="${post.imageDataUrl}" alt="${model} 업로드 이미지" width="1200" height="800" loading="lazy">
         <div class="gallery-card__overlay">
-          <span class="gallery-card__camera-tag">${safeModel}</span>
+          <span class="gallery-card__camera-tag">${model}</span>
         </div>
       </div>
       <div class="gallery-card__info">
         <div class="gallery-card__settings" aria-label="촬영 설정">
-          <span class="setting-chip">${escapeHtml(aperture)}</span>
-          <span class="setting-chip">${escapeHtml(shutterSpeed)}</span>
-          <span class="setting-chip">ISO ${escapeHtml(iso)}</span>
-          <span class="setting-chip">${escapeHtml(focalLength)}</span>
+          <span class="setting-chip">${aperture}</span>
+          <span class="setting-chip">${shutterSpeed}</span>
+          <span class="setting-chip">ISO ${iso}</span>
+          <span class="setting-chip">${focalLength}</span>
         </div>
         <div class="gallery-card__meta">
-          <span class="gallery-card__author">${escapeHtml(authorHandle)}</span>
+          <span class="gallery-card__author">${author}</span>
           <span class="gallery-card__likes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${likes}</span>
         </div>
-        <p class="text-muted" style="margin-top: 8px; font-size: 12px;">카테고리: ${safeCategoryLabel}</p>
+        ${caption}
+        <p class="text-muted" style="margin-top: 8px; font-size: 12px;">카테고리: ${category}</p>
       </div>
     `;
+    return card;
+  }
 
+  function stripInlineImagesFromPosts(posts) {
+    return posts.map((post) => {
+      if (!post?.imageKey || !post.imageDataUrl) return post;
+      const { imageDataUrl, ...rest } = post;
+      return rest;
+    });
+  }
+
+  async function batchPersistCommunityUploads(posts) {
+    if (!posts.length) return;
+
+    const store = window.PicoryCommunityImageStore;
+    if (!store) throw new Error('NO_STORE');
+
+    for (const post of posts) {
+      const key = String(post.imageKey || post.id || '');
+      const src = post.imageDataUrl;
+      if (!key || !src) continue;
+      await store.put(key, src);
+    }
+
+    const metaPosts = posts.map((post) => {
+      const key = String(post.imageKey || post.id || '');
+      const { imageDataUrl, ...rest } = post;
+      return { ...rest, imageKey: key };
+    });
+
+    try {
+      const archiveRaw = localStorage.getItem(archiveStorageKey);
+      const archiveList = archiveRaw ? JSON.parse(archiveRaw) : [];
+      metaPosts.forEach((post) => {
+        archiveList.push({
+          id: `archive-${post.id}`,
+          imageKey: post.imageKey || post.id,
+          cameraModel: post.cameraModel,
+          categoryLabel: post.categoryLabel,
+          aperture: post.aperture,
+          shutterSpeed: post.shutterSpeed,
+          iso: post.iso,
+          focalLength: post.focalLength,
+          authorHandle: post.authorHandle,
+          caption: post.caption || '',
+          createdAt: post.createdAt,
+        });
+      });
+      localStorage.setItem(
+        archiveStorageKey,
+        JSON.stringify(stripInlineImagesFromPosts(archiveList).slice(-60)),
+      );
+    } catch (_) {
+      /* archive is secondary */
+    }
+
+    const raw = localStorage.getItem(communityStorageKey);
+    let list = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(list)) list = [];
+    list = await store.migratePosts(list);
+    list = stripInlineImagesFromPosts(list);
+    const merged = [...list, ...metaPosts];
+    const limits = [80, 40, 20];
+    let saved = false;
+    for (const max of limits) {
+      try {
+        localStorage.setItem(communityStorageKey, JSON.stringify(merged.slice(-max)));
+        saved = true;
+        break;
+      } catch (_) {
+        /* retry with fewer posts */
+      }
+    }
+    if (!saved) throw new Error('QUOTA');
+  }
+
+  async function publishCommunityUploads(posts) {
     const activeFilterChip = communityFilters?.querySelector('.filter-chip--active[data-community-filter]');
     const activeFilter = activeFilterChip?.getAttribute('data-community-filter') || 'all';
-    communityGalleryGrid?.prepend(newCard);
+
+    const saveAttempts = [
+      posts,
+      await Promise.all(
+        posts.map(async (post) => ({
+          ...post,
+          imageDataUrl: await compressCommunityDataUrl(post.imageDataUrl, { maxPx: 768, quality: 0.62 }),
+        })),
+      ),
+      await Promise.all(
+        posts.map(async (post) => ({
+          ...post,
+          imageDataUrl: await compressCommunityDataUrl(post.imageDataUrl, { maxPx: 640, quality: 0.52 }),
+        })),
+      ),
+      await Promise.all(
+        posts.map(async (post) => ({
+          ...post,
+          imageDataUrl: await compressCommunityDataUrl(post.imageDataUrl, { maxPx: 480, quality: 0.45 }),
+          imageKey: post.imageKey || post.id,
+        })),
+      ),
+    ];
+
+    let savedPosts = null;
+    for (const attempt of saveAttempts) {
+      try {
+        await batchPersistCommunityUploads(attempt);
+        savedPosts = attempt.map((post) => {
+          const key = String(post.imageKey || post.id || '');
+          const { imageDataUrl, ...rest } = post;
+          return { ...rest, imageKey: key };
+        });
+        break;
+      } catch (err) {
+        console.warn('[community] batch save failed', err);
+      }
+    }
+
+    if (!savedPosts) {
+      throw new Error('QUOTA');
+    }
+
+    savedPosts = await Promise.all(
+      savedPosts.map(async (post) => ({
+        ...post,
+        imageDataUrl: window.PicoryCommunityImageStore
+          ? await window.PicoryCommunityImageStore.resolvePostImageSrc(post)
+          : '',
+      })),
+    );
+
+    savedPosts
+      .slice()
+      .reverse()
+      .forEach((post) => {
+        const card = buildCommunityCardElement(post);
+        communityGalleryGrid?.prepend(card);
+      });
     enhanceCommunityCards();
     applyCommunityGalleryFilter(activeFilter);
+    return savedPosts.length;
+  }
 
-    // 커뮤니티 업로드 항목은 마이페이지 아카이브에도 함께 저장
-    try {
-      const raw = localStorage.getItem(archiveStorageKey);
-      const list = raw ? JSON.parse(raw) : [];
-      list.push({
-        id: `archive-${Date.now()}`,
-        imageDataUrl: uploadImageDataUrl,
-        cameraModel,
-        categoryLabel: uploadCategoryLabel,
-        aperture,
-        shutterSpeed,
-        iso,
-        focalLength,
-        authorHandle,
-        createdAt: new Date().toISOString(),
-      });
-      localStorage.setItem(archiveStorageKey, JSON.stringify(list.slice(-60)));
-    } catch (_) {
-      /* noop */
-    }
-
+  async function freeCommunityStorageForUpload() {
+    const store = window.PicoryCommunityImageStore;
+    if (!store) return;
     try {
       const raw = localStorage.getItem(communityStorageKey);
-      const list = raw ? JSON.parse(raw) : [];
-      list.push({
-        id: communityPostId,
-        imageDataUrl: uploadImageDataUrl,
-        cameraModel,
-        categoryLabel: uploadCategoryLabel,
-        aperture,
-        shutterSpeed,
-        iso,
-        focalLength,
-        authorHandle,
-        likes,
-        communityTags: `${uploadCategoryKey} daily`,
-        createdAt: new Date().toISOString(),
-      });
-      localStorage.setItem(communityStorageKey, JSON.stringify(list.slice(-80)));
+      let posts = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(posts) && posts.length) {
+        posts = stripInlineImagesFromPosts(await store.migratePosts(posts));
+        localStorage.setItem(communityStorageKey, JSON.stringify(posts));
+      }
     } catch (_) {
       /* noop */
     }
+    try {
+      const archiveRaw = localStorage.getItem(archiveStorageKey);
+      let archive = archiveRaw ? JSON.parse(archiveRaw) : [];
+      if (Array.isArray(archive) && archive.length) {
+        archive = (await store.migratePosts(archive)).map((item) => {
+          if (!item?.imageKey || !item.imageDataUrl) return item;
+          const { imageDataUrl, ...rest } = item;
+          return rest;
+        });
+        localStorage.setItem(archiveStorageKey, JSON.stringify(archive));
+      }
+    } catch (_) {
+      /* noop */
+    }
+  }
 
+  uploadPostBtn?.addEventListener('click', () => {
+    resetUploadModalForm();
+    freeCommunityStorageForUpload().finally(() => {
+      uploadModal?.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+
+  closeUploadModal?.addEventListener('click', () => {
     uploadModal?.classList.add('hidden');
-    addActivityLog(`${cameraModel} 커뮤니티 사진을 업로드했어요.`);
-    alert('커뮤니티에 사진이 업로드됐어요.');
+    document.body.style.overflow = '';
+  });
+
+  uploadModal?.addEventListener('click', (e) => {
+    if (e.target === uploadModal) {
+      uploadModal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  });
+
+  uploadCategoryChips?.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      uploadCategoryChips.forEach((c) => c.classList.remove('filter-chip--active'));
+      chip.classList.add('filter-chip--active');
+      uploadCategoryLabel = chip.textContent?.trim() || '일상';
+      uploadCategoryKey = chip.dataset.cat || categoryLabelToKey[uploadCategoryLabel] || 'daily';
+    });
+  });
+
+  if (usesMultiUploadUi) {
+    uploadDropZone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadDropZone.classList.add('is-over');
+    });
+    uploadDropZone?.addEventListener('dragleave', () => uploadDropZone.classList.remove('is-over'));
+    uploadDropZone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadDropZone.classList.remove('is-over');
+      addUploadFiles(e.dataTransfer?.files || []);
+    });
+    uploadFileInputEl?.addEventListener('change', () => {
+      addUploadFiles(uploadFileInputEl.files || []);
+      uploadFileInputEl.value = '';
+    });
+  } else {
+    uploadModalZone?.addEventListener('click', () => legacyUploadFileInput.click());
+    uploadModalZone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadModalZone.classList.add('dragover');
+    });
+    uploadModalZone?.addEventListener('dragleave', () => uploadModalZone.classList.remove('dragover'));
+    uploadModalZone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadModalZone.classList.remove('dragover');
+      handleUploadImageFile(e.dataTransfer?.files?.[0]);
+    });
+    legacyUploadFileInput.addEventListener('change', () => {
+      handleUploadImageFile(legacyUploadFileInput.files?.[0]);
+    });
+  }
+
+  uploadSubmitBtn?.addEventListener('click', async () => {
+    if (uploadBusy) return;
+
+    const cameraModel = (cameraModelInput || legacyCameraInput)?.value?.trim();
+    if (!cameraModel) {
+      alert('카메라 기종을 입력해 주세요.');
+      (cameraModelInput || legacyCameraInput)?.focus();
+      return;
+    }
+
+    const images = usesMultiUploadUi
+      ? selectedUploadItems.map((item) => item.dataUrl)
+      : uploadImageDataUrl
+        ? [uploadImageDataUrl]
+        : [];
+
+    if (!images.length) {
+      alert('사진을 먼저 업로드해 주세요.');
+      return;
+    }
+
+    const aperture = (apertureInput || legacyApertureInput)?.value?.trim() || '-';
+    const shutterSpeed = (shutterSpeedInput || legacyShutterInput)?.value?.trim() || '-';
+    const iso = (isoInput || legacyIsoInput)?.value?.trim() || '-';
+    const focalLength = (focalLengthInput || legacyFocalInput)?.value?.trim() || '-';
+    const caption = uploadCaptionInput?.value?.trim() || '';
+    const authorHandle = getAuthorHandle();
+    const createdAt = new Date().toISOString();
+    const batchId = Date.now();
+
+    const posts = images.map((imageDataUrl, index) => ({
+      id: `community-${batchId}-${index}`,
+      imageKey: `community-${batchId}-${index}`,
+      imageDataUrl,
+      cameraModel,
+      categoryLabel: uploadCategoryLabel,
+      aperture,
+      shutterSpeed,
+      iso,
+      focalLength,
+      authorHandle,
+      likes: Math.floor(Math.random() * 60) + 1,
+      communityTags: `${uploadCategoryKey} daily`,
+      caption,
+      createdAt,
+    }));
+
+    setUploadBusy(true, `업로드 중… (${posts.length}장)`);
+    try {
+      const savedCount = await publishCommunityUploads(posts);
+      uploadModal?.classList.add('hidden');
+      document.body.style.overflow = '';
+      resetUploadModalForm();
+      addActivityLog(`${cameraModel} 커뮤니티 사진 ${savedCount}장을 업로드했어요.`);
+      alert(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
+    } catch (_) {
+      alert(
+        '사진 저장에 실패했습니다. 브라우저 저장 공간이 부족할 수 있어요. 장 수를 줄이거나 이전 업로드를 삭제한 뒤 다시 시도해 주세요.',
+      );
+    } finally {
+      setUploadBusy(false);
+    }
   });
 
   // ===== Community gallery filters (data-community-filter + data-community-tags) =====
-  const communityFilters = document.querySelector('#community .community-filters');
-  const communityGalleryGrid = document.querySelector('#communityGalleryGrid');
 
-  function renderPersistedCommunityPosts() {
+  async function renderPersistedCommunityPosts() {
     if (!communityGalleryGrid) return;
     let posts = [];
     try {
@@ -1655,47 +2057,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!posts.length) return;
 
-    posts
-      .slice()
-      .reverse()
-      .forEach((post) => {
-        const model = escapeHtml(post.cameraModel || '업로드 이미지');
-        const category = escapeHtml(post.categoryLabel || '일상');
-        const author = escapeHtml(post.authorHandle || '@게스트');
-        const aperture = escapeHtml(post.aperture || '-');
-        const shutterSpeed = escapeHtml(post.shutterSpeed || '-');
-        const iso = escapeHtml(post.iso || '-');
-        const focalLength = escapeHtml(post.focalLength || '-');
-        const likes = Number(post.likes) > 0 ? Number(post.likes) : Math.floor(Math.random() * 60) + 1;
-        const communityTags = String(post.communityTags || 'daily');
-        const imageSrc = String(post.imageDataUrl || '');
-        const card = document.createElement('article');
-        card.className = 'gallery-card card';
-        card.dataset.communityTags = communityTags;
-        card.dataset.communityPostId = String(post.id || `community-${model}-${post.createdAt || ''}`).replace(/\s+/g, '-');
-        card.innerHTML = `
-          <div class="gallery-card__img">
-            <img class="gallery-card__photo" src="${imageSrc}" alt="${model} 업로드 이미지" width="1200" height="800" loading="lazy">
-            <div class="gallery-card__overlay">
-              <span class="gallery-card__camera-tag">${model}</span>
-            </div>
-          </div>
-          <div class="gallery-card__info">
-            <div class="gallery-card__settings" aria-label="촬영 설정">
-              <span class="setting-chip">${aperture}</span>
-              <span class="setting-chip">${shutterSpeed}</span>
-              <span class="setting-chip">ISO ${iso}</span>
-              <span class="setting-chip">${focalLength}</span>
-            </div>
-            <div class="gallery-card__meta">
-              <span class="gallery-card__author">${author}</span>
-              <span class="gallery-card__likes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>${likes}</span>
-            </div>
-            <p class="text-muted" style="margin-top: 8px; font-size: 12px;">카테고리: ${category}</p>
-          </div>
-        `;
-        communityGalleryGrid.prepend(card);
+    const store = window.PicoryCommunityImageStore;
+    if (store) {
+      posts = await store.migratePosts(posts);
+      posts = stripInlineImagesFromPosts(posts);
+      try {
+        localStorage.setItem(communityStorageKey, JSON.stringify(posts));
+      } catch (_) {
+        /* noop */
+      }
+    }
+
+    for (const post of posts.slice().reverse()) {
+      const imageDataUrl = store
+        ? await store.resolvePostImageSrc(post)
+        : String(post.imageDataUrl || post.imageThumb || '');
+      const card = buildCommunityCardElement({
+        ...post,
+        imageDataUrl,
       });
+      communityGalleryGrid.prepend(card);
+    }
   }
 
   function readJsonList(key) {
@@ -2025,9 +2407,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  renderPersistedCommunityPosts();
-  enhanceCommunityCards();
-  applyCommunityGalleryFilter('all');
+  renderPersistedCommunityPosts().then(() => {
+    enhanceCommunityCards();
+    applyCommunityGalleryFilter('all');
+  });
 
   // ===== Mobile Hamburger Menu =====
   const hamburgerBtn = document.getElementById('hamburgerBtn');

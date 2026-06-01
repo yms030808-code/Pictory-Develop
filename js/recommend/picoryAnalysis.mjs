@@ -3,6 +3,7 @@
  */
 /** 프로젝트 안 `js/vendor` — node_modules 상대경로는 브라우저에서 자주 깨짐 */
 import exifr from '../vendor/exifr-lite.mjs';
+import catalogEmbedded from '../../server/catalog.json';
 
 function meanStd(arr) {
   if (!arr.length) return { mean: 0, std: 0 };
@@ -353,8 +354,39 @@ export function toApiShape(color, ranked) {
   };
 }
 
+function catalogFetchUrls() {
+  if (typeof window === 'undefined' || !window.location?.href) {
+    return ['/server/catalog.json'];
+  }
+  const href = window.location.href;
+  const origin = window.location.origin;
+  const candidates = [
+    new URL('server/catalog.json', href).href,
+    new URL('../server/catalog.json', href).href,
+    new URL('../../server/catalog.json', href).href,
+  ];
+  if (origin && origin !== 'null') {
+    candidates.push(`${origin}/server/catalog.json`);
+  }
+  candidates.push('/server/catalog.json');
+  return [...new Set(candidates)];
+}
+
 export async function loadCatalog() {
-  const res = await fetch('/server/catalog.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('CATALOG_FETCH');
-  return res.json();
+  for (const url of catalogFetchUrls()) {
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) return data;
+    } catch (_) {
+      /* try next url */
+    }
+  }
+
+  if (Array.isArray(catalogEmbedded) && catalogEmbedded.length) {
+    return catalogEmbedded;
+  }
+
+  throw new Error('CATALOG_FETCH');
 }

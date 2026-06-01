@@ -14,6 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const communityStorageKey = 'picoryCommunityPosts';
   const communityLikesStorageKey = 'picoryCommunityLikes';
   const communityCommentsStorageKey = 'picoryCommunityComments';
+  const recommendHistoryStatEl = document.getElementById('mypageRecommendStat');
+  const recommendSummaryEmptyEl = document.getElementById('mypageRecommendSummaryEmpty');
+  const recommendSummaryListEl = document.getElementById('mypageRecommendSummaryList');
+  const recommendEmptyEl = document.getElementById('mypageRecommendEmpty');
+  const recommendHistoryEl = document.getElementById('mypageRecommendHistory');
   const nicknameEl = document.getElementById('mypageNickname');
   const profileSubEl = document.getElementById('mypageProfileSub');
   const profileAvatarImg = document.getElementById('mypageProfileAvatarImg');
@@ -28,7 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveCountEl = document.getElementById('mypageArchiveCount');
   const archivePanel = document.querySelector('[data-mypage-panel="archive"]');
   const archiveEmptyState = archivePanel?.querySelector('.mypage-empty-state');
-  const archiveUploadZone = document.getElementById('mypageArchiveUploadZone');
+  const archiveDropZone = document.getElementById('mypageArchiveDropZone');
+  const archiveFileInput = document.getElementById('mypageArchiveFileInput');
+  const archivePreviews = document.getElementById('mypageArchivePreviews');
+  const archivePreviewGrid = document.getElementById('mypageArchivePreviewGrid');
+  const archivePreviewCount = document.getElementById('mypageArchivePreviewCount');
   const archiveModelInput = document.getElementById('mypageArchiveModelInput');
   const archiveCategorySelect = document.getElementById('mypageArchiveCategorySelect');
   const archiveCategoryRoot = document.getElementById('mypageArchiveCategoryRoot');
@@ -59,11 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const communityActivityEl = document.getElementById('mypageCommunityActivity');
   const likedPostsListEl = document.getElementById('mypageLikedPostsList');
   const commentsListEl = document.getElementById('mypageCommentsList');
-  const archiveFileInput = document.createElement('input');
-  archiveFileInput.type = 'file';
-  archiveFileInput.accept = 'image/*';
-  archiveFileInput.hidden = true;
-  document.body.appendChild(archiveFileInput);
   const categoryLabelToKey = {
     인물: 'portrait',
     풍경: 'landscape',
@@ -71,8 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
     야경: 'night',
     음식: 'food',
   };
-  const archiveUploadDefaultHtml = archiveUploadZone?.innerHTML || '';
-  let archiveImageDataUrl = '';
+  const ARCHIVE_UPLOAD_MAX_PHOTOS = 12;
+  /** @type {{ id: string, name: string, size: number, dataUrl: string }[]} */
+  let selectedArchiveItems = [];
+  let archiveUploadBusy = false;
+  let archiveUploadItemSeq = 0;
+  const archiveUploadDefaultLabel = archiveUploadBtn?.textContent?.trim() || '사진 올리기';
   let archiveEditImageDataUrl = '';
   let archiveEditingId = '';
   let archiveEditOverlay = null;
@@ -106,6 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       activateTab(tab.dataset.mypageTab);
+      if (tab.dataset.mypageTab === 'recommend' || tab.dataset.mypageTab === 'home') {
+        renderRecommendHistory();
+      }
     });
   });
   const requestedTab = new URLSearchParams(window.location.search).get('tab');
@@ -241,6 +252,136 @@ document.addEventListener('DOMContentLoaded', () => {
       return [];
     }
   };
+
+  const readRecommendHistory = () => {
+    if (window.PicoryRecommendHistory?.read) {
+      return window.PicoryRecommendHistory.read();
+    }
+    return readJsonList('picoryRecommendHistory');
+  };
+
+  const renderRecommendHistory = () => {
+    const items = readRecommendHistory().slice().reverse();
+    const countLabel = items.length ? `${items.length}건` : '아직 없음';
+
+    if (recommendHistoryStatEl) {
+      recommendHistoryStatEl.textContent = countLabel;
+    }
+
+    const hasItems = items.length > 0;
+    recommendSummaryEmptyEl?.classList.toggle('hidden', hasItems);
+    recommendEmptyEl?.classList.toggle('hidden', hasItems);
+
+    if (recommendSummaryListEl) {
+      recommendSummaryListEl.hidden = !hasItems;
+      if (!hasItems) {
+        recommendSummaryListEl.innerHTML = '';
+      } else {
+        recommendSummaryListEl.innerHTML = items
+          .slice(0, 3)
+          .map((entry) => {
+            const top = entry.items?.[0];
+            const when = formatTime(entry.createdAt);
+            const label = top?.name || 'AI 추천 결과';
+            const detail = entry.summary || top?.why || '업로드 사진 기반 추천';
+            return `
+              <article class="mypage-recommend-summary-item">
+                <strong>${escapeHtml(label)}</strong>
+                <p>${escapeHtml(detail)}</p>
+                <span class="mypage-muted">${when}${entry.moodTags?.length ? ` · ${escapeHtml(entry.moodTags.slice(0, 2).join(', '))}` : ''}</span>
+              </article>
+            `;
+          })
+          .join('');
+      }
+    }
+
+    if (!recommendHistoryEl) return;
+    if (!hasItems) {
+      recommendHistoryEl.hidden = true;
+      recommendHistoryEl.innerHTML = '';
+      return;
+    }
+
+    recommendHistoryEl.hidden = false;
+    recommendHistoryEl.innerHTML = items
+      .map((entry) => {
+        const when = formatTime(entry.createdAt);
+        const tags = (entry.moodTags || [])
+          .map((t) => `<span class="tag tag--natural">${escapeHtml(t)}</span>`)
+          .join('');
+        const cameras = (entry.items || [])
+          .map((cam, i) => {
+            const badge = i === 0 ? 'Best Match' : '대안';
+            const scoreLine =
+              cam.score != null && Number.isFinite(Number(cam.score))
+                ? `색감 유사도 약 ${Number(cam.score).toFixed(1)}점`
+                : '';
+            const whyLine = [scoreLine, cam.why].filter(Boolean).join(' · ');
+            return `
+              <article class="mypage-recommend-camera card">
+                <span class="mypage-recommend-camera__badge">${escapeHtml(badge)}</span>
+                <img class="mypage-recommend-camera__img" src="${escapeHtml(cam.thumbnail || '/images/cameras/default-camera.png')}" alt="${escapeHtml(cam.name)}" loading="lazy">
+                <div class="mypage-recommend-camera__body">
+                  <h4>${escapeHtml(cam.name)}</h4>
+                  ${cam.lens ? `<p class="mypage-recommend-camera__lens">+ ${escapeHtml(cam.lens)}</p>` : ''}
+                  ${whyLine ? `<p class="mypage-recommend-camera__why">${escapeHtml(whyLine)}</p>` : ''}
+                  <div class="mypage-recommend-camera__meta">
+                    ${cam.price ? `<span>${escapeHtml(cam.price)}</span>` : ''}
+                    <a class="btn btn--outline btn--xs" href="${escapeHtml(cam.href || `price.html?q=${encodeURIComponent(cam.name)}`)}">시세 보기</a>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+
+        return `
+          <article class="mypage-recommend-entry card">
+            <header class="mypage-recommend-entry__head">
+              <div>
+                <p class="mypage-recommend-entry__type">AI 사진 추천</p>
+                <time class="mypage-muted">${escapeHtml(when)}</time>
+              </div>
+              <button type="button" class="mypage-recommend-entry__remove" data-recommend-remove="${escapeHtml(entry.id)}" aria-label="추천 기록 삭제">×</button>
+            </header>
+            <div class="mypage-recommend-entry__layout">
+              ${entry.imageThumb ? `<img class="mypage-recommend-entry__photo" src="${entry.imageThumb}" alt="업로드한 참고 사진" loading="lazy">` : ''}
+              <div class="mypage-recommend-entry__detail">
+                ${entry.summary ? `<p class="mypage-recommend-entry__summary">${escapeHtml(entry.summary)}</p>` : ''}
+                ${tags ? `<div class="mypage-recommend-entry__tags">${tags}</div>` : ''}
+                <div class="mypage-recommend-entry__cameras">${cameras}</div>
+              </div>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
+  };
+
+  recommendHistoryEl?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const removeBtn = target.closest('[data-recommend-remove]');
+    if (!removeBtn) return;
+    const id = removeBtn.getAttribute('data-recommend-remove');
+    if (!id) return;
+    const next = readRecommendHistory().filter((entry) => entry.id !== id);
+    try {
+      localStorage.setItem('picoryRecommendHistory', JSON.stringify(next));
+    } catch (_) {
+      /* noop */
+    }
+    renderRecommendHistory();
+  });
+
+  window.addEventListener('picory-recommend-history-updated', renderRecommendHistory);
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'picoryRecommendHistory') renderRecommendHistory();
+  });
+  window.addEventListener('pageshow', renderRecommendHistory);
+
+  renderRecommendHistory();
 
   const renderCommunityActivity = () => {
     if (!communityActivityEl || !likedPostsListEl || !commentsListEl) return;
@@ -479,14 +620,19 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCommunityActivity();
   syncSidebarStats();
 
-  const renderArchive = () => {
+  const renderArchive = async () => {
     if (!archiveGridEl) return;
-    const raw = localStorage.getItem(archiveStorageKey);
-    let items = [];
-    try {
-      items = raw ? JSON.parse(raw) : [];
-    } catch (_) {
-      items = [];
+    let items = readArchiveList();
+    const store = window.PicoryCommunityImageStore;
+
+    if (store && items.length) {
+      items = await store.migratePosts(items);
+      items = items.map((item) => {
+        if (!item?.imageKey || !item.imageDataUrl) return item;
+        const { imageDataUrl, ...rest } = item;
+        return rest;
+      });
+      writeArchiveList(items);
     }
 
     if (archiveCountEl) {
@@ -503,21 +649,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     archiveEmptyState?.classList.add('hidden');
     archiveGridEl.hidden = false;
-    archiveGridEl.innerHTML = items
-      .slice()
-      .reverse()
-      .map((item) => {
-        const model = escapeHtml(item.cameraModel || '업로드 이미지');
-        const category = escapeHtml(item.categoryLabel || '');
-        const imageSrc = String(item.imageDataUrl || '');
-        return `
+
+    const cards = await Promise.all(
+      items
+        .slice()
+        .reverse()
+        .map(async (item) => {
+          const model = escapeHtml(item.cameraModel || '업로드 이미지');
+          const category = escapeHtml(item.categoryLabel || '');
+          const imageSrc = store
+            ? await store.resolvePostImageSrc(item)
+            : String(item.imageDataUrl || item.imageThumb || '');
+          return `
           <article class="mypage-archive-card card">
             <img src="${imageSrc}" alt="${model}">
             <p><strong>${model}</strong>${category ? ` · ${category}` : ''}</p>
           </article>
         `;
-      })
-      .join('');
+        }),
+    );
+    archiveGridEl.innerHTML = cards.join('');
   };
   function readArchiveList() {
     try {
@@ -646,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     overlay.querySelector('[data-archive-edit-close]')?.addEventListener('click', close);
     overlay.querySelector('[data-archive-edit-cancel]')?.addEventListener('click', close);
-    overlay.querySelector('[data-archive-edit-save]')?.addEventListener('click', () => {
+    overlay.querySelector('[data-archive-edit-save]')?.addEventListener('click', async () => {
       if (!archiveEditingId) return;
       const modelInput = overlay.querySelector('#archiveEditModelInput');
       const catSelect = overlay.querySelector('#archiveEditCategorySelect');
@@ -666,13 +817,25 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const prev = archiveList[idx] || {};
+      const imageKey = String(prev.imageKey || prev.id || archiveEditingId);
+      const nextImage = archiveEditImageDataUrl || prev.imageDataUrl;
+      const store = window.PicoryCommunityImageStore;
+      if (store && nextImage && archiveEditImageDataUrl) {
+        try {
+          await store.put(imageKey, nextImage);
+        } catch (_) {
+          /* keep legacy inline if IDB fails */
+        }
+      }
       const next = {
         ...prev,
         cameraModel,
         categoryLabel,
-        imageDataUrl: archiveEditImageDataUrl || prev.imageDataUrl,
+        imageKey,
         updatedAt: new Date().toISOString(),
       };
+      if (!store && nextImage) next.imageDataUrl = nextImage;
+      else if (next.imageDataUrl) delete next.imageDataUrl;
       archiveList[idx] = next;
       writeArchiveList(archiveList);
 
@@ -685,9 +848,10 @@ document.addEventListener('DOMContentLoaded', () => {
           ...communityList[cIdx],
           cameraModel,
           categoryLabel,
-          imageDataUrl: next.imageDataUrl,
+          imageKey,
           communityTags: `${categoryKey} daily`,
         };
+        if (communityList[cIdx].imageDataUrl) delete communityList[cIdx].imageDataUrl;
         writeCommunityList(communityList);
       }
 
@@ -721,48 +885,123 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderArchive();
 
-  const setArchivePreview = (fileName, imageDataUrl) => {
-    if (!archiveUploadZone) return;
-    archiveUploadZone.innerHTML = `
-      <img src="${imageDataUrl}" alt="아카이브 업로드 미리보기" style="width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px;">
-      <p><strong>${escapeHtml(fileName || '이미지')}</strong></p>
-      <p class="text-muted">다른 사진으로 바꾸려면 클릭하거나 다시 드래그하세요.</p>
-    `;
-  };
+  function nextArchiveItemId() {
+    archiveUploadItemSeq += 1;
+    return `pick-${Date.now()}-${archiveUploadItemSeq}`;
+  }
 
-  const handleArchiveImageFile = (file) => {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있어요.');
+  function setArchiveUploadBusy(busy, label) {
+    archiveUploadBusy = busy;
+    if (!archiveUploadBtn) return;
+    archiveUploadBtn.disabled = busy;
+    archiveUploadBtn.textContent = busy && label ? label : archiveUploadDefaultLabel;
+  }
+
+  function updateArchivePreviewState() {
+    const n = selectedArchiveItems.length;
+    if (archivePreviews) archivePreviews.hidden = n === 0;
+    if (archivePreviewCount) {
+      archivePreviewCount.textContent =
+        n > 0 ? `${n}장 선택됨 (최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장)` : '0장 선택됨';
+    }
+  }
+
+  function appendArchivePreviewItem(item) {
+    if (!archivePreviewGrid) return;
+    const div = document.createElement('div');
+    div.className = 'upload-preview-item';
+    div.dataset.archiveItemId = item.id;
+    div.innerHTML = `<img src="${item.dataUrl}" alt="${escapeHtml(item.name)}">
+      <button type="button" class="upload-preview-item__remove" aria-label="제거">×</button>`;
+    div.querySelector('button')?.addEventListener('click', () => {
+      selectedArchiveItems = selectedArchiveItems.filter((x) => x.id !== item.id);
+      div.remove();
+      updateArchivePreviewState();
+    });
+    archivePreviewGrid.appendChild(div);
+    updateArchivePreviewState();
+  }
+
+  async function addArchiveFiles(fileList) {
+    const incoming = [...fileList].filter((file) => file && file.size > 0);
+    if (!incoming.length) return;
+
+    const slotsLeft = ARCHIVE_UPLOAD_MAX_PHOTOS - selectedArchiveItems.length;
+    if (slotsLeft <= 0) {
+      alert(`한 번에 최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`);
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      archiveImageDataUrl = String(reader.result || '');
-      setArchivePreview(file.name, archiveImageDataUrl);
-    };
-    reader.readAsDataURL(file);
-  };
 
-  archiveUploadZone?.addEventListener('click', () => archiveFileInput.click());
-  archiveUploadZone?.addEventListener('dragover', (e) => {
+    const batch = incoming.slice(0, slotsLeft);
+    if (incoming.length > batch.length) {
+      alert(`최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`);
+    }
+
+    const prepare = window.PicoryCommunityImageStore?.prepareFromFile;
+    if (!prepare) {
+      alert('이미지 처리 모듈을 불러오지 못했습니다. 페이지를 새로고침해 주세요.');
+      return;
+    }
+
+    setArchiveUploadBusy(true, '사진 처리 중…');
+    try {
+      for (const file of batch) {
+        if (file.type && !file.type.startsWith('image/')) {
+          alert(`"${file.name}"은(는) 이미지 파일이 아닙니다.`);
+          continue;
+        }
+        try {
+          const dataUrl = await prepare(file);
+          const entry = {
+            id: nextArchiveItemId(),
+            name: file.name,
+            size: file.size,
+            dataUrl,
+          };
+          selectedArchiveItems.push(entry);
+          appendArchivePreviewItem(entry);
+        } catch (_) {
+          alert(`"${file.name}" 파일을 처리하지 못했습니다. JPG/PNG로 다시 시도해 주세요.`);
+        }
+      }
+    } finally {
+      setArchiveUploadBusy(false);
+    }
+  }
+
+  function resetArchiveUploadForm() {
+    selectedArchiveItems = [];
+    if (archivePreviewGrid) archivePreviewGrid.innerHTML = '';
+    if (archivePreviews) archivePreviews.hidden = true;
+    if (archivePreviewCount) archivePreviewCount.textContent = '0장 선택됨';
+    if (archiveDropZone) archiveDropZone.classList.remove('is-over');
+    if (archiveFileInput) archiveFileInput.value = '';
+    if (archiveModelInput) archiveModelInput.value = '';
+    archiveCategoryDropdown?.setValue('일상');
+    if (archiveShareCommunity) archiveShareCommunity.checked = false;
+  }
+
+  archiveDropZone?.addEventListener('dragover', (e) => {
     e.preventDefault();
-    archiveUploadZone.classList.add('dragover');
+    archiveDropZone.classList.add('is-over');
   });
-  archiveUploadZone?.addEventListener('dragleave', () => {
-    archiveUploadZone.classList.remove('dragover');
+  archiveDropZone?.addEventListener('dragleave', () => {
+    archiveDropZone.classList.remove('is-over');
   });
-  archiveUploadZone?.addEventListener('drop', (e) => {
+  archiveDropZone?.addEventListener('drop', (e) => {
     e.preventDefault();
-    archiveUploadZone.classList.remove('dragover');
-    handleArchiveImageFile(e.dataTransfer?.files?.[0]);
+    archiveDropZone.classList.remove('is-over');
+    addArchiveFiles(e.dataTransfer?.files || []);
   });
-  archiveFileInput.addEventListener('change', () => {
-    handleArchiveImageFile(archiveFileInput.files?.[0]);
+  archiveFileInput?.addEventListener('change', () => {
+    addArchiveFiles(archiveFileInput.files || []);
+    archiveFileInput.value = '';
   });
 
-  archiveUploadBtn?.addEventListener('click', () => {
-    if (!archiveImageDataUrl) {
+  archiveUploadBtn?.addEventListener('click', async () => {
+    if (archiveUploadBusy) return;
+
+    if (!selectedArchiveItems.length) {
       alert('아카이브에 올릴 사진을 먼저 선택해 주세요.');
       return;
     }
@@ -785,62 +1024,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const shouldShareToCommunity = Boolean(archiveShareCommunity?.checked);
+    const store = window.PicoryCommunityImageStore;
+    const batchId = Date.now();
+    const createdAt = new Date().toISOString();
+    const count = selectedArchiveItems.length;
 
-    const archiveItem = {
-      id: `archive-${Date.now()}`,
-      imageDataUrl: archiveImageDataUrl,
-      cameraModel,
-      categoryLabel,
-      sharedToCommunity: shouldShareToCommunity,
-      aperture: '-',
-      shutterSpeed: '-',
-      iso: '-',
-      focalLength: '-',
-      authorHandle,
-      createdAt: new Date().toISOString(),
-    };
+    setArchiveUploadBusy(true, `업로드 중… (${count}장)`);
+
+    const archiveItems = [];
+    const communityItems = [];
 
     try {
-      const raw = localStorage.getItem(archiveStorageKey);
-      const list = raw ? JSON.parse(raw) : [];
-      list.push(archiveItem);
-      localStorage.setItem(archiveStorageKey, JSON.stringify(list.slice(-60)));
-    } catch (_) {
-      /* noop */
-    }
+      for (let index = 0; index < selectedArchiveItems.length; index += 1) {
+        const item = selectedArchiveItems[index];
+        const archiveId = `archive-${batchId}-${index}`;
 
-    if (shouldShareToCommunity) {
-      try {
-        const raw = localStorage.getItem(communityStorageKey);
-        const list = raw ? JSON.parse(raw) : [];
-        list.push({
-          ...archiveItem,
-          communityTags: `${categoryKey} daily`,
-          likes: Math.floor(Math.random() * 60) + 1,
-        });
-        localStorage.setItem(communityStorageKey, JSON.stringify(list.slice(-80)));
-      } catch (_) {
-        /* noop */
+        if (store) {
+          try {
+            await store.put(archiveId, item.dataUrl);
+          } catch (_) {
+            throw new Error('IDB_PUT');
+          }
+        }
+
+        const archiveItem = {
+          id: archiveId,
+          imageKey: archiveId,
+          cameraModel,
+          categoryLabel,
+          sharedToCommunity: shouldShareToCommunity,
+          aperture: '-',
+          shutterSpeed: '-',
+          iso: '-',
+          focalLength: '-',
+          authorHandle,
+          createdAt,
+        };
+        if (!store) archiveItem.imageDataUrl = item.dataUrl;
+        archiveItems.push(archiveItem);
+
+        if (shouldShareToCommunity) {
+          communityItems.push({
+            ...archiveItem,
+            communityTags: `${categoryKey} daily`,
+            likes: Math.floor(Math.random() * 60) + 1,
+          });
+        }
       }
+
+      const archiveList = readArchiveList();
+      archiveList.push(...archiveItems);
+      writeArchiveList(archiveList);
+
+      if (communityItems.length) {
+        const communityList = readCommunityList();
+        communityList.push(...communityItems);
+        writeCommunityList(communityList);
+      }
+    } catch (_) {
+      alert('사진 저장에 실패했습니다. 브라우저 저장 공간을 확인한 뒤 다시 시도해 주세요.');
+      setArchiveUploadBusy(false);
+      return;
     }
 
     renderArchive();
     addActivityLog(
       shouldShareToCommunity
-        ? `${cameraModel} 사진을 아카이브에 저장하고 커뮤니티에도 올렸어요.`
-        : `${cameraModel} 사진을 아카이브에 저장했어요.`,
+        ? `${cameraModel} 사진 ${count}장을 아카이브에 저장하고 커뮤니티에도 올렸어요.`
+        : `${cameraModel} 사진 ${count}장을 아카이브에 저장했어요.`,
     );
 
-    if (archiveUploadZone) archiveUploadZone.innerHTML = archiveUploadDefaultHtml;
-    archiveImageDataUrl = '';
-    archiveFileInput.value = '';
-    if (archiveModelInput) archiveModelInput.value = '';
-    archiveCategoryDropdown?.setValue('일상');
-    if (archiveShareCommunity) archiveShareCommunity.checked = false;
+    resetArchiveUploadForm();
+    setArchiveUploadBusy(false);
     alert(
       shouldShareToCommunity
-        ? '아카이브에 저장하고 커뮤니티에도 업로드했어요.'
-        : '아카이브에 저장했어요.',
+        ? `아카이브에 ${count}장 저장하고 커뮤니티에도 업로드했어요.`
+        : `아카이브에 ${count}장 저장했어요.`,
     );
   });
 

@@ -84,18 +84,19 @@
         <div class="mypage-main">
           <div class="mypage-panel is-active" data-mypage-panel="home">
             <section class="mypage-summary-grid">
-              <article class="mypage-stat card"><strong>최근 추천 결과</strong><span>아직 없음</span></article>
+              <article class="mypage-stat card"><strong>최근 추천 결과</strong><span id="mypageRecommendStat">아직 없음</span></article>
               <article class="mypage-stat card"><strong>시세 알림 수</strong><span>0건</span></article>
               <article class="mypage-stat card"><strong>저장 아카이브 수</strong><span id="mypageArchiveCount">0개</span></article>
               <article class="mypage-stat card"><strong>작성글 수</strong><span>0개</span></article>
             </section>
     
-            <section class="mypage-section card">
+            <section class="mypage-section card" id="mypageRecommendSummarySection">
               <h2>추천 결과 요약</h2>
-              <div class="mypage-empty-state">
+              <div class="mypage-empty-state" id="mypageRecommendSummaryEmpty">
                 <p>아직 보여줄 추천 요약이 없어요.</p>
                 <p class="mypage-muted">AI 추천·나에게 맞는 카메라 찾기를 사용하면 여기에 요약돼요.</p>
               </div>
+              <div class="mypage-recommend-summary-list" id="mypageRecommendSummaryList" hidden></div>
             </section>
           </div>
     
@@ -103,13 +104,14 @@
             <section class="mypage-section card">
               <h2>내 추천 상세</h2>
               <p class="mypage-muted">최근 AI 추천 결과와 나에게 맞는 카메라 찾기 기반 결과를 모아봤어요.</p>
-              <div class="mypage-empty-state">
+              <div class="mypage-empty-state" id="mypageRecommendEmpty">
                 <p>저장된 추천 카메라가 없어요.</p>
                 <p class="mypage-muted">AI 추천이나 나에게 맞는 카메라 찾기를 완료하면 여기에 쌓여요.</p>
                 <div class="mypage-empty-state__actions">
                   <a href="recommend.html" class="btn btn--outline btn--sm">AI 추천</a>
                 </div>
               </div>
+              <div class="mypage-recommend-history" id="mypageRecommendHistory" hidden></div>
             </section>
           </div>
     
@@ -133,14 +135,24 @@
               <h2>내 사진 모아보기 <span class="mypage-privacy-badge">나만 보기</span></h2>
               <p class="mypage-muted">여기에 올린 사진·무드보드·레퍼런스는 <strong>본인만</strong> 볼 수 있는 비공개 공간이에요. 커뮤니티에 올리기 전까지 다른 사람에게는 보이지 않아요.</p>
               <div class="mypage-archive-upload" id="mypageArchiveUpload">
-                <div class="upload-modal-zone" id="mypageArchiveUploadZone">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF5C00" stroke-width="1.5">
+                <label class="upload-drop-zone mypage-archive-upload__drop" id="mypageArchiveDropZone" for="mypageArchiveFileInput">
+                  <input type="file" id="mypageArchiveFileInput" accept="image/*" multiple style="position:absolute;opacity:0;width:0;height:0;pointer-events:none;">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5">
                     <rect x="3" y="3" width="18" height="18" rx="2"/>
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <path d="M21 15l-5-5L5 21"/>
                   </svg>
-                  <p>아카이브 사진을 드래그하거나 <span class="text-accent">클릭하여 업로드</span></p>
+                  <p>사진을 드래그하거나 <span class="text-accent">클릭해서 선택</span>하세요</p>
+                  <p class="upload-drop-zone__hint">여러 장 선택 가능 (최대 12장) · 동일 설정 일괄 적용 · 큰 사진은 자동 압축</p>
+                </label>
+
+                <div class="upload-previews mypage-archive-upload__previews" id="mypageArchivePreviews" hidden>
+                  <div class="upload-previews__header">
+                    <span class="upload-previews__count" id="mypageArchivePreviewCount">0장 선택됨</span>
+                  </div>
+                  <div class="upload-preview-grid" id="mypageArchivePreviewGrid"></div>
                 </div>
+
                 <div class="mypage-archive-upload__fields">
                   <input type="text" id="mypageArchiveModelInput" class="form-input" placeholder="카메라 기종 (예: Fujifilm X-T5)">
                   <div class="picory-dropdown mypage-archive-category" id="mypageArchiveCategoryRoot">
@@ -170,7 +182,7 @@
                     <input type="checkbox" id="mypageArchiveShareCommunity">
                     <span>커뮤니티에도 올리기</span>
                   </label>
-                  <button type="button" class="btn btn--primary btn--sm" id="mypageArchiveUploadBtn">아카이브 업로드</button>
+                  <button type="button" class="btn btn--primary btn--sm" id="mypageArchiveUploadBtn">사진 올리기</button>
                 </div>
               </div>
               <div class="mypage-empty-state">
@@ -392,6 +404,8 @@
   </footer>
 
   <script src="../js/theme.js"></script>
+  <script src="../js/recommend-history.js"></script>
+  <script src="../js/community-image-store.js"></script>
   <script src="../app.js"></script>
   <script src="../js/picory-dropdown.js"></script>
   <script src="../mypage.js"></script>
