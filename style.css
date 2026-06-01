@@ -9009,25 +9009,6 @@ html[data-theme="dark"] .product-catalog-nav__chip {
 }
 
 
-/* ===== Match strip — 3D 퍼스펙티브 카드 ===== */
-.match-strip { perspective: 1200px; }
-.match-strip-card {
-  border-radius: 18px !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 8px rgba(0,0,0,0.14) !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-}
-.match-strip-card:hover {
-  transform: translateY(-8px) scale(1.05) rotateY(-4deg) !important;
-  box-shadow: 0 20px 48px rgba(0,0,0,0.32), 0 4px 12px rgba(0,0,0,0.18) !important;
-}
-.match-strip-card:nth-child(odd)  { transform: rotateY(-6deg) rotateZ(-1.5deg); }
-.match-strip-card:nth-child(even) { transform: rotateY(6deg)  rotateZ(1.5deg); }
-.match-strip-card:nth-child(odd):hover  { transform: translateY(-8px) scale(1.05) rotateY(-2deg) rotateZ(0deg); }
-.match-strip-card:nth-child(even):hover { transform: translateY(-8px) scale(1.05) rotateY(2deg)  rotateZ(0deg); }
-.match-strip-card__img {
-  aspect-ratio: 3/4 !important;
-  border-radius: 18px 18px 0 0 !important;
-}
 
 /* ===== Collections Panel — 개선 ===== */
 .collections-panel__header-left { display: flex; align-items: center; gap: 8px; }
@@ -9101,3 +9082,18 @@ html[data-theme="dark"] .product-catalog-nav__chip {
   text-align: center; padding: 8px 0; margin: 0;
 }
 .save-check { color: var(--color-accent); font-size: 0.8em; }
+
+/* 갤러리 카드 하이라이트 (컬렉션에서 이동 시) */
+@keyframes galleryHighlight {
+  0%   { box-shadow: 0 0 0 3px var(--color-accent), var(--shadow-lg); }
+  60%  { box-shadow: 0 0 0 5px rgba(255,101,0,0.5), var(--shadow-lg); }
+  100% { box-shadow: none; }
+}
+.gallery-card--highlight {
+  animation: galleryHighlight 2s ease forwards;
+}
+
+/* 컬렉션 detail item button reset */
+.coll-detail-item {
+  border: none; padding: 0; cursor: pointer;
+}
