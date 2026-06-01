@@ -259,6 +259,7 @@
 
       /* ── Header cards ── */
       var cardsHtml = cams.map(function(cam) {
+        var detailHref = 'price.html?q=' + encodeURIComponent(cam.brand + ' ' + cam.model);
         return '<div class="cmp-card">' +
           '<div class="cmp-card__img">' +
             '<img src="' + escapeHtml(cam.thumbnail) + '" alt="' + escapeHtml(cam.model) + '" onerror="this.style.display=\'none\'">' +
@@ -267,6 +268,7 @@
             '<span class="cmp-card__brand">' + escapeHtml(cam.brand) + '</span>' +
             '<strong class="cmp-card__model">' + escapeHtml(cam.model) + '</strong>' +
             '<span class="cmp-card__price">' + formatPrice(cam.priceKrw) + '</span>' +
+            '<a class="cmp-card__detail-link" href="' + escapeHtml(detailHref) + '">상세보기 →</a>' +
           '</div>' +
           '<button class="cmp-card__remove" data-cid="' + escapeHtml(cam.id) + '" type="button" aria-label="' + escapeHtml(cam.model) + ' 제거">' +
             '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
