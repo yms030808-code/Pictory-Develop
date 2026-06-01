@@ -195,12 +195,12 @@
       <div class="modal__body upload-modal__body">
 
         <!-- 드래그 존 -->
-        <div class="upload-drop-zone" id="uploadDropZone">
-          <input type="file" id="uploadFileInput" accept="image/*" multiple hidden>
+        <label class="upload-drop-zone" id="uploadDropZone" for="uploadFileInput">
+          <input type="file" id="uploadFileInput" accept="image/*" multiple style="position:absolute;opacity:0;width:0;height:0;pointer-events:none;">
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
           <p>사진을 드래그하거나 <span class="text-accent">클릭해서 선택</span>하세요</p>
           <p class="upload-drop-zone__hint">여러 장 동시 선택 가능 · JPG, PNG, HEIC</p>
-        </div>
+        </label>
 
         <!-- 선택된 사진 미리보기 그리드 -->
         <div class="upload-previews" id="uploadPreviews" hidden>
@@ -423,11 +423,11 @@
       previewCount.textContent = `${n}장 선택됨`;
     }
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    // label[for] 방식으로 클릭 처리 — JS .click() 불필요
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('is-over'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('is-over'));
     dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('is-over'); addFiles(e.dataTransfer.files); });
-    fileInput.addEventListener('change', () => addFiles(fileInput.files));
+    fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
     uploadBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
