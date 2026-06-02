@@ -14,6 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const communityStorageKey = 'picoryCommunityPosts';
   const communityLikesStorageKey = 'picoryCommunityLikes';
   const communityCommentsStorageKey = 'picoryCommunityComments';
+
+  function showUploadToast(message, variant = 'success') {
+    let toast = document.getElementById('picoryUploadToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'picoryUploadToast';
+      toast.className = 'picory-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.toggle('picory-toast--error', variant === 'error');
+    toast.classList.add('is-visible');
+    clearTimeout(showUploadToast.timer);
+    showUploadToast.timer = setTimeout(() => {
+      toast.classList.remove('is-visible');
+      toast.classList.remove('picory-toast--error');
+    }, 3000);
+  }
+
   const recommendHistoryStatEl = document.getElementById('mypageRecommendStat');
   const recommendSummaryEmptyEl = document.getElementById('mypageRecommendSummaryEmpty');
   const recommendSummaryListEl = document.getElementById('mypageRecommendSummaryList');
@@ -774,7 +796,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const f = fileInput.files?.[0];
       if (!f) return;
       if (!f.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드할 수 있어요.');
+        showUploadToast('이미지 파일만 업로드할 수 있어요.', 'error');
         return;
       }
       const reader = new FileReader();
@@ -928,18 +950,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const slotsLeft = ARCHIVE_UPLOAD_MAX_PHOTOS - selectedArchiveItems.length;
     if (slotsLeft <= 0) {
-      alert(`한 번에 최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`);
+      showUploadToast(`한 번에 최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`, 'error');
       return;
     }
 
     const batch = incoming.slice(0, slotsLeft);
     if (incoming.length > batch.length) {
-      alert(`최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`);
+      showUploadToast(`최대 ${ARCHIVE_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`, 'error');
     }
 
     const prepare = window.PicoryCommunityImageStore?.prepareFromFile;
     if (!prepare) {
-      alert('이미지 처리 모듈을 불러오지 못했습니다. 페이지를 새로고침해 주세요.');
+      showUploadToast('이미지 처리 모듈을 불러오지 못했습니다. 페이지를 새로고침해 주세요.', 'error');
       return;
     }
 
@@ -947,7 +969,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       for (const file of batch) {
         if (file.type && !file.type.startsWith('image/')) {
-          alert(`"${file.name}"은(는) 이미지 파일이 아닙니다.`);
+          showUploadToast(`"${file.name}"은(는) 이미지 파일이 아닙니다.`, 'error');
           continue;
         }
         try {
@@ -961,7 +983,7 @@ document.addEventListener('DOMContentLoaded', () => {
           selectedArchiveItems.push(entry);
           appendArchivePreviewItem(entry);
         } catch (_) {
-          alert(`"${file.name}" 파일을 처리하지 못했습니다. JPG/PNG로 다시 시도해 주세요.`);
+          showUploadToast(`"${file.name}" 파일을 처리하지 못했습니다. JPG/PNG로 다시 시도해 주세요.`, 'error');
         }
       }
     } finally {
@@ -1002,12 +1024,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (archiveUploadBusy) return;
 
     if (!selectedArchiveItems.length) {
-      alert('아카이브에 올릴 사진을 먼저 선택해 주세요.');
+      showUploadToast('아카이브에 올릴 사진을 먼저 선택해 주세요.', 'error');
       return;
     }
     const cameraModel = archiveModelInput?.value?.trim();
     if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
+      showUploadToast('카메라 기종을 입력해 주세요.', 'error');
       archiveModelInput?.focus();
       return;
     }
@@ -1082,7 +1104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         writeCommunityList(communityList);
       }
     } catch (_) {
-      alert('사진 저장에 실패했습니다. 브라우저 저장 공간을 확인한 뒤 다시 시도해 주세요.');
+      showUploadToast('사진 저장에 실패했습니다. 브라우저 저장 공간을 확인한 뒤 다시 시도해 주세요.', 'error');
       setArchiveUploadBusy(false);
       return;
     }
@@ -1096,11 +1118,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetArchiveUploadForm();
     setArchiveUploadBusy(false);
-    alert(
-      shouldShareToCommunity
-        ? `아카이브에 ${count}장 저장하고 커뮤니티에도 업로드했어요.`
-        : `아카이브에 ${count}장 저장했어요.`,
-    );
+    showUploadToast(count > 1 ? `새 사진 ${count}장이 아카이브에 저장됐어요.` : '새 사진이 아카이브에 저장됐어요.');
   });
 
   const settingsGuestNotice = document.getElementById('settingsGuestNotice');

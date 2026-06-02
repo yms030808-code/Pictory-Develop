@@ -16,6 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
   const communityLikesStorageKey = 'picoryCommunityLikes';
   const communityCommentsStorageKey = 'picoryCommunityComments';
 
+  function showUploadToast(message, variant = 'success') {
+    let toast = document.getElementById('picoryUploadToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'picoryUploadToast';
+      toast.className = 'picory-toast';
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.toggle('picory-toast--error', variant === 'error');
+    toast.classList.add('is-visible');
+    clearTimeout(showUploadToast.timer);
+    showUploadToast.timer = setTimeout(() => {
+      toast.classList.remove('is-visible');
+      toast.classList.remove('picory-toast--error');
+    }, 3000);
+  }
+
   function isPicorySessionActive() {
     return Boolean(localStorage.getItem(sessionStorageKey));
   }
@@ -1640,13 +1661,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const slotsLeft = COMMUNITY_UPLOAD_MAX_PHOTOS - selectedUploadItems.length;
     if (slotsLeft <= 0) {
-      alert(`한 번에 최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`);
+      showUploadToast(`한 번에 최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지 올릴 수 있어요.`, 'error');
       return;
     }
 
     const batch = incoming.slice(0, slotsLeft);
     if (incoming.length > batch.length) {
-      alert(`최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`);
+      showUploadToast(`최대 ${COMMUNITY_UPLOAD_MAX_PHOTOS}장까지만 선택됩니다. 나머지는 제외했어요.`, 'error');
     }
 
     setUploadBusy(true, '사진 처리 중…');
@@ -1663,7 +1684,7 @@ document.addEventListener('DOMContentLoaded', () => {
           selectedUploadItems.push(entry);
           appendUploadPreviewItem(entry);
         } catch (_) {
-          alert(`"${file.name}" 파일을 처리하지 못했습니다. 다른 형식(JPG/PNG)으로 시도해 주세요.`);
+          showUploadToast(`"${file.name}" 파일을 처리하지 못했습니다. 다른 형식(JPG/PNG)으로 시도해 주세요.`, 'error');
         }
       }
     } finally {
@@ -1674,7 +1695,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleUploadImageFile(file) {
     if (!file) return;
     if (file.type && !file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있어요.');
+      showUploadToast('이미지 파일만 업로드할 수 있어요.', 'error');
       return;
     }
     prepareCommunityImageFromFile(file)
@@ -1683,7 +1704,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setUploadPreview(file.name, uploadImageDataUrl);
       })
       .catch(() => {
-        alert('이미지를 처리하지 못했습니다. 파일 크기를 줄이거나 JPG/PNG로 시도해 주세요.');
+        showUploadToast('이미지를 처리하지 못했습니다. 파일 크기를 줄이거나 JPG/PNG로 시도해 주세요.', 'error');
       });
   }
 
@@ -1712,12 +1733,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const card = document.createElement('article');
     card.className = 'gallery-card card';
     card.dataset.communityTags = String(post.communityTags || 'daily');
-    card.dataset.communityPostId = String(post.id || `community-${Date.now()}`);
+    card.dataset.postId = String(post.id || `community-${Date.now()}`);
+    card.dataset.communityPostId = card.dataset.postId;
     card.innerHTML = `
       <div class="gallery-card__img">
         <img class="gallery-card__photo" src="${post.imageDataUrl}" alt="${model} 업로드 이미지" width="1200" height="800" loading="lazy">
         <div class="gallery-card__overlay">
           <span class="gallery-card__camera-tag">${model}</span>
+          <button type="button" class="gallery-card__save-btn" aria-label="저장" data-post-id="${card.dataset.postId}" data-post-title="${model} · ${category}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          </button>
         </div>
       </div>
       <div class="gallery-card__info">
@@ -1973,7 +1998,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cameraModel = (cameraModelInput || legacyCameraInput)?.value?.trim();
     if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
+      showUploadToast('카메라 기종을 입력해 주세요.', 'error');
       (cameraModelInput || legacyCameraInput)?.focus();
       return;
     }
@@ -1985,7 +2010,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : [];
 
     if (!images.length) {
-      alert('사진을 먼저 업로드해 주세요.');
+      showUploadToast('사진을 먼저 업로드해 주세요.', 'error');
       return;
     }
 
@@ -2022,10 +2047,11 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       resetUploadModalForm();
       addActivityLog(`${cameraModel} 커뮤니티 사진 ${savedCount}장을 업로드했어요.`);
-      alert(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
+      showUploadToast(`사진 ${savedCount}장이 업로드됐어요.`);
     } catch (_) {
-      alert(
+      showUploadToast(
         '사진 저장에 실패했습니다. 브라우저 저장 공간이 부족할 수 있어요. 장 수를 줄이거나 이전 업로드를 삭제한 뒤 다시 시도해 주세요.',
+        'error',
       );
     } finally {
       setUploadBusy(false);
@@ -2369,7 +2395,7 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleCommunityLike(likeBtn.closest('.gallery-card'));
       return;
     }
-    if (event.target.closest('.gallery-card__camera-tag')) return;
+    if (event.target.closest('.gallery-card__camera-tag, .gallery-card__save-btn, .save-to-collection')) return;
     const card = event.target.closest('.gallery-card');
     if (card) openCommunityPostModal(card);
   });
@@ -2377,7 +2403,7 @@ document.addEventListener('DOMContentLoaded', () => {
   communityGalleryGrid?.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     const card = event.target.closest('.gallery-card');
-    if (!card || event.target.closest('.gallery-card__like-btn, .gallery-card__camera-tag')) return;
+    if (!card || event.target.closest('.gallery-card__like-btn, .gallery-card__camera-tag, .gallery-card__save-btn, .save-to-collection')) return;
     event.preventDefault();
     openCommunityPostModal(card);
   });

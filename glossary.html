@@ -78,7 +78,6 @@
   <!-- Terms -->
   <section class="glossary-section">
     <div class="container">
-      <p class="glossary-count" id="glossaryCount"></p>
       <div class="glossary-grid" id="glossaryBody">
 
         <div class="glossary-card" data-cat="exposure" data-term="조리개 aperture">
@@ -436,7 +435,7 @@
     let searchQuery = '';
 
     function updateCount(visible) {
-      countEl.textContent = visible === cards.length ? `총 ${visible}개 용어` : `${visible}개 검색됨`;
+      if (countEl) countEl.textContent = visible === cards.length ? `총 ${visible}개 용어` : `${visible}개 검색됨`;
     }
 
     function applyFilter() {

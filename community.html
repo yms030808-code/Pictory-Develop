@@ -186,8 +186,10 @@
   <div class="modal-overlay hidden" id="uploadModal">
     <div class="modal modal--wide">
       <div class="modal__header">
-        <h3>사진 업로드</h3>
-        <span class="modal__header-hint">사진 여러 장에 동일한 설정을 한 번에 적용할 수 있어요.</span>
+        <div class="modal__title-group">
+          <h3>사진 업로드</h3>
+          <span class="modal__header-hint">사진 여러 장에 동일한 설정을 한 번에 적용할 수 있어요.</span>
+        </div>
         <button class="modal__close" id="closeUploadModal" aria-label="닫기" type="button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -246,7 +248,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">글 작성 <span style="color:var(--color-text-muted);font-weight:400;">(선택)</span></label>
-            <textarea id="uploadCaption" class="form-input" rows="3" placeholder="촬영 당시 이야기나 느낌을 자유롭게 적어보세요..." style="resize:vertical;min-height:72px;"></textarea>
+            <textarea id="uploadCaption" class="form-input" rows="3" placeholder="촬영 당시 이야기나 느낌을 자유롭게 적어보세요." style="resize:vertical;min-height:72px;"></textarea>
           </div>
           <button class="btn btn--comm-upload btn--lg" id="uploadSubmitBtn" style="width:100%;margin-top:8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
@@ -364,6 +366,7 @@
   <script src="js/pictory-icons.js"></script>
   <script src="js/picory-header.js"></script>
   <script src="js/community-image-store.js"></script>
+  <script src="js/compare-drawer.js"></script>
   <script src="app.js"></script>
   <script>
   (function () {
@@ -385,6 +388,24 @@
     function saveCollections(data) { try { localStorage.setItem(COLL_KEY, JSON.stringify(data)); } catch {} }
 
     let collections = loadCollections();
+
+    function getPostData(pid) {
+      if (POST_DATA[pid]) return POST_DATA[pid];
+      const card = document.querySelector(`.gallery-card[data-post-id="${pid}"], .gallery-card[data-community-post-id="${pid}"]`);
+      if (!card) return null;
+      const img = card.querySelector('.gallery-card__photo');
+      const camera = card.querySelector('.gallery-card__camera-tag')?.textContent?.trim()
+        || card.querySelector('.gallery-card__author')?.textContent?.trim()
+        || '업로드 이미지';
+      const tags = card.querySelector('.text-muted')?.textContent?.replace(/^카테고리:\s*/, '').trim()
+        || card.dataset.communityTags?.replace(/\s+/g, '/')
+        || '업로드';
+      return {
+        img: img?.getAttribute('src') || '',
+        camera,
+        tags,
+      };
+    }
 
     const collPanel      = document.getElementById('collectionsPanel');
     const collOverlay    = document.getElementById('collectionsOverlay');
@@ -416,7 +437,7 @@
       if (!posts.length) { detailGrid.innerHTML = ''; detailEmpty.hidden = false; return; }
       detailEmpty.hidden = true;
       detailGrid.innerHTML = posts.map(pid => {
-        const p = POST_DATA[pid];
+        const p = getPostData(pid);
         if (!p) return '';
         return `<button type="button" class="coll-detail-item" data-goto-post="${pid}">
           <img src="${p.img}" alt="${p.camera}" loading="lazy">
@@ -448,8 +469,9 @@
       const userCols = collections.filter(c => c.id !== 'c0');
 
       const renderItem = col => {
-        const preview = col.posts[0] && POST_DATA[col.posts[0]]
-          ? `<img src="${POST_DATA[col.posts[0]].img}" alt="" class="collection-item__img">`
+        const previewPost = col.posts[0] ? getPostData(col.posts[0]) : null;
+        const preview = previewPost
+          ? `<img src="${previewPost.img}" alt="" class="collection-item__img">`
           : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`;
         return `<button type="button" class="collection-item" data-cid="${col.id}">
           <div class="collection-item__thumb">${preview}</div>
@@ -488,7 +510,59 @@
     collBack.addEventListener('click', showListView);
     collOverlay.addEventListener('click', closePanel);
 
-    collNewBtn.addEventListener('click', () => { collNewForm.classList.toggle('hidden'); if (!collNewForm.classList.contains('hidden')) collNewInput.focus(); });
+    function openCollectionNameCard(onSubmit) {
+      let overlay = document.getElementById('collectionNameOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'collectionNameOverlay';
+        overlay.className = 'collection-name-overlay';
+        overlay.innerHTML = `
+          <div class="collection-name-card" role="dialog" aria-modal="true" aria-label="새 컬렉션 만들기">
+            <h3>새 컬렉션 만들기</h3>
+            <p>저장할 컬렉션 이름을 입력하세요.</p>
+            <input type="text" class="form-input" id="collectionNameInput" placeholder="컬렉션 이름" maxlength="20">
+            <div class="collection-name-card__actions">
+              <button type="button" class="btn btn--ghost btn--sm" data-collection-name-cancel>취소</button>
+              <button type="button" class="btn btn--primary btn--sm" data-collection-name-save>만들기</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+      }
+
+      const input = overlay.querySelector('#collectionNameInput');
+      const close = () => { overlay.classList.remove('is-open'); };
+      const submit = () => {
+        const name = input.value.trim();
+        if (!name) {
+          input.focus();
+          return;
+        }
+        onSubmit(name);
+        close();
+      };
+
+      overlay.onclick = e => { if (e.target === overlay) close(); };
+      overlay.querySelector('[data-collection-name-cancel]').onclick = close;
+      overlay.querySelector('[data-collection-name-save]').onclick = submit;
+      input.onkeydown = e => {
+        if (e.key === 'Enter') submit();
+        if (e.key === 'Escape') close();
+      };
+      input.value = '';
+      overlay.classList.add('is-open');
+      setTimeout(() => input.focus(), 0);
+    }
+
+    collNewBtn.addEventListener('click', () => {
+      openCollectionNameCard(name => {
+        collections.push({ id: 'c' + Date.now(), name, posts: [] });
+        saveCollections(collections);
+        collNewInput.value = '';
+        collNewForm.classList.add('hidden');
+        renderCollectionsList();
+      });
+    });
     collNewSave.addEventListener('click', () => {
       const name = collNewInput.value.trim();
       if (!name) return;
@@ -506,12 +580,13 @@
     const saveNewBtn  = document.getElementById('saveToCollectionNew');
     let currentPostData = null;
 
-    document.querySelectorAll('.gallery-card__save-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        currentPostData = { id: btn.dataset.postId, title: btn.dataset.postTitle };
-        openSavePopover(btn);
-      });
+    document.addEventListener('click', e => {
+      const btn = e.target.closest('.gallery-card__save-btn');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      currentPostData = { id: btn.dataset.postId, title: btn.dataset.postTitle };
+      openSavePopover(btn);
     });
 
     function openSavePopover(anchor) {
@@ -549,13 +624,13 @@
     }
 
     saveNewBtn.addEventListener('click', () => {
-      const name = prompt('새 컬렉션 이름을 입력하세요');
-      if (!name?.trim()) return;
-      const newCol = { id: 'c' + Date.now(), name: name.trim(), posts: [currentPostData.id] };
-      collections.push(newCol);
-      saveCollections(collections);
-      savePopover.hidden = true;
-      document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`)?.classList.add('is-saved');
+      openCollectionNameCard(name => {
+        const newCol = { id: 'c' + Date.now(), name, posts: [currentPostData.id] };
+        collections.push(newCol);
+        saveCollections(collections);
+        savePopover.hidden = true;
+        document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`)?.classList.add('is-saved');
+      });
     });
 
     document.addEventListener('click', e => {
