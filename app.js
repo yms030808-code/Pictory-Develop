@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const desc = document.getElementById('sectionRecommendDesc');
         if (desc) {
           desc.textContent =
-            '업로드한 사진의 컬러 지표와 Pictory 카탈로그의 색 특성을 비교해 가까운 순으로 골랐어요. (브라우저 전용, 외부 AI 없음)';
+            '업로드한 사진의 컬러 지표와 Pictory 카탈로그의 색 특성을 비교해 가까운 순으로 골랐어요.';
         }
       } catch (err) {
         console.error(err);
@@ -2547,6 +2547,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Close modals on Escape key =====
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      if (window.PicoryCompare?.closeDrawerIfOpen?.()) return;
       glossaryModal?.classList.add('hidden');
       uploadModal?.classList.add('hidden');
       sidebar?.classList.remove('open');

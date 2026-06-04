@@ -700,12 +700,12 @@ html[data-theme="dark"] .page-mobile .product-catalog-nav-wrapper {
 }
 
 .page-mobile .landing-category-strip {
-  padding-top: var(--space-md);
-  padding-bottom: var(--space-md);
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
 }
 
 .page-mobile .landing-category-strip__header {
-  margin-bottom: var(--space-sm);
+  margin-bottom: 10px;
 }
 
 .page-mobile .landing-category-strip__title {
@@ -808,6 +808,11 @@ body.page-mobile.page-recommend #resultSection .container {
   max-width: 100%;
   overflow-x: clip;
   box-sizing: border-box;
+}
+
+body.page-mobile.page-recommend #sectionRecommendDesc {
+  font-size: clamp(0.68rem, 2.85vw, 0.9rem);
+  letter-spacing: -0.02em;
 }
 
 body.page-mobile.page-recommend .result-grid {
@@ -919,6 +924,7 @@ body.page-mobile.page-recommend .color-bar-stack {
 
 body.page-mobile.page-recommend .color-science-note {
   overflow-wrap: anywhere;
+  text-align: center;
 }
 
 body.page-mobile.page-recommend .color-metrics {

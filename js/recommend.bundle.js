@@ -29,7 +29,7 @@
       description: "\uAC00\uBCBC\uC6B4 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uC870\uC791\uC774 \uB2E8\uC21C\uD574 \uC785\uBB38\uC6A9 \uBC14\uB514\uB85C \uB9CE\uC774 \uC120\uD0DD\uB429\uB2C8\uB2E4.",
       priceSummary: "\uC57D 920,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0\uB098\uB77C",
-      thumbnail: "https://www.kenrockwell.com/canon/eos-r/images/r10/D3S_0108-1200.jpg",
+      thumbnail: "/images/cameras/canon-eos-r10.png",
       categories: ["beginner", "value", "travel"]
     },
     {
@@ -77,7 +77,7 @@
       description: "\uD544\uB984 SLR \uAC10\uC131\uC758 \uB2E4\uC774\uC5BC \uC870\uC791\uACFC vari-angle LCD\uAC00 \uB9E4\uB825\uC778 APS-C \uBC14\uB514\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uACF5\uC2DD\uBAB0 \xB7 \uC911\uACE0\uB098\uB77C",
-      thumbnail: "https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_zfc/c12f842d4d1a40beb20e7264c1ceccda.png",
+      thumbnail: "/images/cameras/nikon-z-fc.png",
       categories: ["vintage", "emotional", "travel"]
     },
     {
@@ -89,7 +89,7 @@
       description: "1\uC778\uCE58 \uC13C\uC11C \uCEF4\uD329\uD2B8\uB85C 4K \uC601\uC0C1\uACFC \uC218\uC9C1 \uCD2C\uC601\uC5D0 \uC801\uD569\uD55C \uD734\uB300\uD615 \uAE30\uC885\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 950,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uC628\uB77C\uC778 \uBA74\uC138 \xB7 \uC911\uACE0",
-      thumbnail: "https://img.photographyblog.com/reviews/canon_power_shot_g7_x_mark_iii/sample_images/canon_power_shot_g7_x_mark_iii_01.jpg",
+      thumbnail: "/images/cameras/canon-g7x-mark-iii.png",
       categories: ["vlog", "travel", "value"]
     },
     {
@@ -137,7 +137,7 @@
       description: "\uC190\uB5A8\uB9BC \uBCF4\uC815\uACFC \uBC30\uD130\uB9AC \uC6A9\uB7C9\uC774 \uC88B\uC544 \uC0AC\uC9C4\xB7\uC601\uC0C1 \uACB8\uC6A9\uC73C\uB85C \uC778\uAE30\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,780,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
-      thumbnail: "https://img.photographyblog.com/reviews/fujifilm_x_s20/sample_images/fujifilm_x_s20_01.jpg",
+      thumbnail: "/images/cameras/fujifilm-x-s20.png",
       categories: ["emotional", "vlog", "beginner"]
     },
     {
@@ -173,7 +173,7 @@
       description: "\uAC00\uBCBC\uC6B4 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 4K 60p\uB97C \uB2F4\uC544 \uC778\uBB3C\xB7\uC5EC\uD589\uC6A9\uC73C\uB85C \uC811\uADFC\uC131\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,890,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uB2E4\uB098\uC640",
-      thumbnail: "https://img.photographyblog.com/reviews/canon_eos_r8/sample_images/canon_eos_r8_01.jpg",
+      thumbnail: "/images/cameras/canon-eos-r8.png",
       categories: ["travel", "emotional", "value"]
     },
     {
@@ -185,7 +185,7 @@
       description: "\uC791\uC740 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 \uACE0\uBC30\uC728 \uC90C\uC744 \uB2F4\uC740 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC5EC\uD589 \uAE30\uB85D\uC5D0 \uAC15\uD569\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,490,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uCFE0\uD321 \xB7 \uC911\uACE0",
-      thumbnail: "https://img.photographyblog.com/reviews/sony_cyber_shot_rx100_vii/sample_images/sony_cyber_shot_rx100_vii_01.jpg",
+      thumbnail: "/images/cameras/sony-rx100-vii.png",
       categories: ["travel", "value", "vlog"]
     },
     {
@@ -197,7 +197,7 @@
       description: "LUT \uAE30\uBC18 \uCEEC\uB7EC \uC6CC\uD06C\uD50C\uB85C\uC640 \uC791\uC740 \uD480\uD504\uB808\uC784 \uBC14\uB514\uB85C \uC601\uC0C1\xB7\uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC5B4\uC6B8\uB9BD\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,990,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
-      thumbnail: "https://img.photographyblog.com/reviews/panasonic_lumix_s9/sample_images/panasonic_lumix_s9_01.jpg",
+      thumbnail: "/images/cameras/panasonic-lumix-s9.png",
       categories: ["vlog", "emotional", "travel"]
     },
     {
@@ -221,7 +221,7 @@
       description: "\uD074\uB798\uC2DD\uD55C \uB514\uC790\uC778\uC5D0 \uBC29\uC9C4\uBC29\uC801\uACFC \uAC15\uB825\uD55C \uC190\uB5A8\uB9BC \uBCF4\uC815\uC744 \uB354\uD55C \uC5EC\uD589\xB7\uC544\uC6C3\uB3C4\uC5B4\uD615 \uBBF8\uB7EC\uB9AC\uC2A4\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
-      thumbnail: "https://4.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/1564684221/4315193761.jpg",
+      thumbnail: "/images/cameras/om-system-om-3.png",
       categories: ["travel", "vintage", "emotional"]
     },
     {
@@ -233,7 +233,7 @@
       description: "\uC791\uC740 \uBC14\uB514\uC640 \uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158, \uC601\uC0C1 \uCE5C\uD654 UI\uB97C \uAC16\uCD98 \uC785\uBB38\xB7\uBE0C\uC774\uB85C\uADF8\uC6A9 X \uC2DC\uB9AC\uC988\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uCFE0\uD321 \xB7 \uB124\uC774\uBC84",
-      thumbnail: "https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/6845601350/1452105376.jpg",
+      thumbnail: "/images/cameras/fujifilm-x-m5.png",
       categories: ["beginner", "vlog", "emotional"]
     },
     {
@@ -245,7 +245,7 @@
       description: "\uBC1D\uC740 \uC90C\uB80C\uC988\uC640 \uD074\uB798\uC2DD\uD55C \uC870\uC791\uACC4\uB97C \uAC16\uCD98 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC798 \uB9DE\uC2B5\uB2C8\uB2E4.",
       priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
-      thumbnail: "https://4.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/leica_dlux8/cd1fcfa8664d44b38cb04577f0b2ada4.png",
+      thumbnail: "/images/cameras/leica-d-lux-8.png",
       categories: ["vintage", "emotional", "travel"]
     },
     {
@@ -257,7 +257,7 @@
       description: "\uCD08\uC18C\uD615 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC640 61MP \uC13C\uC11C\uAC00 \uD2B9\uC9D5\uC778 \uBAA8\uB4C8\uD615 \uCE74\uBA54\uB77C\uB85C \uC0AC\uC9C4\xB7\uC2DC\uB124\uB9C8 \uC791\uC5C5\uC5D0 \uB3C5\uD2B9\uD569\uB2C8\uB2E4.",
       priceSummary: "\uC57D 2,990,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
-      thumbnail: "https://img.photographyblog.com/reviews/sigma_fp_l/sample_images/sigma_fp_l_01.jpg",
+      thumbnail: "/images/cameras/sigma-fp-l.png",
       categories: ["emotional", "vintage"]
     },
     {
@@ -269,7 +269,7 @@
       description: "\uAC00\uBCCD\uACE0 \uC800\uB834\uD55C CCD \uAC10\uC131 \uCEF4\uD329\uD2B8\uB85C \uD734\uB300\uD3F0\uACFC \uB2E4\uB978 \uC0C9\uAC10\uC758 \uC77C\uC0C1 \uAE30\uB85D\uC6A9\uC73C\uB85C \uCC3E\uB294 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
       priceSummary: "\uC57D 230,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
-      thumbnail: "https://m.media-amazon.com/images/I/71lI8A2AvzL._AC_SL1500_.jpg",
+      thumbnail: "/images/cameras/kodak-pixpro-fz55.png",
       categories: ["value", "vintage", "travel"]
     }
   ];
@@ -1464,6 +1464,202 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
   var qe = new RegExp(`(<|\\/)(${Ye.join("|")})`, "g");
   var exifr_lite_default = Ae;
 
+  // server/catalog.json
+  var catalog_default = [
+    {
+      id: "fujifilm-x100vi",
+      brand: "Fujifilm",
+      model: "X100VI",
+      priceKrw: 219e4,
+      popularity: 98,
+      description: "\uACE0\uC815 \uB80C\uC988\uC640 \uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158\uC73C\uB85C \uC2A4\uB0C5\xB7\uC77C\uC0C1 \uAE30\uB85D\uC5D0 \uAC15\uD55C \uD480\uD504\uB808\uC784\uAE09 \uC778\uAE30 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,190,000\uC6D0\uB300 \xB7 \uC815\uAC00 \uAE30\uC900",
+      thumbnail: "images/cameras/fujifilm-x100vi.png",
+      categories: ["trending", "emotional", "travel"],
+      colorProfile: { warmth: 10, saturationRange: 58, greenShift: 9 },
+      localRecommend: {
+        lens: "\uACE0\uC815 23mm F2 (\uB0B4\uC7A5)",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 4020\uB9CC", aperture: "F2" }
+      }
+    },
+    {
+      id: "canon-eos-r10",
+      brand: "Canon",
+      model: "EOS R10",
+      priceKrw: 92e4,
+      popularity: 82,
+      description: "\uAC00\uBCBC\uC6B4 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uC870\uC791\uC774 \uB2E8\uC21C\uD574 \uC785\uBB38\uC6A9 \uBC14\uB514\uB85C \uB9CE\uC774 \uC120\uD0DD\uB429\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 920,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/canon-eos-r10.png",
+      categories: ["beginner", "value", "travel"],
+      colorProfile: { warmth: 8, saturationRange: 50, greenShift: 2 },
+      localRecommend: {
+        lens: "RF-S 18-150mm \uB610\uB294 \uB2E8\uB80C\uC988",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2420\uB9CC", aperture: "F3.5~6.3 \uB4F1" }
+      }
+    },
+    {
+      id: "sony-zv-e10-ii",
+      brand: "Sony",
+      model: "ZV-E10 II",
+      priceKrw: 128e4,
+      popularity: 92,
+      description: "\uBE0C\uC774\uB85C\uADF8\uC5D0 \uB9DE\uCD98 \uC790\uB3D9 \uBAA8\uB4DC\uC640 \uB9C8\uC774\uD06C \uB2E8\uC790 \uAD6C\uC131\uC774 \uAC15\uC810\uC778 APS-C \uAE30\uC885\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,280,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/sony-zv-e10-ii.png",
+      categories: ["vlog", "beginner", "trending"],
+      colorProfile: { warmth: 2, saturationRange: 46, greenShift: 0 },
+      localRecommend: {
+        lens: "E PZ 16-50mm \uB610\uB294 \uB2E8\uB80C\uC988",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2600\uB9CC", aperture: "F3.5~5.6 \uB4F1" }
+      }
+    },
+    {
+      id: "ricoh-gr-iiix",
+      brand: "Ricoh",
+      model: "GR IIIx",
+      priceKrw: 159e4,
+      popularity: 88,
+      description: "40mm \uD654\uAC01\uC758 \uC2A4\uB0C5 \uD2B9\uD654 \uCEF4\uD329\uD2B8\uB85C \uC8FC\uBA38\uB2C8\uC5D0 \uB123\uACE0 \uB2E4\uB2C8\uAE30 \uC88B\uC2B5\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,590,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/ricoh-gr-iiix.png",
+      categories: ["travel", "emotional", "trending"],
+      colorProfile: { warmth: 0, saturationRange: 44, greenShift: 0 },
+      localRecommend: {
+        lens: "\uACE0\uC815 40mm F2.8 (\uB0B4\uC7A5)",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2424\uB9CC", aperture: "F2.8" }
+      }
+    },
+    {
+      id: "sony-a7c-ii",
+      brand: "Sony",
+      model: "A7C II",
+      priceKrw: 239e4,
+      popularity: 96,
+      description: "\uD480\uD504\uB808\uC784 \uC13C\uC11C\uB97C \uC791\uC740 \uBC14\uB514\uC5D0 \uB2F4\uC544 \uC778\uBB3C\xB7\uC5EC\uD589\xB7\uBE0C\uC774\uB85C\uADF8\uAE4C\uC9C0 \uADE0\uD615\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/sony-a7c-ii.png",
+      categories: ["trending", "emotional", "vlog"],
+      colorProfile: { warmth: 4, saturationRange: 49, greenShift: 1 },
+      localRecommend: {
+        lens: "FE 35mm F1.8 \uB610\uB294 FE 40mm F2.5",
+        specs: { sensor: "\uD480\uD504\uB808\uC784", megapixel: "\uC57D 3300\uB9CC", aperture: "F1.8~4" }
+      }
+    },
+    {
+      id: "nikon-z-fc",
+      brand: "Nikon",
+      model: "Z fc",
+      priceKrw: 119e4,
+      popularity: 80,
+      description: "\uD544\uB984 SLR \uAC10\uC131\uC758 \uB2E4\uC774\uC5BC \uC870\uC791\uACFC vari-angle LCD\uAC00 \uB9E4\uB825\uC778 APS-C \uBC14\uB514\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/nikon-z-fc.png",
+      categories: ["vintage", "emotional", "travel"],
+      colorProfile: { warmth: 9, saturationRange: 53, greenShift: 4 },
+      localRecommend: {
+        lens: "NIKKOR Z 28mm F2.8 \uB610\uB294 \uD0A4\uD2B8 \uC90C",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2088\uB9CC", aperture: "F3.5~6.3 \uB4F1" }
+      }
+    },
+    {
+      id: "canon-g7x-mark-iii",
+      brand: "Canon",
+      model: "PowerShot G7 X Mark III",
+      priceKrw: 95e4,
+      popularity: 90,
+      description: "1\uC778\uCE58 \uC13C\uC11C \uCEF4\uD329\uD2B8\uB85C 4K \uC601\uC0C1\uACFC \uC218\uC9C1 \uCD2C\uC601\uC5D0 \uC801\uD569\uD55C \uD734\uB300\uD615 \uAE30\uC885\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 950,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/canon-g7x-mark-iii.png",
+      categories: ["vlog", "travel", "value"],
+      colorProfile: { warmth: 7, saturationRange: 51, greenShift: -1 },
+      localRecommend: {
+        lens: "\uB0B4\uC7A5 24-100mm F1.8-2.8",
+        specs: { sensor: "1\uC778\uCE58", megapixel: "\uC57D 2010\uB9CC", aperture: "F1.8~2.8" }
+      }
+    },
+    {
+      id: "dji-osmo-pocket-3",
+      brand: "DJI",
+      model: "Osmo Pocket 3",
+      priceKrw: 649e3,
+      popularity: 91,
+      description: "3\uCD95 \uC9D0\uBC8C \uC77C\uCCB4\uD615 \uD3EC\uCF13 \uCEA0\uC73C\uB85C \uC190\uB5A8\uB9BC \uBCF4\uC815\uC774 \uAC15\uD55C \uC601\uC0C1 \uAE30\uAE30\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 649,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/dji-osmo-pocket-3.png",
+      categories: ["vlog", "travel", "trending"],
+      colorProfile: { warmth: 1, saturationRange: 45, greenShift: 0 },
+      localRecommend: {
+        lens: "\uB0B4\uC7A5 \uB80C\uC988 (\uBAA8\uB4C8\uD615)",
+        specs: { sensor: "1\uC778\uCE58", megapixel: "\uC57D 970\uB9CC", aperture: "F2.0" }
+      }
+    },
+    {
+      id: "sony-a6700",
+      brand: "Sony",
+      model: "A6700",
+      priceKrw: 152e4,
+      popularity: 94,
+      description: "\uCD5C\uC2E0 APS-C AF \uC131\uB2A5\uACFC 4K 120p(\uD06C\uB86D) \uB4F1 \uC601\uC0C1 \uC635\uC158\uC774 \uD48D\uBD80\uD55C \uC62C\uB77C\uC6B4\uB354\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,520,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/sony-a6700.png",
+      categories: ["trending", "vlog", "travel", "beginner"],
+      colorProfile: { warmth: -1, saturationRange: 50, greenShift: 1 },
+      localRecommend: {
+        lens: "E 16-55mm F2.8 \uB610\uB294 \uB2E8\uB80C\uC988",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2600\uB9CC", aperture: "F2.8 \uB4F1" }
+      }
+    },
+    {
+      id: "canon-eos-r50",
+      brand: "Canon",
+      model: "EOS R50",
+      priceKrw: 98e4,
+      popularity: 93,
+      description: "\uAC00\uBCCD\uACE0 \uAC00\uACA9 \uBD80\uB2F4\uC774 \uC801\uC5B4 \uCCAB \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uBB34\uB09C\uD55C \uC785\uBB38 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 980,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/canon-eos-r50.png",
+      categories: ["beginner", "value", "trending"],
+      colorProfile: { warmth: 10, saturationRange: 52, greenShift: 2 },
+      localRecommend: {
+        lens: "RF-S 18-45mm \uD0A4\uD2B8 \uB610\uB294 \uB2E8\uB80C\uC988",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2420\uB9CC", aperture: "F4.5~6.3 \uB4F1" }
+      }
+    },
+    {
+      id: "fujifilm-x-s20",
+      brand: "Fujifilm",
+      model: "X-S20",
+      priceKrw: 178e4,
+      popularity: 87,
+      description: "\uC190\uB5A8\uB9BC \uBCF4\uC815\uACFC \uBC30\uD130\uB9AC \uC6A9\uB7C9\uC774 \uC88B\uC544 \uC0AC\uC9C4\xB7\uC601\uC0C1 \uACB8\uC6A9\uC73C\uB85C \uC778\uAE30\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,780,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/fujifilm-x-s20.png",
+      categories: ["emotional", "vlog", "beginner"],
+      colorProfile: { warmth: 8, saturationRange: 55, greenShift: 6 },
+      localRecommend: {
+        lens: "XF 18-55mm \uB610\uB294 XF 35mm F1.4",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2610\uB9CC", aperture: "F2.8~4 \uB4F1" }
+      }
+    },
+    {
+      id: "canon-eos-r50-v",
+      brand: "Canon",
+      model: "EOS R50 V",
+      priceKrw: 118e4,
+      popularity: 79,
+      description: "\uC138\uB85C \uC601\uC0C1\xB7\uB77C\uC774\uBE0C\uC5D0 \uB9DE\uCD98 UI\uC640 \uC785\uBB38\uD615 \uC870\uC791\uC774 \uAC15\uC810\uC778 V \uC2DC\uB9AC\uC988\uC785\uB2C8\uB2E4.",
+      priceSummary: "\uC57D 1,180,000\uC6D0\uB300 ~",
+      thumbnail: "images/cameras/canon-eos-r50-v.png",
+      categories: ["vlog", "beginner", "trending"],
+      colorProfile: { warmth: 3, saturationRange: 47, greenShift: 0 },
+      localRecommend: {
+        lens: "RF-S 14-30mm \uB610\uB294 \uC218\uC9C1 \uCD2C\uC601\uC6A9 \uAD11\uAC01",
+        specs: { sensor: "APS-C", megapixel: "\uC57D 2420\uB9CC", aperture: "F3.5~5.6 \uB4F1" }
+      }
+    }
+  ];
+
   // js/recommend/picoryAnalysis.mjs
   function meanStd(arr) {
     if (!arr.length) return { mean: 0, std: 0 };
@@ -1731,7 +1927,7 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
       if (short) moodTags.push(short);
     }
     moodTags.push("\uC0C9\uAC10 \uB9E4\uCE6D", "\uB85C\uCEEC \uCD94\uCC9C");
-    const summary = best ? `\uC774 \uC0AC\uC9C4\uC758 \uCEEC\uB7EC \uC9C0\uD45C(\uC6DC/\uCFE8\xB7\uCC44\uB3C4\xB7\uADF8\uB9B0 \uC2DC\uD504\uD2B8)\uC640 \uCE74\uD0C8\uB85C\uADF8\uC5D0 \uC801\uC5B4 \uB454 \uC0C9 \uD2B9\uC131\uC744 \uBE44\uAD50\uD588\uC5B4\uC694. \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uC870\uD569\uC740 ${best.product.brand} ${best.product.model}(${best.score.toFixed(1)}\uC810 \uADFC\uC0AC)\uC785\uB2C8\uB2E4. \uBE0C\uB77C\uC6B0\uC800\uC5D0\uC11C\uB9CC \uACC4\uC0B0\uD588\uACE0 \uC678\uBD80 AI \uC11C\uBC84\uB294 \uC4F0\uC9C0 \uC54A\uC558\uC5B4\uC694.` : "\uCE74\uD0C8\uB85C\uADF8\uC5D0\uC11C \uC0C9 \uD504\uB85C\uD544\uC774 \uC788\uB294 \uAE30\uC885\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694.";
+    const summary = best ? `\uC774 \uC0AC\uC9C4\uC758 \uCEEC\uB7EC \uC9C0\uD45C(\uC6DC/\uCFE8\xB7\uCC44\uB3C4\xB7\uADF8\uB9B0 \uC2DC\uD504\uD2B8)\uC640 \uCE74\uD0C8\uB85C\uADF8\uC5D0 \uC801\uC5B4 \uB454 \uC0C9 \uD2B9\uC131\uC744 \uBE44\uAD50\uD588\uC5B4\uC694. \uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uC870\uD569\uC740 ${best.product.brand} ${best.product.model}(${best.score.toFixed(1)}\uC810 \uADFC\uC0AC)\uC785\uB2C8\uB2E4.` : "\uCE74\uD0C8\uB85C\uADF8\uC5D0\uC11C \uC0C9 \uD504\uB85C\uD544\uC774 \uC788\uB294 \uAE30\uC885\uC744 \uCC3E\uC9C0 \uBABB\uD588\uC5B4\uC694.";
     const items = top2.map((r2, idx) => ({
       rank: idx + 1,
       product: r2.product,
@@ -1748,7 +1944,6 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
       items
     };
   }
-  const catalogEmbedded = [{"id":"fujifilm-x100vi","brand":"Fujifilm","model":"X100VI","priceKrw":2190000,"popularity":98,"description":"고정 렌즈와 필름 시뮬레이션으로 스냅·일상 기록에 강한 풀프레임급 인기 모델입니다.","priceSummary":"약 2,190,000원대 · 정가 기준","thumbnail":"images/cameras/fujifilm-x100vi.png","categories":["trending","emotional","travel"],"colorProfile":{"warmth":10,"saturationRange":58,"greenShift":9},"localRecommend":{"lens":"고정 23mm F2 (내장)","specs":{"sensor":"APS-C","megapixel":"약 4020만","aperture":"F2"}}},{"id":"canon-eos-r10","brand":"Canon","model":"EOS R10","priceKrw":920000,"popularity":82,"description":"가벼운 APS-C 미러리스로 조작이 단순해 입문용 바디로 많이 선택됩니다.","priceSummary":"약 920,000원대 ~","thumbnail":"images/cameras/canon-eos-r10.png","categories":["beginner","value","travel"],"colorProfile":{"warmth":8,"saturationRange":50,"greenShift":2},"localRecommend":{"lens":"RF-S 18-150mm 또는 단렌즈","specs":{"sensor":"APS-C","megapixel":"약 2420만","aperture":"F3.5~6.3 등"}}},{"id":"sony-zv-e10-ii","brand":"Sony","model":"ZV-E10 II","priceKrw":1280000,"popularity":92,"description":"브이로그에 맞춘 자동 모드와 마이크 단자 구성이 강점인 APS-C 기종입니다.","priceSummary":"약 1,280,000원대 ~","thumbnail":"images/cameras/sony-zv-e10-ii.png","categories":["vlog","beginner","trending"],"colorProfile":{"warmth":2,"saturationRange":46,"greenShift":0},"localRecommend":{"lens":"E PZ 16-50mm 또는 단렌즈","specs":{"sensor":"APS-C","megapixel":"약 2600만","aperture":"F3.5~5.6 등"}}},{"id":"ricoh-gr-iiix","brand":"Ricoh","model":"GR IIIx","priceKrw":1590000,"popularity":88,"description":"40mm 화각의 스냅 특화 컴팩트로 주머니에 넣고 다니기 좋습니다.","priceSummary":"약 1,590,000원대 ~","thumbnail":"images/cameras/ricoh-gr-iiix.png","categories":["travel","emotional","trending"],"colorProfile":{"warmth":0,"saturationRange":44,"greenShift":0},"localRecommend":{"lens":"고정 40mm F2.8 (내장)","specs":{"sensor":"APS-C","megapixel":"약 2424만","aperture":"F2.8"}}},{"id":"sony-a7c-ii","brand":"Sony","model":"A7C II","priceKrw":2390000,"popularity":96,"description":"풀프레임 센서를 작은 바디에 담아 인물·여행·브이로그까지 균형이 좋습니다.","priceSummary":"약 2,390,000원대 ~","thumbnail":"images/cameras/sony-a7c-ii.png","categories":["trending","emotional","vlog"],"colorProfile":{"warmth":4,"saturationRange":49,"greenShift":1},"localRecommend":{"lens":"FE 35mm F1.8 또는 FE 40mm F2.5","specs":{"sensor":"풀프레임","megapixel":"약 3300만","aperture":"F1.8~4"}}},{"id":"nikon-z-fc","brand":"Nikon","model":"Z fc","priceKrw":1190000,"popularity":80,"description":"필름 SLR 감성의 다이얼 조작과 vari-angle LCD가 매력인 APS-C 바디입니다.","priceSummary":"약 1,190,000원대 ~","thumbnail":"images/cameras/nikon-z-fc.png","categories":["vintage","emotional","travel"],"colorProfile":{"warmth":9,"saturationRange":53,"greenShift":4},"localRecommend":{"lens":"NIKKOR Z 28mm F2.8 또는 키트 줌","specs":{"sensor":"APS-C","megapixel":"약 2088만","aperture":"F3.5~6.3 등"}}},{"id":"canon-g7x-mark-iii","brand":"Canon","model":"PowerShot G7 X Mark III","priceKrw":950000,"popularity":90,"description":"1인치 센서 컴팩트로 4K 영상과 수직 촬영에 적합한 휴대형 기종입니다.","priceSummary":"약 950,000원대 ~","thumbnail":"images/cameras/canon-g7x-mark-iii.png","categories":["vlog","travel","value"],"colorProfile":{"warmth":7,"saturationRange":51,"greenShift":-1},"localRecommend":{"lens":"내장 24-100mm F1.8-2.8","specs":{"sensor":"1인치","megapixel":"약 2010만","aperture":"F1.8~2.8"}}},{"id":"dji-osmo-pocket-3","brand":"DJI","model":"Osmo Pocket 3","priceKrw":649000,"popularity":91,"description":"3축 짐벌 일체형 포켓 캠으로 손떨림 보정이 강한 영상 기기입니다.","priceSummary":"약 649,000원대 ~","thumbnail":"images/cameras/dji-osmo-pocket-3.png","categories":["vlog","travel","trending"],"colorProfile":{"warmth":1,"saturationRange":45,"greenShift":0},"localRecommend":{"lens":"내장 렌즈 (모듈형)","specs":{"sensor":"1인치","megapixel":"약 970만","aperture":"F2.0"}}},{"id":"sony-a6700","brand":"Sony","model":"A6700","priceKrw":1520000,"popularity":94,"description":"최신 APS-C AF 성능과 4K 120p(크롭) 등 영상 옵션이 풍부한 올라운더입니다.","priceSummary":"약 1,520,000원대 ~","thumbnail":"images/cameras/sony-a6700.png","categories":["trending","vlog","travel","beginner"],"colorProfile":{"warmth":-1,"saturationRange":50,"greenShift":1},"localRecommend":{"lens":"E 16-55mm F2.8 또는 단렌즈","specs":{"sensor":"APS-C","megapixel":"약 2600만","aperture":"F2.8 등"}}},{"id":"canon-eos-r50","brand":"Canon","model":"EOS R50","priceKrw":980000,"popularity":93,"description":"가볍고 가격 부담이 적어 첫 미러리스로 무난한 입문 모델입니다.","priceSummary":"약 980,000원대 ~","thumbnail":"images/cameras/canon-eos-r50.png","categories":["beginner","value","trending"],"colorProfile":{"warmth":10,"saturationRange":52,"greenShift":2},"localRecommend":{"lens":"RF-S 18-45mm 키트 또는 단렌즈","specs":{"sensor":"APS-C","megapixel":"약 2420만","aperture":"F4.5~6.3 등"}}},{"id":"fujifilm-x-s20","brand":"Fujifilm","model":"X-S20","priceKrw":1780000,"popularity":87,"description":"손떨림 보정과 배터리 용량이 좋아 사진·영상 겸용으로 인기입니다.","priceSummary":"약 1,780,000원대 ~","thumbnail":"images/cameras/fujifilm-x-s20.png","categories":["emotional","vlog","beginner"],"colorProfile":{"warmth":8,"saturationRange":55,"greenShift":6},"localRecommend":{"lens":"XF 18-55mm 또는 XF 35mm F1.4","specs":{"sensor":"APS-C","megapixel":"약 2610만","aperture":"F2.8~4 등"}}},{"id":"canon-eos-r50-v","brand":"Canon","model":"EOS R50 V","priceKrw":1180000,"popularity":79,"description":"세로 영상·라이브에 맞춘 UI와 입문형 조작이 강점인 V 시리즈입니다.","priceSummary":"약 1,180,000원대 ~","thumbnail":"images/cameras/canon-eos-r50-v.png","categories":["vlog","beginner","trending"],"colorProfile":{"warmth":3,"saturationRange":47,"greenShift":0},"localRecommend":{"lens":"RF-S 14-30mm 또는 수직 촬영용 광각","specs":{"sensor":"APS-C","megapixel":"약 2420만","aperture":"F3.5~5.6 등"}}}];
   function catalogFetchUrls() {
     if (typeof window === "undefined" || !window.location?.href) {
       return ["/server/catalog.json"];
@@ -1761,7 +1956,7 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
       new URL("../../server/catalog.json", href).href
     ];
     if (origin && origin !== "null") {
-      candidates.push(origin + "/server/catalog.json");
+      candidates.push(`${origin}/server/catalog.json`);
     }
     candidates.push("/server/catalog.json");
     return [...new Set(candidates)];
@@ -1773,10 +1968,11 @@ this.ifd0Offset: ${this.ifd0Offset}, file.byteLength: ${e2.byteLength}`), e2.tif
         if (!res.ok) continue;
         const data = await res.json();
         if (Array.isArray(data) && data.length) return data;
-      } catch (_) {}
+      } catch (_2) {
+      }
     }
-    if (Array.isArray(catalogEmbedded) && catalogEmbedded.length) {
-      return catalogEmbedded;
+    if (Array.isArray(catalog_default) && catalog_default.length) {
+      return catalog_default;
     }
     throw new Error("CATALOG_FETCH");
   }

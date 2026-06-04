@@ -333,7 +333,7 @@ export function toApiShape(color, ranked) {
   moodTags.push('색감 매칭', '로컬 추천');
 
   const summary = best
-    ? `이 사진의 컬러 지표(웜/쿨·채도·그린 시프트)와 카탈로그에 적어 둔 색 특성을 비교했어요. 가장 가까운 조합은 ${best.product.brand} ${best.product.model}(${best.score.toFixed(1)}점 근사)입니다. 브라우저에서만 계산했고 외부 AI 서버는 쓰지 않았어요.`
+    ? `이 사진의 컬러 지표(웜/쿨·채도·그린 시프트)와 카탈로그에 적어 둔 색 특성을 비교했어요. 가장 가까운 조합은 ${best.product.brand} ${best.product.model}(${best.score.toFixed(1)}점 근사)입니다.`
     : '카탈로그에서 색 프로필이 있는 기종을 찾지 못했어요.';
 
   const items = top2.map((r, idx) => ({

@@ -44,9 +44,30 @@
     document.getElementById('pcmpOverlay').classList.add('is-open');
   }
 
+  function isDrawerOpen() {
+    return Boolean(document.getElementById('pcmpDrawer')?.classList.contains('is-open'));
+  }
+
+  function isConfirmOpen() {
+    return Boolean(document.getElementById('pcmpConfirm')?.classList.contains('is-open'));
+  }
+
   function closeDrawer() {
-    document.getElementById('pcmpDrawer').classList.remove('is-open');
-    document.getElementById('pcmpOverlay').classList.remove('is-open');
+    document.getElementById('pcmpDrawer')?.classList.remove('is-open');
+    document.getElementById('pcmpOverlay')?.classList.remove('is-open');
+  }
+
+  /** ESC 등 — 확인창·드로어가 열려 있으면 닫고 true */
+  function closeDrawerIfOpen() {
+    if (isConfirmOpen()) {
+      closeAddedPrompt();
+      return true;
+    }
+    if (isDrawerOpen()) {
+      closeDrawer();
+      return true;
+    }
+    return false;
   }
 
   function startFloatGlow() {
@@ -188,12 +209,17 @@
       startFloatGlow();
     });
     document.getElementById('pcmpConfirmNo').addEventListener('click', closeAddedPrompt);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        closeAddedPrompt();
-        closeDrawer();
-      }
-    });
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key !== 'Escape') return;
+        if (closeDrawerIfOpen()) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -202,5 +228,13 @@
     render();
   });
 
-  window.PicoryCompare = { add, remove, has, getItems };
+  window.PicoryCompare = {
+    add,
+    remove,
+    has,
+    getItems,
+    openDrawer,
+    closeDrawer,
+    closeDrawerIfOpen,
+  };
 })();

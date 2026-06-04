@@ -284,11 +284,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const when = formatTime(entry.createdAt);
             const label = top?.name || 'AI 추천 결과';
             const detail = entry.summary || top?.why || '업로드 사진 기반 추천';
+            const dateMeta = `${when}${entry.moodTags?.length ? ` · ${escapeHtml(entry.moodTags.slice(0, 2).join(', '))}` : ''}`;
             return `
               <article class="mypage-recommend-summary-item">
-                <strong>${escapeHtml(label)}</strong>
+                <div class="mypage-recommend-summary-item__head">
+                  <strong>${escapeHtml(label)}</strong>
+                  <span class="mypage-recommend-summary-item__date mypage-muted">${dateMeta}</span>
+                </div>
                 <p>${escapeHtml(detail)}</p>
-                <span class="mypage-muted">${when}${entry.moodTags?.length ? ` · ${escapeHtml(entry.moodTags.slice(0, 2).join(', '))}` : ''}</span>
               </article>
             `;
           })

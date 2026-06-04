@@ -25,7 +25,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '가벼운 APS-C 미러리스로 조작이 단순해 입문용 바디로 많이 선택됩니다.',
     priceSummary: '약 920,000원대 ~',
     platform: '쿠팡 · 다나와 · 중고나라',
-    thumbnail: 'https://www.kenrockwell.com/canon/eos-r/images/r10/D3S_0108-1200.jpg',
+    thumbnail: '/images/cameras/canon-eos-r10.png',
     categories: ['beginner', 'value', 'travel'],
   },
   {
@@ -73,7 +73,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '필름 SLR 감성의 다이얼 조작과 vari-angle LCD가 매력인 APS-C 바디입니다.',
     priceSummary: '약 1,190,000원대 ~',
     platform: '네이버 · 공식몰 · 중고나라',
-    thumbnail: 'https://2.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/nikon_zfc/c12f842d4d1a40beb20e7264c1ceccda.png',
+    thumbnail: '/images/cameras/nikon-z-fc.png',
     categories: ['vintage', 'emotional', 'travel'],
   },
   {
@@ -85,7 +85,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '1인치 센서 컴팩트로 4K 영상과 수직 촬영에 적합한 휴대형 기종입니다.',
     priceSummary: '약 950,000원대 ~',
     platform: '쿠팡 · 온라인 면세 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/canon_power_shot_g7_x_mark_iii/sample_images/canon_power_shot_g7_x_mark_iii_01.jpg',
+    thumbnail: '/images/cameras/canon-g7x-mark-iii.png',
     categories: ['vlog', 'travel', 'value'],
   },
   {
@@ -133,7 +133,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '손떨림 보정과 배터리 용량이 좋아 사진·영상 겸용으로 인기입니다.',
     priceSummary: '약 1,780,000원대 ~',
     platform: '공식몰 · 다나와 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/fujifilm_x_s20/sample_images/fujifilm_x_s20_01.jpg',
+    thumbnail: '/images/cameras/fujifilm-x-s20.png',
     categories: ['emotional', 'vlog', 'beginner'],
   },
   {
@@ -169,7 +169,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '가벼운 풀프레임 바디에 빠른 AF와 4K 60p를 담아 인물·여행용으로 접근성이 좋습니다.',
     priceSummary: '약 1,890,000원대 ~',
     platform: '쿠팡 · 네이버 · 다나와',
-    thumbnail: 'https://img.photographyblog.com/reviews/canon_eos_r8/sample_images/canon_eos_r8_01.jpg',
+    thumbnail: '/images/cameras/canon-eos-r8.png',
     categories: ['travel', 'emotional', 'value'],
   },
   {
@@ -181,7 +181,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '작은 바디에 빠른 AF와 고배율 줌을 담은 프리미엄 컴팩트로 여행 기록에 강합니다.',
     priceSummary: '약 1,490,000원대 ~',
     platform: '네이버 · 쿠팡 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/sony_cyber_shot_rx100_vii/sample_images/sony_cyber_shot_rx100_vii_01.jpg',
+    thumbnail: '/images/cameras/sony-rx100-vii.png',
     categories: ['travel', 'value', 'vlog'],
   },
   {
@@ -193,7 +193,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: 'LUT 기반 컬러 워크플로와 작은 풀프레임 바디로 영상·일상 스냅에 어울립니다.',
     priceSummary: '약 1,990,000원대 ~',
     platform: '공식몰 · 네이버 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/panasonic_lumix_s9/sample_images/panasonic_lumix_s9_01.jpg',
+    thumbnail: '/images/cameras/panasonic-lumix-s9.png',
     categories: ['vlog', 'emotional', 'travel'],
   },
   {
@@ -217,7 +217,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '클래식한 디자인에 방진방적과 강력한 손떨림 보정을 더한 여행·아웃도어형 미러리스입니다.',
     priceSummary: '약 2,390,000원대 ~',
     platform: '공식몰 · 네이버 · 중고',
-    thumbnail: 'https://4.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/1564684221/4315193761.jpg',
+    thumbnail: '/images/cameras/om-system-om-3.png',
     categories: ['travel', 'vintage', 'emotional'],
   },
   {
@@ -229,7 +229,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '작은 바디와 필름 시뮬레이션, 영상 친화 UI를 갖춘 입문·브이로그용 X 시리즈입니다.',
     priceSummary: '약 1,190,000원대 ~',
     platform: '공식몰 · 쿠팡 · 네이버',
-    thumbnail: 'https://1.img-dpreview.com/files/p/TC190x190S190x190~sample_galleries/6845601350/1452105376.jpg',
+    thumbnail: '/images/cameras/fujifilm-x-m5.png',
     categories: ['beginner', 'vlog', 'emotional'],
   },
   {
@@ -241,7 +241,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '밝은 줌렌즈와 클래식한 조작계를 갖춘 프리미엄 컴팩트로 일상 스냅에 잘 맞습니다.',
     priceSummary: '약 2,390,000원대 ~',
     platform: '공식몰 · 네이버 · 중고',
-    thumbnail: 'https://4.img-dpreview.com/files/p/TS60x60PFFFFFF00~products/leica_dlux8/cd1fcfa8664d44b38cb04577f0b2ada4.png',
+    thumbnail: '/images/cameras/leica-d-lux-8.png',
     categories: ['vintage', 'emotional', 'travel'],
   },
   {
@@ -253,7 +253,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '초소형 풀프레임 바디와 61MP 센서가 특징인 모듈형 카메라로 사진·시네마 작업에 독특합니다.',
     priceSummary: '약 2,990,000원대 ~',
     platform: '공식몰 · 다나와 · 중고',
-    thumbnail: 'https://img.photographyblog.com/reviews/sigma_fp_l/sample_images/sigma_fp_l_01.jpg',
+    thumbnail: '/images/cameras/sigma-fp-l.png',
     categories: ['emotional', 'vintage'],
   },
   {
@@ -265,7 +265,7 @@ export const PICORY_PRODUCT_MOCK = [
     description: '가볍고 저렴한 CCD 감성 컴팩트로 휴대폰과 다른 색감의 일상 기록용으로 찾는 모델입니다.',
     priceSummary: '약 230,000원대 ~',
     platform: '쿠팡 · 네이버 · 중고',
-    thumbnail: 'https://m.media-amazon.com/images/I/71lI8A2AvzL._AC_SL1500_.jpg',
+    thumbnail: '/images/cameras/kodak-pixpro-fz55.png',
     categories: ['value', 'vintage', 'travel'],
   },
 ];
