@@ -2,6 +2,7 @@
  * 최근 7개월 중고 평균 시세 라인 차트 (목록의 중고 평균에 맞춤)
  */
 import { escapeAttr, escapeHtml } from '../products/utils.js';
+import { buildExternalListingUrl } from './buildListings.js';
 
 function hashString(s) {
   let h = 0;
@@ -115,6 +116,12 @@ function xAt(i) {
   return X0 + (i / (N - 1)) * (X1 - X0);
 }
 
+function findLowestUsedListing(listings) {
+  const used = (listings || []).filter((r) => r && r.conditionKey !== 'new');
+  if (!used.length) return null;
+  return used.reduce((min, row) => (row.priceValue < min.priceValue ? row : min));
+}
+
 function buildHighLowSeries(avgValues, currentLow, currentHigh, query) {
   const seed = hashString(`${query}|${currentLow}|${currentHigh}|range`);
   const lowStart = Math.round(currentLow * (1.035 + (seed % 8) / 500));
@@ -194,9 +201,14 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
     )
     .join('');
 
-  const iconHigh = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z" fill="#3AFF28"/></svg>`;
-  const iconAvg = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="2" viewBox="0 0 9 2" fill="none" aria-hidden="true"><path d="M0 1.16667V0H8.16667V1.16667H0Z" fill="white"/></svg>`;
-  const iconLow = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M8.16667 7V5.83333H9.68333L6.65 2.82917L4.31667 5.1625L0 0.816667L0.816667 0L4.31667 3.5L6.65 1.16667L10.5 5.01667V3.5H11.6667V7H8.16667Z" fill="#EF4444"/></svg>`;
+  const iconHigh = `<svg class="chart__price-icon chart__price-icon--high" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M0.816667 7L0 6.18333L4.31667 1.8375L6.65 4.17083L9.68333 1.16667H8.16667V0H11.6667V3.5H10.5V1.98333L6.65 5.83333L4.31667 3.5L0.816667 7Z" fill="currentColor"/></svg>`;
+  const iconAvg = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="2" viewBox="0 0 9 2" fill="none" aria-hidden="true"><path d="M0 1.16667V0H8.16667V1.16667H0Z" fill="currentColor"/></svg>`;
+  const iconLow = `<svg class="chart__price-icon chart__price-icon--low" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M8.16667 7V5.83333H9.68333L6.65 2.82917L4.31667 5.1625L0 0.816667L0.816667 0L4.31667 3.5L6.65 1.16667L10.5 5.01667V3.5H11.6667V7H8.16667Z" fill="currentColor"/></svg>`;
+
+  const lowestListing = findLowestUsedListing(used);
+  const lowestLinkHtml = lowestListing
+    ? `<a class="chart__lowest-link" href="${escapeAttr(buildExternalListingUrl(lowestListing.platformKey, query || lowestListing.searchQuery))}" target="_blank" rel="noopener noreferrer">${escapeHtml(lowestListing.platformLabel)}에서 최저가 보기</a>`
+    : '';
 
   const pointGroups = lowPoints
     .map((lowPoint, i) => {
@@ -204,8 +216,8 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
       return `
     <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
       <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
-      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="5" fill="#3AFF28" stroke="#F3F3F4" stroke-width="2.5"/>
-      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5" fill="#EF4444" stroke="#F3F3F4" stroke-width="2.5"/>
+      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="4.5"/>
+      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5.5"/>
     </g>`;
     })
     .join('');
@@ -233,6 +245,7 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
             ${iconLow}
             <span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span>
           </div>
+          ${lowestLinkHtml}
         </div>
       </div>
     </header>`;
@@ -257,7 +270,7 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
         </div>
         <div class="chart__badges" aria-hidden="true">
           <div class="chart__inline-label chart__inline-label--high" id="chartLabelHigh">최고가 ${escapeHtml(Math.round(currentHigh).toLocaleString('ko-KR'))}</div>
-          <div class="chart__inline-label chart__inline-label--low" id="chartLabelLow">최저가 ${escapeHtml(Math.round(currentLow).toLocaleString('ko-KR'))}</div>
+          <div class="chart__inline-label chart__inline-label--low chart__inline-label--primary" id="chartLabelLow">최저가 ${escapeHtml(Math.round(currentLow).toLocaleString('ko-KR'))}</div>
         </div>
       </div>
     </div>

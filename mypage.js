@@ -46,21 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const archiveCategoryValue = document.getElementById('mypageArchiveCategoryValue');
   let archiveCategoryDropdown = null;
   let archiveEditCategoryDropdown = null;
-
-  if (
-    typeof window.mountPicoryDropdown === 'function' &&
-    archiveCategoryTrigger &&
-    archiveCategoryList
-  ) {
-    archiveCategoryDropdown = window.mountPicoryDropdown({
-      root: archiveCategoryRoot,
-      trigger: archiveCategoryTrigger,
-      list: archiveCategoryList,
-      valueEl: archiveCategoryValue,
-      hiddenInput: archiveCategorySelect,
-      initialValue: archiveCategorySelect?.value || '일상',
-    });
-  }
   const archiveShareCommunity = document.getElementById('mypageArchiveShareCommunity');
   const archiveUploadBtn = document.getElementById('mypageArchiveUploadBtn');
   const communityPanel = document.querySelector('[data-mypage-panel="community"]');
@@ -75,6 +60,192 @@ document.addEventListener('DOMContentLoaded', () => {
     야경: 'night',
     음식: 'food',
   };
+  const ARCHIVE_DEFAULT_CATEGORIES = ['일상', '인물', '풍경', '야경', '음식'];
+  const archiveCustomCategoriesKey = 'picoryArchiveCustomCategories';
+  const ARCHIVE_CATEGORY_MAX_LEN = 16;
+  const ARCHIVE_CUSTOM_CATEGORY_MAX = 20;
+
+  const escapeCategoryAttr = (value) =>
+    String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;');
+
+  const escapeCategoryHtml = (value) => escapeCategoryAttr(value);
+
+  function readArchiveCustomCategories() {
+    try {
+      const raw = localStorage.getItem(archiveCustomCategoriesKey);
+      const list = raw ? JSON.parse(raw) : [];
+      if (!Array.isArray(list)) return [];
+      return list
+        .map((item) => String(item || '').trim())
+        .filter((item) => item && !ARCHIVE_DEFAULT_CATEGORIES.includes(item));
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function writeArchiveCustomCategories(list) {
+    try {
+      localStorage.setItem(archiveCustomCategoriesKey, JSON.stringify(list.slice(0, ARCHIVE_CUSTOM_CATEGORY_MAX)));
+    } catch (_) {
+      /* noop */
+    }
+  }
+
+  function normalizeArchiveCategoryLabel(raw) {
+    return String(raw || '')
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
+  function syncArchiveCustomCategoriesFromPosts() {
+    const seen = new Set(readArchiveCustomCategories());
+    let changed = false;
+    readArchiveList().forEach((item) => {
+      const label = normalizeArchiveCategoryLabel(item?.categoryLabel);
+      if (!label || ARCHIVE_DEFAULT_CATEGORIES.includes(label) || seen.has(label)) return;
+      seen.add(label);
+      changed = true;
+    });
+    if (changed) writeArchiveCustomCategories([...seen]);
+  }
+
+  function getAllArchiveCategoryLabels() {
+    const merged = [...ARCHIVE_DEFAULT_CATEGORIES];
+    const seen = new Set(merged);
+    readArchiveCustomCategories().forEach((label) => {
+      if (!label || seen.has(label)) return;
+      seen.add(label);
+      merged.push(label);
+    });
+    return merged;
+  }
+
+  function labelToCommunityKey(label) {
+    return categoryLabelToKey[label] || 'custom';
+  }
+
+  function isArchiveCategoryLabelValid(label) {
+    return getAllArchiveCategoryLabels().includes(label);
+  }
+
+  function populateArchiveCategoryMenu(listEl, { showAddRow = false } = {}) {
+    if (!listEl) return;
+    const labels = getAllArchiveCategoryLabels();
+    const optionsHtml = labels
+      .map(
+        (value) =>
+          `<li class="picory-dropdown__item" role="option" data-value="${escapeCategoryAttr(value)}" tabindex="-1">${escapeCategoryHtml(value)}</li>`,
+      )
+      .join('');
+    const addRowHtml = showAddRow
+      ? `<li class="picory-dropdown__add" role="presentation">
+          <div class="mypage-archive-category__add">
+            <input type="text" class="mypage-archive-category__add-input form-input" placeholder="새 주제" maxlength="${ARCHIVE_CATEGORY_MAX_LEN}" aria-label="새 주제 이름">
+            <button type="button" class="mypage-archive-category__add-btn btn btn--outline btn--xs">추가</button>
+          </div>
+        </li>`
+      : '';
+    listEl.innerHTML = optionsHtml + addRowHtml;
+  }
+
+  function refreshArchiveCategoryMenus(selectedValue) {
+    const current =
+      selectedValue ||
+      archiveCategoryDropdown?.getValue() ||
+      archiveCategorySelect?.value ||
+      '일상';
+    populateArchiveCategoryMenu(archiveCategoryList, { showAddRow: true });
+    archiveCategoryDropdown?.setValue(current);
+
+    const editList = archiveEditOverlay?.querySelector('#archiveEditCategoryList');
+    if (editList) {
+      const editCurrent = archiveEditCategoryDropdown?.getValue() || current;
+      populateArchiveCategoryMenu(editList, { showAddRow: true });
+      archiveEditCategoryDropdown?.setValue(editCurrent);
+    }
+  }
+
+  function tryAddArchiveCategory(rawLabel, sourceListEl) {
+    const name = normalizeArchiveCategoryLabel(rawLabel);
+    if (!name) {
+      alert('주제 이름을 입력해 주세요.');
+      return false;
+    }
+    if (name.length > ARCHIVE_CATEGORY_MAX_LEN) {
+      alert(`주제는 ${ARCHIVE_CATEGORY_MAX_LEN}자 이내로 입력해 주세요.`);
+      return false;
+    }
+    const activeDropdown =
+      sourceListEl?.id === 'archiveEditCategoryList'
+        ? archiveEditCategoryDropdown
+        : archiveCategoryDropdown;
+    if (getAllArchiveCategoryLabels().includes(name)) {
+      activeDropdown?.setValue(name);
+      activeDropdown?.close();
+      return true;
+    }
+    const custom = readArchiveCustomCategories();
+    if (custom.length >= ARCHIVE_CUSTOM_CATEGORY_MAX) {
+      alert(`사용자 주제는 최대 ${ARCHIVE_CUSTOM_CATEGORY_MAX}개까지 추가할 수 있어요.`);
+      return false;
+    }
+    custom.push(name);
+    writeArchiveCustomCategories(custom);
+    refreshArchiveCategoryMenus(name);
+    activeDropdown?.setValue(name);
+    activeDropdown?.close();
+    return true;
+  }
+
+  function bindArchiveCategoryAddRow(listEl) {
+    if (!listEl || listEl.dataset.categoryAddBound === '1') return;
+    listEl.dataset.categoryAddBound = '1';
+    listEl.addEventListener('click', (e) => {
+      const addRow = e.target.closest('.picory-dropdown__add');
+      if (!addRow || !listEl.contains(addRow)) return;
+      e.stopPropagation();
+      if (!e.target.closest('.mypage-archive-category__add-btn')) return;
+      const input = addRow.querySelector('.mypage-archive-category__add-input');
+      tryAddArchiveCategory(input?.value || '', listEl);
+      if (input) input.value = '';
+    });
+    listEl.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const input = e.target.closest('.mypage-archive-category__add-input');
+      if (!input || !listEl.contains(input)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      tryAddArchiveCategory(input.value, listEl);
+      input.value = '';
+    });
+    listEl.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.picory-dropdown__add')) e.stopPropagation();
+    });
+  }
+
+  function initArchiveCategoryDropdowns() {
+    syncArchiveCustomCategoriesFromPosts();
+    populateArchiveCategoryMenu(archiveCategoryList, { showAddRow: true });
+    bindArchiveCategoryAddRow(archiveCategoryList);
+
+    if (typeof window.mountPicoryDropdown === 'function' && archiveCategoryTrigger && archiveCategoryList) {
+      archiveCategoryDropdown = window.mountPicoryDropdown({
+        root: archiveCategoryRoot,
+        trigger: archiveCategoryTrigger,
+        list: archiveCategoryList,
+        valueEl: archiveCategoryValue,
+        hiddenInput: archiveCategorySelect,
+        initialValue: archiveCategorySelect?.value || '일상',
+        isValid: isArchiveCategoryLabelValid,
+      });
+    }
+  }
+
+  initArchiveCategoryDropdowns();
+
   const ARCHIVE_UPLOAD_MAX_PHOTOS = 12;
   /** @type {{ id: string, name: string, size: number, dataUrl: string }[]} */
   let selectedArchiveItems = [];
@@ -203,6 +374,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = new Date(isoString);
     if (Number.isNaN(date.getTime())) return '';
     return date.toLocaleString('ko-KR', {
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
+  };
+
+  const formatArchiveDateTime = (isoString) => {
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleString('ko-KR', {
+      year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
@@ -428,8 +612,32 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </article>
       `).join('')
-      : '<p class="mypage-muted">아직 작성한 댓글이 없어요.</p>';
+      : `
+        <div class="mypage-community-empty mypage-community-empty--comments">
+          <p class="mypage-community-empty__title">아직 남긴 댓글이 없어요</p>
+          <p class="mypage-muted">지금 첫 댓글을 달고 다른 사람들의 사진과 촬영 이야기에 함께해 보세요.</p>
+          <div class="mypage-community-empty__actions">
+            <button type="button" class="btn btn--primary btn--sm" data-mypage-goto-community-tab>댓글 남기러 가기</button>
+          </div>
+        </div>
+      `;
   };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (!target.closest('[data-mypage-goto-community-tab]')) return;
+    event.preventDefault();
+    activateTab('community');
+    const hash = 'community';
+    const base = `${window.location.pathname}${window.location.search}`;
+    try {
+      history.replaceState(null, '', `${base}#${hash}`);
+    } catch (_) {
+      window.location.hash = hash;
+    }
+    window.location.href = 'community.html';
+  });
 
   /** 이전 사이드바 활동 요약(북마크·아카이브 등) 제거 후 호환용 noop */
   const syncSidebarStats = () => {};
@@ -623,6 +831,76 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCommunityActivity();
   syncSidebarStats();
 
+  let archiveViewOverlay = null;
+
+  function ensureArchiveViewModal() {
+    if (archiveViewOverlay) return archiveViewOverlay;
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay hidden';
+    overlay.id = 'mypageArchiveViewModal';
+    overlay.innerHTML = `
+      <div class="modal modal--archive-view" role="dialog" aria-modal="true" aria-labelledby="mypageArchiveViewTitle">
+        <div class="modal__header">
+          <h3 id="mypageArchiveViewTitle">사진 보기</h3>
+          <button class="modal__close" type="button" data-archive-view-close aria-label="닫기">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal__body mypage-archive-view__body">
+          <div class="mypage-archive-view__img-wrap">
+            <img class="mypage-archive-view__img" id="mypageArchiveViewImg" alt="">
+          </div>
+          <div class="mypage-archive-view__meta">
+            <p class="mypage-archive-view__camera" id="mypageArchiveViewCamera"></p>
+            <p class="mypage-archive-view__detail" id="mypageArchiveViewDetail"></p>
+            <time class="mypage-archive-view__time" id="mypageArchiveViewTime"></time>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const close = () => overlay.classList.add('hidden');
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) close();
+    });
+    overlay.querySelector('[data-archive-view-close]')?.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !overlay.classList.contains('hidden')) close();
+    });
+
+    archiveViewOverlay = overlay;
+    return overlay;
+  }
+
+  function openArchiveView({ imageSrc, cameraModel, categoryLabel, createdAt }) {
+    const overlay = ensureArchiveViewModal();
+    const img = overlay.querySelector('#mypageArchiveViewImg');
+    const cameraEl = overlay.querySelector('#mypageArchiveViewCamera');
+    const detailEl = overlay.querySelector('#mypageArchiveViewDetail');
+    const timeEl = overlay.querySelector('#mypageArchiveViewTime');
+    const model = String(cameraModel || '업로드 이미지').trim() || '업로드 이미지';
+    const category = String(categoryLabel || '').trim();
+    const when = formatArchiveDateTime(createdAt);
+
+    if (img) {
+      img.src = imageSrc || '';
+      img.alt = model;
+    }
+    if (cameraEl) cameraEl.textContent = model;
+    if (detailEl) detailEl.textContent = category || '주제 미지정';
+    if (timeEl) {
+      if (when) {
+        timeEl.dateTime = createdAt || '';
+        timeEl.textContent = `업로드 ${when}`;
+      } else {
+        timeEl.removeAttribute('datetime');
+        timeEl.textContent = '업로드 시각 정보 없음';
+      }
+    }
+    overlay.classList.remove('hidden');
+  }
+
   const renderArchive = async () => {
     if (!archiveGridEl) return;
     let items = readArchiveList();
@@ -663,16 +941,48 @@ document.addEventListener('DOMContentLoaded', () => {
           const imageSrc = store
             ? await store.resolvePostImageSrc(item)
             : String(item.imageDataUrl || item.imageThumb || '');
+          const when = formatArchiveDateTime(item.createdAt);
+          const whenLabel = when ? escapeHtml(when) : '';
+          const whenAttr = item.createdAt ? escapeHtml(item.createdAt) : '';
           return `
-          <article class="mypage-archive-card card">
-            <img src="${imageSrc}" alt="${model}">
-            <p><strong>${model}</strong>${category ? ` · ${category}` : ''}</p>
+          <article class="mypage-archive-card card" data-archive-id="${escapeHtml(item.id || '')}">
+            <button
+              type="button"
+              class="mypage-archive-card__thumb"
+              aria-label="${model} 크게 보기"
+            >
+              <img src="${escapeHtml(imageSrc)}" alt="" loading="lazy" decoding="async">
+            </button>
+            <div class="mypage-archive-card__body">
+              <p class="mypage-archive-card__title"><strong>${model}</strong>${category ? `<span class="mypage-archive-card__category"> · ${category}</span>` : ''}</p>
+              ${whenLabel ? `<time class="mypage-archive-card__time" datetime="${whenAttr}">${whenLabel}</time>` : '<span class="mypage-archive-card__time mypage-archive-card__time--unknown">업로드 시각 정보 없음</span>'}
+            </div>
           </article>
         `;
         }),
     );
     archiveGridEl.innerHTML = cards.join('');
   };
+
+  archiveGridEl?.addEventListener('click', async (e) => {
+    const thumb = e.target.closest('.mypage-archive-card__thumb');
+    if (!thumb || !archiveGridEl.contains(thumb)) return;
+    const card = thumb.closest('[data-archive-id]');
+    const id = card?.getAttribute('data-archive-id');
+    if (!id) return;
+    const item = readArchiveList().find((entry) => entry && entry.id === id);
+    if (!item) return;
+    const store = window.PicoryCommunityImageStore;
+    const imageSrc = store
+      ? await store.resolvePostImageSrc(item)
+      : String(item.imageDataUrl || item.imageThumb || '');
+    openArchiveView({
+      imageSrc,
+      cameraModel: item.cameraModel,
+      categoryLabel: item.categoryLabel,
+      createdAt: item.createdAt,
+    });
+  });
   function readArchiveList() {
     try {
       const raw = localStorage.getItem(archiveStorageKey);
@@ -747,13 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
                 </span>
               </button>
-              <ul class="picory-dropdown__menu" id="archiveEditCategoryList" role="listbox" hidden>
-                <li class="picory-dropdown__item" role="option" data-value="일상" tabindex="-1">일상</li>
-                <li class="picory-dropdown__item" role="option" data-value="인물" tabindex="-1">인물</li>
-                <li class="picory-dropdown__item" role="option" data-value="풍경" tabindex="-1">풍경</li>
-                <li class="picory-dropdown__item" role="option" data-value="야경" tabindex="-1">야경</li>
-                <li class="picory-dropdown__item" role="option" data-value="음식" tabindex="-1">음식</li>
-              </ul>
+              <ul class="picory-dropdown__menu" id="archiveEditCategoryList" role="listbox" hidden></ul>
             </div>
           </div>
           <div style="display:flex; gap:8px; justify-content:flex-end;">
@@ -846,7 +1150,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const communityList = readCommunityList();
       const cIdx = communityList.findIndex((x) => x && x.id === archiveEditingId);
       if (cIdx >= 0) {
-        const categoryKey = categoryLabelToKey[categoryLabel] || 'daily';
+        const categoryKey = labelToCommunityKey(categoryLabel);
         communityList[cIdx] = {
           ...communityList[cIdx],
           cameraModel,
@@ -871,6 +1175,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const editValue = overlay.querySelector('#archiveEditCategoryValue');
       const editHidden = overlay.querySelector('#archiveEditCategorySelect');
       if (editTrigger && editList) {
+        populateArchiveCategoryMenu(editList, { showAddRow: true });
+        bindArchiveCategoryAddRow(editList);
         archiveEditCategoryDropdown = window.mountPicoryDropdown({
           root: editRoot,
           trigger: editTrigger,
@@ -878,6 +1184,7 @@ document.addEventListener('DOMContentLoaded', () => {
           valueEl: editValue,
           hiddenInput: editHidden,
           initialValue: '일상',
+          isValid: isArchiveCategoryLabelValid,
         });
       }
     }
@@ -1016,7 +1323,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const categoryLabel = archiveCategorySelect?.value?.trim() || '일상';
-    const categoryKey = categoryLabelToKey[categoryLabel] || 'daily';
+    const categoryKey = labelToCommunityKey(categoryLabel);
     let authorHandle = '@게스트';
     try {
       const raw = localStorage.getItem(sessionStorageKey);
@@ -1209,15 +1516,25 @@ document.addEventListener('DOMContentLoaded', () => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
   }
 
+  function syncPasswordToggleIcon(toggleButton, isRevealed) {
+    toggleButton.classList.toggle('is-revealed', isRevealed);
+    toggleButton.setAttribute('aria-label', isRevealed ? '비밀번호 숨기기' : '비밀번호 보기');
+    toggleButton.setAttribute('aria-pressed', isRevealed ? 'true' : 'false');
+  }
+
   function bindSettingsPasswordToggles() {
     settingsSectionRoot?.querySelectorAll('[data-password-toggle]').forEach((toggleButton) => {
-      toggleButton.addEventListener('click', () => {
-        const row = toggleButton.parentElement;
-        const input = row?.querySelector('input');
-        if (!(input instanceof HTMLInputElement)) return;
+      if (toggleButton.dataset.passwordToggleBound === '1') return;
+      const input = toggleButton.parentElement?.querySelector('input');
+      if (!(input instanceof HTMLInputElement)) return;
+      toggleButton.dataset.passwordToggleBound = '1';
+      syncPasswordToggleIcon(toggleButton, input.type === 'text');
+      toggleButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
         const reveal = input.type === 'password';
         input.type = reveal ? 'text' : 'password';
-        toggleButton.setAttribute('aria-label', reveal ? '비밀번호 숨기기' : '비밀번호 보기 전환');
+        syncPasswordToggleIcon(toggleButton, reveal);
       });
     });
   }

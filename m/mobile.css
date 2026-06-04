@@ -1047,6 +1047,22 @@ body.page-mobile.page-community #community .section__header {
   margin-top: 0;
 }
 
+body.page-mobile.page-community #community .community-page-intro {
+  text-align: left;
+}
+
+body.page-mobile.page-community #community .community-page-intro .section__title,
+body.page-mobile.page-community #community .community-page-intro .section__desc {
+  text-align: left;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+body.page-mobile.page-community #community .community-actions,
+body.page-mobile.page-community #community .community-filters {
+  justify-content: flex-start;
+}
+
 /* 시세 비교: 검색 결과·차트가 가로로 튀어나가지 않도록 (/m/ 는 항상 카드형 목록) */
 body.page-mobile.page-price #price .container {
   width: 100%;
@@ -1325,12 +1341,13 @@ body.page-mobile.page-mypage .mypage-tabs--sidebar {
   padding-bottom: 0;
 }
 
-body.page-mobile.page-mypage .mypage-tabs--sidebar .mypage-tab {
-  flex: none;
-  width: 100%;
-  min-height: 40px;
-  padding: 8px 10px;
-  font-size: clamp(0.72rem, 2.8vw, 0.82rem);
-  white-space: normal;
-  word-break: keep-all;
+body.page-mobile.page-mypage .mypage-nav__item {
+  padding: 9px 10px 9px 8px;
+  font-size: clamp(0.78rem, 2.9vw, 0.86rem);
+  gap: 9px;
+}
+
+body.page-mobile.page-mypage .mypage-nav__list {
+  padding: 5px;
+  gap: 1px;
 }

@@ -153,7 +153,7 @@ body.auth-page .footer .container > * {
     grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
     column-gap: var(--grid-gutter);
     row-gap: var(--grid-gutter);
-    align-items: start;
+    align-items: stretch;
   }
 
   body.page-mypage .mypage-sidebar {
@@ -197,4 +197,17 @@ body.page-products .product-catalog-nav-wrapper .container {
 
 body.page-products .product-catalog-nav-wrapper .container > * {
   grid-column: 1 / -1;
+}
+
+/* 커뮤니티: 제목·액션·필터 왼쪽 정렬 */
+body.page-community #community .community-page-intro,
+body.page-community #community .community-actions,
+body.page-community #community .community-filters {
+  justify-self: start;
+  width: 100%;
+}
+
+body.page-community #community .community-actions,
+body.page-community #community .community-filters {
+  justify-content: flex-start;
 }

@@ -264,7 +264,7 @@ const server = http.createServer((req, res) => {
     }
     const type = MIME[ext] || 'text/plain';
     /** HTML/JS/CSS/JSON은 캐시하지 않음 — 코드 수정 후 F5만으로도 최신이 보이게 (import .mjs 포함) */
-    const nocache = ['.html', '.htm', '.js', '.mjs', '.css', '.json'].includes(ext);
+    const nocache = ['.html', '.htm', '.js', '.mjs', '.css', '.json', '.svg'].includes(ext);
     const headers = nocache
       ? { 'Content-Type': type, 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
       : { 'Content-Type': type };

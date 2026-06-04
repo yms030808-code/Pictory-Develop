@@ -50,8 +50,8 @@
 
   <section class="section section--dark" id="community">
     <div class="container">
-      <div class="section__header section__header--community-brand">
-        <img class="community-page-logo community-logo-mark" src="images/pictory-community-logo-mark.svg" alt="Pictory Community" width="860" height="220">
+      <div class="section__header community-page-intro">
+        <h1 class="section__title">커뮤니티</h1>
         <p class="section__desc">실제 유저들이 올린 사진과 촬영 설정을 확인하세요. 광고 없는 진짜 결과물만 모았어요.</p>
       </div>
 
@@ -78,7 +78,7 @@
       <div class="gallery-grid" id="communityGalleryGrid">
         <div class="gallery-card card" data-community-tags="food daily" data-post-id="p1">
           <div class="gallery-card__img">
-            <img class="gallery-card__photo" src="images/community-fujifilm-xt5-gallery.jpg" alt="도시 식당·음식 풍경 샘플 (카메라 본체 없음)" width="1200" height="800" loading="lazy">
+            <img class="gallery-card__photo" src="images/community-fujifilm-xt5-gallery.jpg" alt="제주 해안과 등대가 보이는 풍경" width="1000" height="1250" loading="lazy">
             <div class="gallery-card__overlay">
               <button type="button" class="gallery-card__camera-tag" data-products-href="products.html#emotional" aria-haspopup="dialog" aria-expanded="false">Fujifilm X-T5</button>
               <button type="button" class="gallery-card__save-btn" aria-label="저장" data-post-id="p1" data-post-title="Fujifilm X-T5 · 음식/일상">
@@ -102,7 +102,7 @@
 
         <div class="gallery-card card" data-community-tags="night daily" data-post-id="p2">
           <div class="gallery-card__img">
-            <img class="gallery-card__photo" src="images/community-canon-r6ii-gallery.jpg" alt="야간 도시 불빛 풍경 (카메라 본체 없음)" width="1200" height="800" loading="lazy">
+            <img class="gallery-card__photo" src="images/community-canon-r6ii-gallery.jpg" alt="한국 도심 골목 길 풍경" width="1000" height="1250" loading="lazy">
             <div class="gallery-card__overlay">
               <button type="button" class="gallery-card__camera-tag" data-products-href="products.html#vlog" aria-haspopup="dialog" aria-expanded="false">Canon R6 II</button>
               <button type="button" class="gallery-card__save-btn" aria-label="저장" data-post-id="p2" data-post-title="Canon R6 II · 야경/일상">
@@ -126,7 +126,7 @@
 
         <div class="gallery-card card" data-community-tags="landscape daily" data-post-id="p3">
           <div class="gallery-card__img">
-            <img class="gallery-card__photo" src="images/community-nikon-zf-gallery.jpg" alt="산과 숲이 보이는 풍경 (카메라 본체 없음)" width="1200" height="800" loading="lazy">
+            <img class="gallery-card__photo" src="images/community-nikon-zf-gallery.jpg" alt="서울 북촌 한옥마을과 남산 타워 풍경" width="1000" height="1250" loading="lazy">
             <div class="gallery-card__overlay">
               <button type="button" class="gallery-card__camera-tag" data-products-href="products.html#vintage" aria-haspopup="dialog" aria-expanded="false">Nikon Zf</button>
               <button type="button" class="gallery-card__save-btn" aria-label="저장" data-post-id="p3" data-post-title="Nikon Zf · 풍경/일상">
@@ -150,7 +150,7 @@
 
         <div class="gallery-card card" data-community-tags="portrait daily" data-post-id="p4">
           <div class="gallery-card__img">
-            <img class="gallery-card__photo" src="images/community-portrait-gallery.jpg" alt="인물 클로즈업 샘플 (카메라 본체 없음)" width="1200" height="800" loading="lazy">
+            <img class="gallery-card__photo" src="images/community-portrait-gallery.jpg" alt="공원 연못 앞 소풍 테이블 풍경" width="1000" height="1250" loading="lazy">
             <div class="gallery-card__overlay">
               <button type="button" class="gallery-card__camera-tag" data-products-href="products.html#trending" aria-haspopup="dialog" aria-expanded="false">Sony α7 IV</button>
               <button type="button" class="gallery-card__save-btn" aria-label="저장" data-post-id="p4" data-post-title="Sony α7 IV · 인물">
@@ -216,7 +216,7 @@
             <label class="form-label">카메라 기종</label>
             <input type="text" class="form-input" id="uploadCamera" placeholder="예: Sony A7C II">
           </div>
-          <div class="form-row">
+          <div class="form-row upload-exif-row">
             <div class="form-group">
               <label class="form-label">조리개</label>
               <input type="text" class="form-input" id="uploadAperture" placeholder="예: f/1.8">
@@ -246,7 +246,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">글 작성 <span style="color:var(--color-text-muted);font-weight:400;">(선택)</span></label>
-            <textarea id="uploadCaption" class="form-input" rows="3" placeholder="촬영 당시 이야기나 느낌을 자유롭게 적어보세요..." style="resize:vertical;min-height:72px;"></textarea>
+            <textarea id="uploadCaption" class="form-input" rows="3" placeholder="촬영 당시 이야기나 느낌을 자유롭게 적어보세요" style="resize:vertical;min-height:72px;"></textarea>
           </div>
           <button class="btn btn--comm-upload btn--lg" id="uploadSubmitBtn" style="width:100%;margin-top:8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>

@@ -54,13 +54,57 @@
             </div>
             <button type="button" class="btn btn--outline btn--sm mypage-sidebar__logout" id="mypageLogoutBtn">로그아웃</button>
           </div>
-          <nav class="mypage-tabs mypage-tabs--sidebar" aria-label="마이페이지 탭">
-            <button class="mypage-tab is-active" data-mypage-tab="home" type="button">마이홈</button>
-            <button class="mypage-tab" data-mypage-tab="recommend" type="button">나를 위한 추천</button>
-            <button class="mypage-tab" data-mypage-tab="bookmark" type="button">북마크</button>
-            <button class="mypage-tab" data-mypage-tab="archive" type="button">내 사진 모아보기</button>
-            <button class="mypage-tab" data-mypage-tab="community" type="button">커뮤니티</button>
-            <button class="mypage-tab" data-mypage-tab="settings" type="button">설정</button>
+          <nav class="mypage-nav mypage-tabs mypage-tabs--sidebar" aria-label="마이페이지 메뉴">
+            <ul class="mypage-nav__list" role="list">
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab is-active" data-mypage-tab="home">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-9.5z"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">마이홈</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab" data-mypage-tab="recommend">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.2 6.8H21l-5.5 4 2.1 6.7L12 15.9 6.4 19.5l2.1-6.7L3 8.8h6.8L12 2z"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">나를 위한 추천</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab" data-mypage-tab="bookmark">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">북마크</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab" data-mypage-tab="archive">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">내 사진 모아보기</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab" data-mypage-tab="community">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 3V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">커뮤니티</span>
+                </button>
+              </li>
+              <li>
+                <button type="button" class="mypage-nav__item mypage-tab" data-mypage-tab="settings">
+                  <span class="mypage-nav__icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  </span>
+                  <span class="mypage-nav__label">설정</span>
+                </button>
+              </li>
+            </ul>
           </nav>
         </aside>
 
@@ -173,19 +217,13 @@
                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0L5 6L10 0" fill="currentColor"/></svg>
                       </span>
                     </button>
-                    <ul class="picory-dropdown__menu" id="mypageArchiveCategoryList" role="listbox" hidden>
-                      <li class="picory-dropdown__item" role="option" data-value="일상" tabindex="-1">일상</li>
-                      <li class="picory-dropdown__item" role="option" data-value="인물" tabindex="-1">인물</li>
-                      <li class="picory-dropdown__item" role="option" data-value="풍경" tabindex="-1">풍경</li>
-                      <li class="picory-dropdown__item" role="option" data-value="야경" tabindex="-1">야경</li>
-                      <li class="picory-dropdown__item" role="option" data-value="음식" tabindex="-1">음식</li>
-                    </ul>
+                    <ul class="picory-dropdown__menu" id="mypageArchiveCategoryList" role="listbox" hidden></ul>
                   </div>
                   <label class="mypage-archive-upload__community-option">
                     <input type="checkbox" id="mypageArchiveShareCommunity">
                     <span>커뮤니티에도 올리기</span>
                   </label>
-                  <button type="button" class="btn btn--primary btn--sm" id="mypageArchiveUploadBtn">사진 올리기</button>
+                  <button type="button" class="btn btn--primary mypage-archive-upload__submit" id="mypageArchiveUploadBtn">사진 올리기</button>
                 </div>
               </div>
               <div class="mypage-empty-state">
@@ -212,7 +250,7 @@
                   <h3>내가 좋아요한 게시물</h3>
                   <div class="mypage-community-list" id="mypageLikedPostsList"></div>
                 </section>
-                <section class="mypage-community-block">
+                <section class="mypage-community-block" id="mypageCommentsBlock">
                   <h3>내가 쓴 댓글</h3>
                   <div class="mypage-community-list" id="mypageCommentsList"></div>
                 </section>
@@ -227,7 +265,6 @@
               <nav class="mypage-settings-tabs" aria-label="설정 구분">
                 <button type="button" class="mypage-settings-tab is-active" data-settings-tab="account">계정</button>
                 <button type="button" class="mypage-settings-tab" data-settings-tab="notifications">알림</button>
-                <button type="button" class="mypage-settings-tab" data-settings-tab="privacy">개인정보</button>
               </nav>
               <div class="mypage-settings-panels">
                 <div class="mypage-settings-panel is-active" data-settings-panel="account">
@@ -267,33 +304,36 @@
                     <section class="mypage-settings-block">
                       <h3 class="mypage-settings-block__title">비밀번호</h3>
                       <p class="mypage-muted mypage-settings-block__lead">현재 비밀번호 확인 후 새 비밀번호로 변경할 수 있어요.</p>
-                      <label class="mypage-settings-field">
-                        <span class="mypage-settings-field__label">현재 비밀번호</span>
+                      <div class="mypage-settings-field">
+                        <label class="mypage-settings-field__label" for="settingsCurrentPassword">현재 비밀번호</label>
                         <div class="auth-password-wrap">
-                          <input type="password" id="settingsCurrentPassword" autocomplete="current-password">
-                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          <input type="password" id="settingsCurrentPassword" autocomplete="current-password" placeholder="현재 비밀번호">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기">
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                           </button>
                         </div>
-                      </label>
-                      <label class="mypage-settings-field">
-                        <span class="mypage-settings-field__label">새 비밀번호</span>
+                      </div>
+                      <div class="mypage-settings-field">
+                        <label class="mypage-settings-field__label" for="settingsNewPassword">새 비밀번호</label>
                         <div class="auth-password-wrap">
-                          <input type="password" id="settingsNewPassword" autocomplete="new-password">
-                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          <input type="password" id="settingsNewPassword" autocomplete="new-password" placeholder="영문 대·소문자, 숫자, 특수문자 포함 8~20자">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기">
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                           </button>
                         </div>
-                      </label>
-                      <label class="mypage-settings-field">
-                        <span class="mypage-settings-field__label">새 비밀번호 확인</span>
+                      </div>
+                      <div class="mypage-settings-field">
+                        <label class="mypage-settings-field__label" for="settingsNewPasswordConfirm">새 비밀번호 확인</label>
                         <div class="auth-password-wrap">
-                          <input type="password" id="settingsNewPasswordConfirm" autocomplete="new-password">
-                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기 전환">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                          <input type="password" id="settingsNewPasswordConfirm" autocomplete="new-password" placeholder="새 비밀번호 다시 입력">
+                          <button class="auth-password-toggle" type="button" data-password-toggle aria-label="비밀번호 보기">
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                            <svg class="auth-password-toggle__icon auth-password-toggle__icon--show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
                           </button>
                         </div>
-                      </label>
+                      </div>
                       <button type="button" class="btn btn--outline btn--sm" id="settingsSavePasswordBtn">비밀번호 변경</button>
                     </section>
 
@@ -305,15 +345,15 @@
                         <input type="email" id="settingsEmailInput" autocomplete="email" placeholder="example@email.com" maxlength="120">
                       </label>
                       <div class="mypage-settings-actions">
-                        <button type="button" class="btn btn--primary btn--sm" id="settingsSaveEmailBtn">이메일 저장</button>
+                        <button type="button" class="btn btn--outline btn--sm" id="settingsSaveEmailBtn">이메일 저장</button>
                         <button type="button" class="btn btn--outline btn--sm hidden" id="settingsRemoveEmailBtn">연결 해제</button>
                       </div>
                     </section>
 
                     <section class="mypage-settings-block mypage-settings-block--danger">
                       <h3 class="mypage-settings-block__title">계정 삭제</h3>
-                      <p class="mypage-muted mypage-settings-block__lead">계정과 로컬에 저장된 데모 회원 정보가 삭제되며 되돌릴 수 없어요.</p>
-                      <button type="button" class="btn btn--outline btn--sm mypage-settings-danger-btn" id="settingsDeleteAccountBtn">계정 삭제</button>
+                      <p class="mypage-muted mypage-settings-block__lead">계정을 삭제하면 이 기기에 저장된 회원 정보도 함께 삭제돼요.<br>삭제한 정보는 다시 복구할 수 없어요.</p>
+                      <button type="button" class="btn btn--outline btn--sm" id="settingsDeleteAccountBtn">계정 삭제</button>
                     </section>
                   </div>
                 </div>
@@ -331,9 +371,6 @@
                       <p class="mypage-muted mypage-settings-hint" id="settingsNotifyEmailHint"></p>
                     </section>
                   </div>
-                </div>
-                <div class="mypage-settings-panel" data-settings-panel="privacy">
-                  <p class="mypage-muted">개인정보 처리방침·데이터 다운로드 등 상세 기능은 서비스 확장 시 제공할 예정이에요.</p>
                 </div>
               </div>
             </section>
