@@ -34,6 +34,7 @@ export function renderProductCardHTML(product) {
           <span class="product-card__brand">${escapeHtml(product.brand)}</span>
           <h3 class="product-card__model">${escapeHtml(product.model)}</h3>
         </div>
+        <div class="product-card__stack">
         <a class="product-card__thumb-link" href="${escapeAttr(priceHref)}" aria-label="${escapeAttr(ariaLabel)}">
           <div class="product-card__thumb product-card__thumb--slot">
             <img
@@ -56,23 +57,24 @@ export function renderProductCardHTML(product) {
           </div>
           <p class="product-card__platform">${escapeHtml(product.platform)}</p>
         </div>
-      </div>
-      <div class="product-card__footer-row">
-        <div class="product-card__cta">
-          <button type="button" class="product-card__compare-btn"
-            data-id="${escapeAttr(product.id)}"
-            data-brand="${escapeAttr(product.brand)}"
-            data-model="${escapeAttr(product.model)}"
-            data-thumb="${escapeAttr(thumb)}">
-            <span class="product-card__cta-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
-              </svg>
-            </span>
-            <span class="product-card__cta-text">비교함 담기</span>
-          </button>
+        <div class="product-card__footer-row">
+          <div class="product-card__cta">
+            <button type="button" class="product-card__compare-btn"
+              data-id="${escapeAttr(product.id)}"
+              data-brand="${escapeAttr(product.brand)}"
+              data-model="${escapeAttr(product.model)}"
+              data-thumb="${escapeAttr(thumb)}">
+              <span class="product-card__cta-icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span class="product-card__cta-text">비교함 담기</span>
+            </button>
+          </div>
+          <a class="product-card__action-btn" href="${escapeAttr(priceHref)}">상세보기</a>
         </div>
-        <a class="product-card__action-btn" href="${escapeAttr(priceHref)}">상세보기</a>
+        </div>
       </div>
     </div>
   `.trim();
