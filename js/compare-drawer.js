@@ -96,7 +96,7 @@
   function showCompareAddedPrompt() {
     const confirmEl = document.getElementById('pcmpConfirm');
     if (!confirmEl) {
-      if (window.confirm('비교함에 추가되었습니다. 비교 시작하시겠습니까?')) startFloatGlow();
+      if (window.confirm('비교함에 추가되었습니다. 비교함으로 이동할까요?')) startFloatGlow();
       return;
     }
     confirmEl.classList.add('is-open');
@@ -175,7 +175,7 @@
         <span id="pcmpBadge" class="pcmp-float__badge" style="display:none">0</span>
       </button>
       <div id="pcmpConfirm" class="pcmp-confirm" role="dialog" aria-modal="false" aria-label="비교함 추가 확인">
-        <p class="pcmp-confirm__text">비교함에 추가되었습니다. 비교 시작하시겠습니까?</p>
+        <p class="pcmp-confirm__text">비교함에 추가되었습니다. 비교함으로 이동할까요?</p>
         <div class="pcmp-confirm__actions">
           <button id="pcmpConfirmYes" class="pcmp-confirm__btn pcmp-confirm__btn--yes" type="button">예</button>
           <button id="pcmpConfirmNo" class="pcmp-confirm__btn" type="button">나중에 할게요</button>

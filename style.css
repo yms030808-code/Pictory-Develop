@@ -7071,7 +7071,7 @@ html[data-theme="dark"] .btn--danger {
 
 .mypage-settings-field .auth-password-wrap input {
   border: none;
-  padding-left: 0;
+  padding-left: 12px;
   padding-right: 0;
   border-radius: 0;
   box-shadow: none;
@@ -7648,7 +7648,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   width: 100%;
   height: auto;
   margin: 0;
-  padding: 1.25rem 2rem 1.375rem;
+  padding: 1rem 1.625rem 1.05rem;
   box-sizing: border-box;
   border-radius: 1.35rem;
   border: 1px solid var(--Gray-600, #303030);
@@ -7682,7 +7682,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin: 0 0 0.625rem;
+  margin: 0 0 0.4rem;
   padding: 0;
 }
 
@@ -7691,9 +7691,9 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   margin: 0;
   color: var(--Gray-400, #9e9e9e);
   font-family: Pretendard, var(--font-family);
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.35;
   letter-spacing: -0.06rem;
 }
 
@@ -7704,7 +7704,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   font-family: Pretendard, var(--font-family);
   font-size: 1.25rem;
   font-weight: 600;
-  line-height: 1.9rem;
+  line-height: 1.5rem;
   letter-spacing: -0.02063rem;
 }
 
@@ -7714,7 +7714,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   text-decoration: none;
   color: inherit;
   flex-shrink: 0;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.3rem;
 }
 
 .product-card__thumb-link:focus-visible {
@@ -7726,7 +7726,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
 .product-card__thumb {
   position: relative;
   width: 100%;
-  height: 11rem;
+  height: 8.75rem;
   flex-shrink: 0;
   border-radius: 0.8rem;
   background: #fff;
@@ -7740,7 +7740,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0.75rem;
+  padding: 0.625rem;
   box-sizing: border-box;
 }
 
@@ -7765,9 +7765,9 @@ html[data-theme="dark"] .mypage-settings-block--danger {
 .product-card__desc-box {
   display: flex;
   width: 100%;
-  min-height: 4rem;
-  margin: 0 0 0.25rem;
-  padding: 0.5625rem 0 0.5625rem 0.875rem;
+  min-height: 3.125rem;
+  margin: 0 0 0.15rem;
+  padding: 0.375rem 0 0.375rem 0.875rem;
   box-sizing: border-box;
   justify-content: flex-start;
   align-items: center;
@@ -7780,7 +7780,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   font-family: Pretendard, var(--font-family);
   font-size: 0.9375rem;
   font-weight: 400;
-  line-height: 1.4rem;
+  line-height: 1.35rem;
   letter-spacing: -0.015rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -7845,7 +7845,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
 .product-card__footer-row {
   display: flex;
   width: 100%;
-  margin: 0.75rem 0 0;
+  margin: 0.5rem 0 0;
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
@@ -7912,9 +7912,9 @@ html[data-theme="dark"] .mypage-settings-block--danger {
 
 .product-card__action-btn {
   display: inline-flex;
-  height: 2.75rem;
+  height: 2.375rem;
   min-width: 5.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.5rem 1.0625rem;
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
@@ -8254,7 +8254,7 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   }
 
   .product-card.product-item {
-    padding: 1.25rem 1rem 1.5rem;
+    padding: 1rem 1rem 1.125rem;
   }
 
   .hero { padding: 90px 0 var(--space-2xl); }
