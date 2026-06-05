@@ -207,7 +207,7 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
 
   const lowestListing = findLowestUsedListing(used);
   const lowestLinkHtml = lowestListing
-    ? `<a class="chart__lowest-link" href="${escapeAttr(buildExternalListingUrl(lowestListing.platformKey, query || lowestListing.searchQuery))}" target="_blank" rel="noopener noreferrer">${escapeHtml(lowestListing.platformLabel)}에서 최저가 보기</a>`
+    ? `<a class="chart__lowest-link" href="${escapeAttr(buildExternalListingUrl(lowestListing.platformKey, query || lowestListing.searchQuery))}" target="_blank" rel="noopener noreferrer">최저가 보러가기<span class="chart__lowest-link-icon" aria-hidden="true">-&gt;</span></a>`
     : '';
 
   const pointGroups = lowPoints
@@ -216,8 +216,8 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
       return `
     <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
       <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
-      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="4.5"/>
-      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5.5"/>
+      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="5"/>
+      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5"/>
     </g>`;
     })
     .join('');
@@ -244,8 +244,8 @@ export function renderPriceChart(mount, filteredListings, query, options = {}) {
           <div class="chart__col-price">
             ${iconLow}
             <span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span>
+            ${lowestLinkHtml}
           </div>
-          ${lowestLinkHtml}
         </div>
       </div>
     </header>`;

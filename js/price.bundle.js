@@ -612,14 +612,14 @@
     const iconAvg = `<svg class="chart__price-icon" xmlns="http://www.w3.org/2000/svg" width="9" height="2" viewBox="0 0 9 2" fill="none" aria-hidden="true"><path d="M0 1.16667V0H8.16667V1.16667H0Z" fill="currentColor"/></svg>`;
     const iconLow = `<svg class="chart__price-icon chart__price-icon--low" xmlns="http://www.w3.org/2000/svg" width="12" height="7" viewBox="0 0 12 7" fill="none" aria-hidden="true"><path d="M8.16667 7V5.83333H9.68333L6.65 2.82917L4.31667 5.1625L0 0.816667L0.816667 0L4.31667 3.5L6.65 1.16667L10.5 5.01667V3.5H11.6667V7H8.16667Z" fill="currentColor"/></svg>`;
     const lowestListing = findLowestUsedListing(used);
-    const lowestLinkHtml = lowestListing ? `<a class="chart__lowest-link" href="${escapeAttr(buildExternalListingUrl(lowestListing.platformKey, query || lowestListing.searchQuery))}" target="_blank" rel="noopener noreferrer">${escapeHtml(lowestListing.platformLabel)}\uC5D0\uC11C \uCD5C\uC800\uAC00 \uBCF4\uAE30</a>` : "";
+    const lowestLinkHtml = lowestListing ? `<a class="chart__lowest-link" href="${escapeAttr(buildExternalListingUrl(lowestListing.platformKey, query || lowestListing.searchQuery))}" target="_blank" rel="noopener noreferrer">\uCD5C\uC800\uAC00 \uBCF4\uB7EC\uAC00\uAE30<span class="chart__lowest-link-icon" aria-hidden="true">-&gt;</span></a>` : "";
     const pointGroups = lowPoints.map((lowPoint, i) => {
       const highPoint = highPoints[i];
       return `
     <g class="chart__point" data-month="${escapeAttr(monthFull[i])}" data-low="${escapeAttr(formatWonFull(lowPoint.v))}" data-high="${escapeAttr(formatWonFull(highPoint.v))}">
       <circle class="chart__hit" cx="${lowPoint.x}" cy="${(lowPoint.y + highPoint.y) / 2}" r="16" fill="transparent" style="cursor:pointer"/>
-      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="4.5"/>
-      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5.5"/>
+      <circle class="chart__dot chart__dot--high" cx="${highPoint.x}" cy="${highPoint.y}" r="5"/>
+      <circle class="chart__dot chart__dot--low" cx="${lowPoint.x}" cy="${lowPoint.y}" r="5"/>
     </g>`;
     }).join("");
     const headerHtml = `
@@ -644,8 +644,8 @@
           <div class="chart__col-price">
             ${iconLow}
             <span class="chart__col-value">${escapeHtml(formatWonFull(currentLow))}</span>
+            ${lowestLinkHtml}
           </div>
-          ${lowestLinkHtml}
         </div>
       </div>
     </header>`;

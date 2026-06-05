@@ -552,6 +552,18 @@
     "sigma-fp-l": ["black", "gray"],
     "kodak-pixpro-fz55": ["black", "blue", "red"]
   });
+  var COMPARE_CTA_DEFAULT_TEXT = "\uBE44\uAD50\uD568 \uB2F4\uAE30";
+  var COMPARE_CTA_ADDED_TEXT = "\uB2F4\uAE40";
+  var COMPARE_CTA_PLUS_ICON = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+  </svg>
+`.trim();
+  var COMPARE_CTA_CHECK_ICON = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M6.75 12.25L10.25 15.75L17.75 8.25" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+`.trim();
   var recommendIndexById = new Map(
     PICORY_PRODUCT_MOCK.map((p, i) => [p.id, i])
   );
@@ -604,6 +616,49 @@
       return colors.includes(colorKey);
     });
   }
+  function setCompareButtonState(button, isAdded) {
+    button.classList.toggle("is-added", isAdded);
+    button.setAttribute("aria-pressed", isAdded ? "true" : "false");
+    const textEl = button.querySelector(".product-card__cta-text");
+    if (textEl) textEl.textContent = isAdded ? COMPARE_CTA_ADDED_TEXT : COMPARE_CTA_DEFAULT_TEXT;
+    const iconEl = button.querySelector(".product-card__cta-icon");
+    if (iconEl) iconEl.innerHTML = isAdded ? COMPARE_CTA_CHECK_ICON : COMPARE_CTA_PLUS_ICON;
+  }
+  function syncProductCompareButtons(root = document) {
+    const compare = window.PicoryCompare;
+    root.querySelectorAll(".product-card__compare-btn").forEach((button) => {
+      const id = button.getAttribute("data-id");
+      setCompareButtonState(button, Boolean(compare?.has?.(id)));
+    });
+  }
+  function getCompareCameraFromButton(button) {
+    return {
+      id: button.getAttribute("data-id") || "",
+      brand: button.getAttribute("data-brand") || "",
+      model: button.getAttribute("data-model") || "",
+      thumbnail: button.getAttribute("data-thumb") || ""
+    };
+  }
+  function bindProductCompareButtons(gridRoot) {
+    gridRoot.addEventListener("click", (event) => {
+      const button = event.target.closest(".product-card__compare-btn");
+      if (!button || !gridRoot.contains(button)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const compare = window.PicoryCompare;
+      if (!compare) return;
+      const camera = getCompareCameraFromButton(button);
+      if (!camera.id) return;
+      if (compare.has(camera.id)) {
+        compare.remove?.(camera.id);
+        setCompareButtonState(button, false);
+        return;
+      }
+      compare.add(camera);
+      setCompareButtonState(button, true);
+    });
+    document.addEventListener("picory-compare-updated", () => syncProductCompareButtons(gridRoot));
+  }
   function refreshProductGrid(gridRoot, emptyEl, categoryKey, sortKey, searchQuery, colorKey = "all") {
     const categoryFiltered = filterProductsByCategoryAndSearch(PICORY_PRODUCT_MOCK, categoryKey, searchQuery);
     const filtered = filterProductsByColor(categoryFiltered, colorKey);
@@ -617,6 +672,7 @@
     if (emptyEl) emptyEl.classList.add("hidden");
     gridRoot.innerHTML = items.map(renderProductCardHTML).join("");
     bindProductCardImageFallbacks(gridRoot);
+    syncProductCompareButtons(gridRoot);
     window.syncPicoryBookmarks?.();
   }
   function getCategoryKeyFromHash() {
@@ -695,6 +751,7 @@
     const colorList = document.getElementById("productColorList");
     const colorValue = document.getElementById("productColorValue");
     if (!navRoot || !gridRoot) return;
+    bindProductCompareButtons(gridRoot);
     let sortKey = getStoredSort();
     let colorKey = getStoredColor();
     let activeSearchQuery = qParam;

@@ -28,6 +28,10 @@
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
       <div class="nav__actions">
+        <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
+          <span class="pictory-icon pictory-icon--sm" data-pictory-icon="favorite" aria-hidden="true"></span>
+          북마크
+        </button>
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
       </div>
       <button class="nav__hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
@@ -217,22 +221,40 @@
 
       grid.innerHTML = filtered.map(cam => {
         const inCompare = window.PicoryCompare && window.PicoryCompare.has(cam.id);
+        const compareIcon = inCompare
+          ? '<path d="M6.75 12.25L10.25 15.75L17.75 8.25" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>'
+          : '<path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>';
         return `
           <div class="cam-result-card">
-            <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="cam-result-card__thumb" style="display:flex;text-decoration:none;">
-              <img src="${cam.thumbnail}" alt="${cam.brand} ${cam.model}" onerror="this.src='images/cameras/default-camera.png'">
-            </a>
             <div class="cam-result-card__body">
-              <p class="cam-result-card__brand">${cam.brand}</p>
-              <p class="cam-result-card__model">${cam.model}</p>
-              <p class="cam-result-card__desc">${cam.desc}</p>
-              <p class="cam-result-card__price">${cam.priceSummary}</p>
-              <div class="cam-result-card__actions">
-                <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="btn btn--ghost" style="flex:1;font-size:0.78rem;padding:8px 10px;">자세히 보기</a>
-                <button class="cam-add-compare-btn ${inCompare ? 'is-added' : ''}" data-id="${cam.id}" type="button">
-                  ${inCompare ? '✓ 담김' : '+ 비교함 담기'}
+              <div class="product-card__header">
+                <span class="cam-result-card__brand product-card__brand">${cam.brand}</span>
+                <h3 class="cam-result-card__model product-card__model">${cam.model}</h3>
+              </div>
+              <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="cam-result-card__thumb product-card__thumb-link" aria-label="${cam.brand} ${cam.model} 상세보기">
+                <div class="product-card__thumb product-card__thumb--slot">
+                  <img class="product-card__img" src="${cam.thumbnail}" alt="" onerror="this.src='images/cameras/default-camera.png'">
+                </div>
+              </a>
+              <div class="product-card__desc-box">
+                <p class="cam-result-card__desc product-card__desc">${cam.desc}</p>
+              </div>
+              <div class="product-card__meta-row">
+                <div class="product-card__price-group">
+                  <strong class="cam-result-card__price product-card__price">${cam.priceSummary}</strong>
+                </div>
+              </div>
+            </div>
+            <div class="product-card__footer-row cam-result-card__footer-row">
+              <div class="product-card__cta">
+                <button class="cam-add-compare-btn product-card__compare-btn ${inCompare ? 'is-added' : ''}" data-id="${cam.id}" type="button">
+                  <span class="product-card__cta-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">${compareIcon}</svg>
+                  </span>
+                  <span class="product-card__cta-text">${inCompare ? '담김' : '비교함 담기'}</span>
                 </button>
               </div>
+              <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}" class="product-card__action-btn">상세보기</a>
             </div>
           </div>
         `;
@@ -243,14 +265,26 @@
           const id = btn.dataset.id;
           const cam = CAMERAS.find(c => c.id === id);
           if (!cam || !window.PicoryCompare) return;
-          if (window.PicoryCompare.has(id)) return;
+          const textEl = btn.querySelector('.product-card__cta-text');
+          const iconEl = btn.querySelector('.product-card__cta-icon');
+          const plusIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>';
+          const checkIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.75 12.25L10.25 15.75L17.75 8.25" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          const setCompareState = (isAdded) => {
+            btn.classList.toggle('is-added', isAdded);
+            if (textEl) textEl.textContent = isAdded ? '담김' : '비교함 담기';
+            if (iconEl) iconEl.innerHTML = isAdded ? checkIcon : plusIcon;
+          };
+          if (window.PicoryCompare.has(id)) {
+            window.PicoryCompare.remove?.(id);
+            setCompareState(false);
+            return;
+          }
           const added = window.PicoryCompare.add(cam);
           if (added) {
-            btn.classList.add('is-added');
-            btn.textContent = '✓ 담김';
+            setCompareState(true);
           } else {
-            btn.textContent = '이미 담김';
-            setTimeout(() => { btn.textContent = '+ 비교함 담기'; }, 1500);
+            if (textEl) textEl.textContent = '이미 담김';
+            setTimeout(() => { if (textEl) textEl.textContent = '비교함 담기'; }, 1500);
           }
         });
       });

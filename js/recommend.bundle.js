@@ -275,17 +275,39 @@
   ];
 
   // js/recommend/cameraThumbnails.js
-  var EXTRA_THUMBNAILS = {
-    "Fujifilm X-T5": "/images/cameras/fujifilm-x-s20.png"
+  var PRICE_DETAIL_IMAGES = {
+    "Fujifilm X100VI": "images/cameras/fujifilm-x100vi.png",
+    "Canon EOS R10": "images/cameras/canon-eos-r10.png",
+    "Sony ZV-E10 II": "images/cameras/sony-zv-e10-ii.png",
+    "Ricoh GR IIIx": "images/cameras/ricoh-gr-iiix.png",
+    "Sony A7C II": "images/cameras/sony-a7c-ii.png",
+    "Nikon Z fc": "images/cameras/nikon-z-fc.png",
+    "Canon PowerShot G7 X Mark III": "images/cameras/canon-g7x-mark-iii.png",
+    "DJI Osmo Pocket 3": "images/cameras/dji-osmo-pocket-3.png",
+    "Sony A6700": "images/cameras/sony-a6700.png",
+    "Canon EOS R50": "images/cameras/canon-eos-r50.png",
+    "Fujifilm X-S20": "images/cameras/fujifilm-x-s20.png",
+    "Canon EOS R50 V": "images/cameras/canon-eos-r50-v.png",
+    "Fujifilm X-T5": "images/cameras/fujifilm-x-s20.png"
   };
+  var EXTRA_THUMBNAILS = {
+    "Fujifilm X-T5": "images/cameras/fujifilm-x-s20.png"
+  };
+  function normalizeImagePath(path) {
+    return String(path || "").replace(/^\/images\//, "images/");
+  }
   function getThumbnailForRecommendModel(displayName) {
     const n2 = (displayName || "").trim();
+    if (PRICE_DETAIL_IMAGES[n2]) return PRICE_DETAIL_IMAGES[n2];
     if (EXTRA_THUMBNAILS[n2]) return EXTRA_THUMBNAILS[n2];
     const hit = PICORY_PRODUCT_MOCK.find(
       (p2) => `${p2.brand} ${p2.model}` === n2 || p2.model === n2
     );
-    if (hit?.thumbnail) return hit.thumbnail;
-    return "/images/cameras/default-camera.png";
+    if (hit) {
+      const detailKey = `${hit.brand} ${hit.model}`;
+      return PRICE_DETAIL_IMAGES[detailKey] || normalizeImagePath(hit.thumbnail);
+    }
+    return "images/cameras/default-camera.png";
   }
 
   // js/recommend/picoryAnalysis.mjs

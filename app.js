@@ -43,6 +43,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.PicoryAuthReturn = { buildAuthUrl };
 
+  function showPicoryToast(message, options = {}) {
+    const type = options.type === 'error' ? 'error' : 'success';
+    let stack = document.querySelector('.picory-toast-stack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.className = 'picory-toast-stack';
+      stack.setAttribute('aria-live', 'polite');
+      stack.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(stack);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `picory-toast picory-toast--${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+    const icon = document.createElement('span');
+    icon.className = 'picory-toast__icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = type === 'error' ? '!' : '✓';
+
+    const text = document.createElement('span');
+    text.className = 'picory-toast__text';
+    text.textContent = message;
+
+    toast.append(icon, text);
+    stack.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      window.setTimeout(() => toast.remove(), 220);
+    }, options.duration || 2800);
+  }
+
+  window.PicoryToast = { show: showPicoryToast };
+
   function restoreAuthReturnScroll() {
     let saved = null;
     try {
@@ -1004,8 +1040,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyRecommendCameraThumbnails() {
     const getThumb = window.picoryGetRecommendThumbnail;
     const fallbackThumb = {
-      'Sony A7C II': '/images/cameras/sony-a7c-ii.png',
-      'Fujifilm X-T5': '/images/cameras/fujifilm-x-s20.png',
+      'Sony A7C II': 'images/cameras/sony-a7c-ii.png',
+      'Fujifilm X-T5': 'images/cameras/fujifilm-x-s20.png',
     };
     document.querySelectorAll('.recommend-card').forEach((card) => {
       const nameEl = card.querySelector('.recommend-card__name');
@@ -1015,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const src =
         typeof getThumb === 'function'
           ? getThumb(name)
-          : fallbackThumb[name] || '/images/cameras/default-camera.png';
+          : fallbackThumb[name] || 'images/cameras/default-camera.png';
       imgWrap.replaceChildren();
       const img = document.createElement('img');
       img.className = 'recommend-card__photo';
@@ -1025,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
       img.decoding = 'async';
       img.onerror = () => {
         img.onerror = null;
-        img.src = '/images/cameras/default-camera.png';
+        img.src = 'images/cameras/default-camera.png';
       };
       imgWrap.appendChild(img);
     });
@@ -1577,6 +1613,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedUploadItems = [];
     uploadCategoryKey = 'daily';
     uploadCategoryLabel = '일상';
+    clearCameraModelError();
     if (uploadModalZone) uploadModalZone.innerHTML = uploadDefaultZoneHtml;
     if (uploadPreviewGrid) uploadPreviewGrid.innerHTML = '';
     if (uploadPreviews) uploadPreviews.hidden = true;
@@ -1599,6 +1636,28 @@ document.addEventListener('DOMContentLoaded', () => {
       chip.classList.toggle('filter-chip--active', isDaily);
     });
   }
+
+  function getCameraModelInput() {
+    return cameraModelInput || legacyCameraInput;
+  }
+
+  function showCameraModelError() {
+    const input = getCameraModelInput();
+    if (!input) return;
+    input.classList.add('form-input--error');
+    input.setAttribute('aria-invalid', 'true');
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.setTimeout(() => input.focus({ preventScroll: true }), 260);
+  }
+
+  function clearCameraModelError() {
+    const input = getCameraModelInput();
+    if (!input) return;
+    input.classList.remove('form-input--error');
+    input.removeAttribute('aria-invalid');
+  }
+
+  getCameraModelInput()?.addEventListener('input', clearCameraModelError);
 
   function setUploadPreview(fileName, imageDataUrl) {
     if (!uploadModalZone) return;
@@ -1973,10 +2032,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cameraModel = (cameraModelInput || legacyCameraInput)?.value?.trim();
     if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
-      (cameraModelInput || legacyCameraInput)?.focus();
+      showCameraModelError();
       return;
     }
+    clearCameraModelError();
 
     const images = usesMultiUploadUi
       ? selectedUploadItems.map((item) => item.dataUrl)
@@ -2022,7 +2081,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       resetUploadModalForm();
       addActivityLog(`${cameraModel} 커뮤니티 사진 ${savedCount}장을 업로드했어요.`);
-      alert(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
+      showPicoryToast(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
     } catch (_) {
       alert(
         '사진 저장에 실패했습니다. 브라우저 저장 공간이 부족할 수 있어요. 장 수를 줄이거나 이전 업로드를 삭제한 뒤 다시 시도해 주세요.',

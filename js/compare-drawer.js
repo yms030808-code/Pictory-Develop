@@ -118,12 +118,14 @@
           </button>
         </div>`;
     }
+    return '';
+  }
+
+  function renderEmptyState() {
     return `
-      <div class="pcmp-slot pcmp-slot--empty">
-        <div class="pcmp-slot__placeholder">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          <span>카메라 추가</span>
-        </div>
+      <div class="pcmp-empty">
+        <p class="pcmp-empty__text">아직 비교할 카메라가 없습니다.</p>
+        <a class="btn btn--primary pcmp-empty__btn" href="products.html">상품 보러가기</a>
       </div>`;
   }
 
@@ -142,8 +144,10 @@
       if (countEl) countEl.textContent = count;
 
       if (slots) {
-        const slotsToRender = items.length ? items : [null, null, null];
-        slots.innerHTML = slotsToRender.map((item, i) => renderSlot(item, i)).join('');
+        slots.classList.toggle('pcmp-slots--empty', count === 0);
+        slots.innerHTML = count === 0
+          ? renderEmptyState()
+          : items.map((item, i) => renderSlot(item, i)).join('');
         slots.querySelectorAll('.pcmp-slot__remove').forEach(btn => {
           btn.addEventListener('click', () => remove(nid(btn.getAttribute('data-cid'))));
         });
@@ -151,6 +155,7 @@
 
       if (goBtn) {
         goBtn.disabled = count < 2;
+        goBtn.hidden = count === 0;
         goBtn.onclick = () => {
           if (!requireLoginForLargeCompare()) return;
           const ids = items.map(c => c.id).join(',');

@@ -27,6 +27,10 @@
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
       <div class="nav__actions">
+        <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
+          <span class="pictory-icon pictory-icon--sm" data-pictory-icon="favorite" aria-hidden="true"></span>
+          북마크
+        </button>
         <a href="auth.html" class="btn btn--primary btn--sm">로그인</a>
       </div>
       <button class="nav__hamburger" id="hamburgerBtn" aria-label="메뉴 열기">
@@ -350,13 +354,19 @@
             </div>
             <p class="match-result-card__price">${cam.priceSummary}</p>
             <p class="match-result-card__reason">${cam.reason}</p>
-            <div style="display:flex;gap:8px;margin-top:12px;">
+            <div class="product-card__footer-row match-result-card__footer-row">
+              <div class="product-card__cta">
+                <button class="cam-add-compare-btn product-card__compare-btn" data-id="${cam.id}" type="button">
+                  <span class="product-card__cta-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  <span class="product-card__cta-text">비교함 담기</span>
+                </button>
+              </div>
               <a href="price.html?q=${encodeURIComponent(cam.brand + ' ' + cam.model)}"
-                 class="btn btn--ghost" style="flex:1;font-size:0.78rem;padding:8px 10px;">상세보기</a>
-              <button class="cam-add-compare-btn product-card__compare-btn" data-id="${cam.id}" type="button"
-                style="flex:1;font-size:0.78rem;padding:8px 10px;">
-                + 비교함 담기
-              </button>
+                 class="product-card__action-btn match-result-card__action-btn">상세보기</a>
             </div>
           </div>
         </div>
@@ -367,14 +377,31 @@
           const id = btn.dataset.id;
           const cam = CAMERAS.find(c => c.id === id);
           if (!cam || !window.PicoryCompare) return;
-          if (window.PicoryCompare.has(id)) { btn.textContent = '✓ 담김'; btn.classList.add('is-added'); return; }
+          const textEl = btn.querySelector('.product-card__cta-text');
+          const iconEl = btn.querySelector('.product-card__cta-icon');
+          const plusIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 7.25V16.75M7.25 12H16.75" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></svg>';
+          const checkIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.75 12.25L10.25 15.75L17.75 8.25" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          const markAdded = (label = '담김') => {
+            if (textEl) textEl.textContent = label;
+            if (iconEl) iconEl.innerHTML = checkIcon;
+            btn.classList.add('is-added');
+          };
+          const markDefault = () => {
+            if (textEl) textEl.textContent = '비교함 담기';
+            if (iconEl) iconEl.innerHTML = plusIcon;
+            btn.classList.remove('is-added');
+          };
+          if (window.PicoryCompare.has(id)) {
+            window.PicoryCompare.remove?.(id);
+            markDefault();
+            return;
+          }
           const added = window.PicoryCompare.add(cam);
           if (added) {
-            btn.textContent = '✓ 담김';
-            btn.classList.add('is-added');
+            markAdded();
           } else {
-            btn.textContent = '이미 담김';
-            setTimeout(() => { btn.textContent = '+ 비교함 담기'; btn.classList.remove('is-added'); }, 1500);
+            markAdded('이미 담김');
+            setTimeout(markDefault, 1500);
           }
         });
       });
