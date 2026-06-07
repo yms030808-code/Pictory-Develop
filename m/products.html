@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="../cards-grids.css">
   <link rel="stylesheet" href="mobile.css">
-  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('picory-theme','dark');}catch(e){}</script>
   <script src="../picory-nav-badges-pre.js"></script>
 </head>
 <body class="page-mobile page-products">
@@ -140,11 +140,6 @@
           <a href="#">이용약관</a>
           <a href="#">개인정보처리방침</a>
           <a href="#">고객센터</a>
-        </div>
-        <div class="footer__theme" role="group" aria-label="화면 테마">
-          <span class="footer__theme-label">테마</span>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
         </div>
         <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
       </div>

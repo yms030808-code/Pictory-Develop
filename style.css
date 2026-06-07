@@ -1278,7 +1278,7 @@ body.page-recommend #sectionRecommendDesc {
 
 .category-tile {
   display: grid;
-  grid-template-rows: minmax(96px, auto) auto auto;
+  grid-template-rows: 96px auto auto;
   justify-items: center;
   align-content: start;
   row-gap: 4px;
@@ -1294,12 +1294,14 @@ body.page-recommend #sectionRecommendDesc {
 
 .category-tile__thumb {
   width: 108px;
-  height: 84px;
+  height: 96px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   align-self: center;
+  flex-shrink: 0;
+  overflow: visible;
 }
 
 .category-tile__image {
@@ -1454,15 +1456,15 @@ body.page-recommend #sectionRecommendDesc {
 .category-tile__thumb--vintage { filter: drop-shadow(0 6px 10px rgba(155,132,104,0.18)); }
 .category-tile__thumb--community { filter: drop-shadow(0 6px 10px rgba(0,0,0,0.18)); }
 
-/* 상황별 추천: 지금 인기 썸네일 살짝 확대, 입문 추천은 더 크게, 여행용·브이로그는 프레임 안에서 아래로 */
-.category-tile__thumb--popular {
-  width: 118px;
-  height: 92px;
+/* 상황별 추천: 썸네일 영역 크기는 통일, 강조는 이미지 scale만 적용 */
+.category-tile__thumb--popular .category-tile__image {
+  transform: scale(1.08);
+  transform-origin: center center;
 }
 
-.category-tile__thumb--beginner {
-  width: 138px;
-  height: 108px;
+.category-tile__thumb--beginner .category-tile__image {
+  transform: scale(1.12);
+  transform-origin: center center;
 }
 
 .category-tile__thumb--travel .category-tile__image,
@@ -3540,6 +3542,54 @@ body.page-checklist .checklist-option__icon {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+}
+
+.gallery-card__owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 0.625rem;
+}
+
+.gallery-card__owner-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.75rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--Gray-600, #303030);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--Gray-300, #d4d4d4);
+  font-family: Pretendard, var(--font-family);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.gallery-card__owner-btn:hover,
+.gallery-card__owner-btn:focus-visible {
+  border-color: rgba(255, 101, 0, 0.45);
+  color: #fff;
+  background: rgba(255, 101, 0, 0.08);
+}
+
+.gallery-card__owner-btn--danger {
+  color: #ff9b72;
+  border-color: rgba(255, 101, 0, 0.28);
+}
+
+.gallery-card__owner-btn--danger:hover,
+.gallery-card__owner-btn--danger:focus-visible {
+  border-color: rgba(255, 101, 0, 0.55);
+  color: #fff;
+  background: rgba(255, 101, 0, 0.14);
+}
+
+.community-post-modal .gallery-card__owner-actions {
+  margin-top: 0.75rem;
 }
 
 .gallery-card__like-btn {
@@ -8419,24 +8469,24 @@ html[data-theme="dark"] .mypage-settings-block--danger {
   }
 
   .category-tile {
-    grid-template-rows: minmax(84px, auto) auto auto;
+    grid-template-rows: 72px auto auto;
     row-gap: 3px;
     padding: 2px 4px 6px;
   }
 
   .category-tile__thumb {
     width: 78px;
-    height: 64px;
-  }
-
-  .category-tile__thumb--popular {
-    width: 88px;
     height: 72px;
   }
 
-  .category-tile__thumb--beginner {
-    width: 102px;
-    height: 84px;
+  .category-tile__thumb--popular .category-tile__image {
+    transform: scale(1.06);
+    transform-origin: center center;
+  }
+
+  .category-tile__thumb--beginner .category-tile__image {
+    transform: scale(1.08);
+    transform-origin: center center;
   }
 
   .category-camera {

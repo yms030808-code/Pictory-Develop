@@ -1341,10 +1341,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryLabel = archiveCategorySelect?.value?.trim() || '일상';
     const categoryKey = labelToCommunityKey(categoryLabel);
     let authorHandle = '@게스트';
+    let authorId = 'guest';
     try {
       const raw = localStorage.getItem(sessionStorageKey);
       const session = raw ? JSON.parse(raw) : null;
       if (session?.nickname) authorHandle = `@${String(session.nickname).trim() || '게스트'}`;
+      if (session?.id || session?.nickname) {
+        authorId = String(session.id || session.nickname || 'member');
+      }
     } catch (_) {
       /* noop */
     }
@@ -1384,6 +1388,7 @@ document.addEventListener('DOMContentLoaded', () => {
           iso: '-',
           focalLength: '-',
           authorHandle,
+          authorId,
           createdAt,
         };
         if (!store) archiveItem.imageDataUrl = item.dataUrl;
@@ -1392,6 +1397,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shouldShareToCommunity) {
           communityItems.push({
             ...archiveItem,
+            id: archiveId,
+            imageKey: archiveId,
             communityTags: `${categoryKey} daily`,
             likes: Math.floor(Math.random() * 60) + 1,
           });
