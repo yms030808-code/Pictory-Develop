@@ -25,7 +25,7 @@ body.auth-page {
 }
 
 body.page-products {
-  --site-margin: 220px;
+  --site-margin: 160px;
 }
 
 /* Fluid margin: full spec at 1920px, scales down on smaller viewports */
@@ -43,6 +43,17 @@ body.auth-page {
 }
 
 /* Header layout uses its own padding in style.css — not page margins */
+
+body:not(.page-mobile) .nav__inner {
+  width: 100%;
+  max-width: var(--frame-width);
+  padding-inline: clamp(
+    1rem,
+    calc(160px * 100vw / var(--frame-width)),
+    160px
+  );
+  box-sizing: border-box;
+}
 
 body.page-landing .container,
 body.page-community .container,

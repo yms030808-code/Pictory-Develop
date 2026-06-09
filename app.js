@@ -43,6 +43,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.PicoryAuthReturn = { buildAuthUrl };
 
+  function showPicoryToast(message, options = {}) {
+    const type = options.type === 'error' ? 'error' : 'success';
+    let stack = document.querySelector('.picory-toast-stack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.className = 'picory-toast-stack';
+      stack.setAttribute('aria-live', 'polite');
+      stack.setAttribute('aria-atomic', 'true');
+      document.body.appendChild(stack);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `picory-toast picory-toast--${type}`;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+    const icon = document.createElement('span');
+    icon.className = 'picory-toast__icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = type === 'error' ? '!' : '✓';
+
+    const text = document.createElement('span');
+    text.className = 'picory-toast__text';
+    text.textContent = message;
+
+    toast.append(icon, text);
+    stack.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    window.setTimeout(() => {
+      toast.classList.remove('is-visible');
+      window.setTimeout(() => toast.remove(), 220);
+    }, options.duration || 2800);
+  }
+
+  window.PicoryToast = { show: showPicoryToast };
+
   function restoreAuthReturnScroll() {
     let saved = null;
     try {
@@ -1004,8 +1040,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function applyRecommendCameraThumbnails() {
     const getThumb = window.picoryGetRecommendThumbnail;
     const fallbackThumb = {
-      'Sony A7C II': '/images/cameras/sony-a7c-ii.png',
-      'Fujifilm X-T5': '/images/cameras/fujifilm-x-s20.png',
+      'Sony A7C II': 'images/cameras/sony-a7c-ii.png',
+      'Fujifilm X-T5': 'images/cameras/fujifilm-x-s20.png',
     };
     document.querySelectorAll('.recommend-card').forEach((card) => {
       const nameEl = card.querySelector('.recommend-card__name');
@@ -1015,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const src =
         typeof getThumb === 'function'
           ? getThumb(name)
-          : fallbackThumb[name] || '/images/cameras/default-camera.png';
+          : fallbackThumb[name] || 'images/cameras/default-camera.png';
       imgWrap.replaceChildren();
       const img = document.createElement('img');
       img.className = 'recommend-card__photo';
@@ -1025,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
       img.decoding = 'async';
       img.onerror = () => {
         img.onerror = null;
-        img.src = '/images/cameras/default-camera.png';
+        img.src = 'images/cameras/default-camera.png';
       };
       imgWrap.appendChild(img);
     });
@@ -1473,7 +1509,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const COMMUNITY_UPLOAD_JPEG_QUALITY = 0.72;
   let uploadItemSeq = 0;
   let uploadBusy = false;
+  let editingCommunityPostId = null;
   const uploadSubmitDefaultHtml = uploadSubmitBtn?.innerHTML || '사진 올리기';
+  const uploadModalTitleEl = uploadModal?.querySelector('.modal__header h3');
+  const categoryKeyToLabel = {
+    portrait: '인물',
+    landscape: '풍경',
+    daily: '일상',
+    night: '야경',
+    food: '음식',
+  };
 
   function nextUploadItemId() {
     uploadItemSeq += 1;
@@ -1577,6 +1622,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedUploadItems = [];
     uploadCategoryKey = 'daily';
     uploadCategoryLabel = '일상';
+    clearCameraModelError();
     if (uploadModalZone) uploadModalZone.innerHTML = uploadDefaultZoneHtml;
     if (uploadPreviewGrid) uploadPreviewGrid.innerHTML = '';
     if (uploadPreviews) uploadPreviews.hidden = true;
@@ -1598,7 +1644,273 @@ document.addEventListener('DOMContentLoaded', () => {
       const isDaily = key === 'daily' || chip.textContent?.trim() === '일상';
       chip.classList.toggle('filter-chip--active', isDaily);
     });
+    setUploadModalCreateMode();
   }
+
+  function setUploadModalCreateMode() {
+    editingCommunityPostId = null;
+    if (uploadDropZone) uploadDropZone.hidden = false;
+    if (uploadModalTitleEl) uploadModalTitleEl.textContent = '사진 업로드';
+    if (uploadSubmitBtn && !uploadBusy) uploadSubmitBtn.innerHTML = uploadSubmitDefaultHtml;
+  }
+
+  function readCommunityPosts() {
+    try {
+      const raw = localStorage.getItem(communityStorageKey);
+      const list = raw ? JSON.parse(raw) : [];
+      return Array.isArray(list) ? list : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function writeCommunityPosts(posts) {
+    try {
+      localStorage.setItem(communityStorageKey, JSON.stringify(posts.slice(-80)));
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function getPersistedCommunityPost(postId) {
+    if (!postId) return null;
+    return readCommunityPosts().find((post) => post?.id === postId) || null;
+  }
+
+  function isOwnedCommunityPost(post) {
+    if (!post || typeof post !== 'object') return false;
+    const user = getCommunityUser();
+    if (post.authorId) return String(post.authorId) === String(user.id);
+    const handle = String(post.authorHandle || '').trim();
+    return handle === getAuthorHandle();
+  }
+
+  function canManageCommunityPost(postId) {
+    const post = getPersistedCommunityPost(postId);
+    return Boolean(post && isOwnedCommunityPost(post));
+  }
+
+  function buildCommunityOwnerActionsHtml(postId) {
+    if (!canManageCommunityPost(postId)) return '';
+    return `
+      <div class="gallery-card__owner-actions">
+        <button type="button" class="gallery-card__owner-btn" data-community-edit="${escapeAttr(postId)}" aria-label="게시물 수정">수정</button>
+        <button type="button" class="gallery-card__owner-btn gallery-card__owner-btn--danger" data-community-delete="${escapeAttr(postId)}" aria-label="게시물 삭제">삭제</button>
+      </div>
+    `;
+  }
+
+  function injectCommunityOwnerActions(card) {
+    if (!card) return;
+    const postId = card.dataset.communityPostId;
+    if (!postId || card.querySelector('.gallery-card__owner-actions')) return;
+    if (!canManageCommunityPost(postId)) return;
+    const post = getPersistedCommunityPost(postId);
+    if (post?.authorId) card.dataset.communityAuthorId = String(post.authorId);
+    const wrap = document.createElement('div');
+    wrap.innerHTML = buildCommunityOwnerActionsHtml(postId);
+    const actions = wrap.firstElementChild;
+    if (!actions) return;
+    card.querySelector('.gallery-card__info')?.appendChild(actions);
+  }
+
+  async function deleteCommunityPost(postId) {
+    if (!canManageCommunityPost(postId)) {
+      alert('본인 게시물만 삭제할 수 있어요.');
+      return;
+    }
+    if (!window.confirm('이 게시물을 삭제할까요?')) return;
+
+    const post = getPersistedCommunityPost(postId);
+    const nextPosts = readCommunityPosts().filter((item) => item?.id !== postId);
+    if (!writeCommunityPosts(nextPosts)) {
+      alert('게시물 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      return;
+    }
+
+    const store = window.PicoryCommunityImageStore;
+    const imageKey = String(post?.imageKey || post?.id || '');
+    if (store && imageKey) {
+      try {
+        await store.remove(imageKey);
+      } catch (_) {
+        /* noop */
+      }
+    }
+
+    try {
+      const archive = readJsonList(archiveStorageKey).filter(
+        (item) =>
+          item?.id !== postId &&
+          item?.id !== `archive-${postId}` &&
+          String(item?.imageKey || '') !== imageKey,
+      );
+      writeJsonList(archiveStorageKey, archive, 60);
+    } catch (_) {
+      /* noop */
+    }
+
+    writeJsonList(
+      communityLikesStorageKey,
+      readJsonList(communityLikesStorageKey).filter((item) => item?.postId !== postId),
+    );
+    writeJsonList(
+      communityCommentsStorageKey,
+      readJsonList(communityCommentsStorageKey).filter((item) => item?.postId !== postId),
+    );
+
+    communityGalleryGrid
+      ?.querySelectorAll(`.gallery-card[data-community-post-id="${CSS.escape(postId)}"]`)
+      .forEach((card) => card.remove());
+
+    const modal = document.getElementById('communityPostModal');
+    if (modal) modal.hidden = true;
+
+    addActivityLog(`${post?.cameraModel || '커뮤니티'} 게시물을 삭제했어요.`);
+    showPicoryToast('게시물을 삭제했어요.');
+  }
+
+  async function replaceCommunityCard(post) {
+    if (!communityGalleryGrid || !post?.id) return;
+    const store = window.PicoryCommunityImageStore;
+    const imageDataUrl = store
+      ? await store.resolvePostImageSrc(post)
+      : String(post.imageDataUrl || post.imageThumb || '');
+    const newCard = buildCommunityCardElement({ ...post, imageDataUrl });
+    const oldCard = communityGalleryGrid.querySelector(
+      `.gallery-card[data-community-post-id="${CSS.escape(post.id)}"]`,
+    );
+    if (oldCard) {
+      oldCard.replaceWith(newCard);
+    } else {
+      communityGalleryGrid.prepend(newCard);
+    }
+    enhanceCommunityCards();
+    const activeFilterChip = communityFilters?.querySelector('.filter-chip--active[data-community-filter]');
+    applyCommunityGalleryFilter(activeFilterChip?.getAttribute('data-community-filter') || 'all');
+  }
+
+  async function saveCommunityPostEdit(postId, fields) {
+    const posts = readCommunityPosts();
+    const index = posts.findIndex((item) => item?.id === postId);
+    if (index < 0) throw new Error('NOT_FOUND');
+    const prev = posts[index];
+    if (!isOwnedCommunityPost(prev)) throw new Error('FORBIDDEN');
+
+    const updated = {
+      ...prev,
+      cameraModel: fields.cameraModel,
+      aperture: fields.aperture,
+      shutterSpeed: fields.shutterSpeed,
+      iso: fields.iso,
+      focalLength: fields.focalLength,
+      categoryLabel: fields.categoryLabel,
+      communityTags: `${fields.categoryKey} daily`,
+      caption: fields.caption,
+      updatedAt: new Date().toISOString(),
+    };
+    posts[index] = updated;
+    if (!writeCommunityPosts(posts)) throw new Error('QUOTA');
+
+    try {
+      const archive = readJsonList(archiveStorageKey);
+      const archiveIndex = archive.findIndex(
+        (item) =>
+          item?.id === postId ||
+          item?.id === `archive-${postId}` ||
+          String(item?.imageKey || '') === String(prev.imageKey || prev.id || ''),
+      );
+      if (archiveIndex >= 0) {
+        archive[archiveIndex] = {
+          ...archive[archiveIndex],
+          cameraModel: updated.cameraModel,
+          categoryLabel: updated.categoryLabel,
+          aperture: updated.aperture,
+          shutterSpeed: updated.shutterSpeed,
+          iso: updated.iso,
+          focalLength: updated.focalLength,
+          caption: updated.caption,
+        };
+        writeJsonList(archiveStorageKey, archive, 60);
+      }
+    } catch (_) {
+      /* noop */
+    }
+
+    await replaceCommunityCard(updated);
+  }
+
+  async function openEditCommunityPost(postId) {
+    const post = getPersistedCommunityPost(postId);
+    if (!post || !isOwnedCommunityPost(post)) {
+      alert('본인 게시물만 수정할 수 있어요.');
+      return;
+    }
+
+    resetUploadModalForm();
+    editingCommunityPostId = postId;
+
+    const camInput = getCameraModelInput();
+    if (camInput) camInput.value = post.cameraModel || '';
+    if (apertureInput || legacyApertureInput) {
+      (apertureInput || legacyApertureInput).value = post.aperture === '-' ? '' : post.aperture || '';
+    }
+    if (shutterSpeedInput || legacyShutterInput) {
+      (shutterSpeedInput || legacyShutterInput).value =
+        post.shutterSpeed === '-' ? '' : post.shutterSpeed || '';
+    }
+    if (isoInput || legacyIsoInput) {
+      (isoInput || legacyIsoInput).value = post.iso === '-' ? '' : post.iso || '';
+    }
+    if (focalLengthInput || legacyFocalInput) {
+      (focalLengthInput || legacyFocalInput).value =
+        post.focalLength === '-' ? '' : post.focalLength || '';
+    }
+    if (uploadCaptionInput) uploadCaptionInput.value = post.caption || '';
+
+    const tags = String(post.communityTags || 'daily')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    uploadCategoryKey = tags.find((tag) => tag !== 'daily') || tags[0] || 'daily';
+    uploadCategoryLabel = post.categoryLabel || categoryKeyToLabel[uploadCategoryKey] || '일상';
+    uploadCategoryChips?.forEach((chip) => {
+      const key = chip.dataset.cat || categoryLabelToKey[chip.textContent?.trim() || ''] || '';
+      chip.classList.toggle('filter-chip--active', key === uploadCategoryKey);
+    });
+
+    if (uploadDropZone) uploadDropZone.hidden = true;
+    if (uploadPreviews) uploadPreviews.hidden = true;
+    if (uploadModalTitleEl) uploadModalTitleEl.textContent = '게시물 수정';
+    if (uploadSubmitBtn) uploadSubmitBtn.textContent = '수정 완료';
+
+    uploadModal?.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    window.setTimeout(() => camInput?.focus({ preventScroll: true }), 0);
+  }
+
+  function getCameraModelInput() {
+    return cameraModelInput || legacyCameraInput;
+  }
+
+  function showCameraModelError() {
+    const input = getCameraModelInput();
+    if (!input) return;
+    input.classList.add('form-input--error');
+    input.setAttribute('aria-invalid', 'true');
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.setTimeout(() => input.focus({ preventScroll: true }), 260);
+  }
+
+  function clearCameraModelError() {
+    const input = getCameraModelInput();
+    if (!input) return;
+    input.classList.remove('form-input--error');
+    input.removeAttribute('aria-invalid');
+  }
+
+  getCameraModelInput()?.addEventListener('input', clearCameraModelError);
 
   function setUploadPreview(fileName, imageDataUrl) {
     if (!uploadModalZone) return;
@@ -1703,16 +2015,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const model = escapeHtml(post.cameraModel || '업로드 이미지');
     const category = escapeHtml(post.categoryLabel || '일상');
     const author = escapeHtml(post.authorHandle || '@게스트');
+    const postId = String(post.id || `community-${Date.now()}`);
     const aperture = escapeHtml(post.aperture || '-');
     const shutterSpeed = escapeHtml(post.shutterSpeed || '-');
     const iso = escapeHtml(post.iso || '-');
     const focalLength = escapeHtml(post.focalLength || '-');
     const likes = Number(post.likes) > 0 ? Number(post.likes) : Math.floor(Math.random() * 60) + 1;
     const caption = post.caption ? `<p class="gallery-card__caption">${escapeHtml(post.caption)}</p>` : '';
+    const ownerActions = buildCommunityOwnerActionsHtml(postId);
     const card = document.createElement('article');
     card.className = 'gallery-card card';
     card.dataset.communityTags = String(post.communityTags || 'daily');
-    card.dataset.communityPostId = String(post.id || `community-${Date.now()}`);
+    card.dataset.communityPostId = postId;
+    if (post.authorId) card.dataset.communityAuthorId = String(post.authorId);
     card.innerHTML = `
       <div class="gallery-card__img">
         <img class="gallery-card__photo" src="${post.imageDataUrl}" alt="${model} 업로드 이미지" width="1200" height="800" loading="lazy">
@@ -1733,6 +2048,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         ${caption}
         <p class="text-muted" style="margin-top: 8px; font-size: 12px;">카테고리: ${category}</p>
+        ${ownerActions}
       </div>
     `;
     return card;
@@ -1779,6 +2095,7 @@ document.addEventListener('DOMContentLoaded', () => {
           iso: post.iso,
           focalLength: post.focalLength,
           authorHandle: post.authorHandle,
+          authorId: post.authorId,
           caption: post.caption || '',
           createdAt: post.createdAt,
         });
@@ -1973,8 +2290,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cameraModel = (cameraModelInput || legacyCameraInput)?.value?.trim();
     if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
-      (cameraModelInput || legacyCameraInput)?.focus();
+      showCameraModelError();
+      return;
+    }
+    clearCameraModelError();
+
+    const aperture = (apertureInput || legacyApertureInput)?.value?.trim() || '-';
+    const shutterSpeed = (shutterSpeedInput || legacyShutterInput)?.value?.trim() || '-';
+    const iso = (isoInput || legacyIsoInput)?.value?.trim() || '-';
+    const focalLength = (focalLengthInput || legacyFocalInput)?.value?.trim() || '-';
+    const caption = uploadCaptionInput?.value?.trim() || '';
+
+    if (editingCommunityPostId) {
+      setUploadBusy(true, '수정 중…');
+      try {
+        await saveCommunityPostEdit(editingCommunityPostId, {
+          cameraModel,
+          aperture,
+          shutterSpeed,
+          iso,
+          focalLength,
+          categoryLabel: uploadCategoryLabel,
+          categoryKey: uploadCategoryKey,
+          caption,
+        });
+        uploadModal?.classList.add('hidden');
+        document.body.style.overflow = '';
+        resetUploadModalForm();
+        addActivityLog(`${cameraModel} 커뮤니티 게시물을 수정했어요.`);
+        showPicoryToast('게시물을 수정했어요.');
+      } catch (_) {
+        alert('게시물 수정에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+      } finally {
+        setUploadBusy(false);
+      }
       return;
     }
 
@@ -1989,12 +2338,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const aperture = (apertureInput || legacyApertureInput)?.value?.trim() || '-';
-    const shutterSpeed = (shutterSpeedInput || legacyShutterInput)?.value?.trim() || '-';
-    const iso = (isoInput || legacyIsoInput)?.value?.trim() || '-';
-    const focalLength = (focalLengthInput || legacyFocalInput)?.value?.trim() || '-';
-    const caption = uploadCaptionInput?.value?.trim() || '';
     const authorHandle = getAuthorHandle();
+    const authorId = getCommunityUser().id;
     const createdAt = new Date().toISOString();
     const batchId = Date.now();
 
@@ -2009,6 +2354,7 @@ document.addEventListener('DOMContentLoaded', () => {
       iso,
       focalLength,
       authorHandle,
+      authorId,
       likes: Math.floor(Math.random() * 60) + 1,
       communityTags: `${uploadCategoryKey} daily`,
       caption,
@@ -2022,7 +2368,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = '';
       resetUploadModalForm();
       addActivityLog(`${cameraModel} 커뮤니티 사진 ${savedCount}장을 업로드했어요.`);
-      alert(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
+      showPicoryToast(`커뮤니티에 사진 ${savedCount}장이 업로드됐어요.`);
     } catch (_) {
       alert(
         '사진 저장에 실패했습니다. 브라우저 저장 공간이 부족할 수 있어요. 장 수를 줄이거나 이전 업로드를 삭제한 뒤 다시 시도해 주세요.',
@@ -2223,6 +2569,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       card.querySelector('.gallery-card__comments')?.remove();
+      injectCommunityOwnerActions(card);
       renderCommunityLikeState(card);
       renderCommunityCommentCount(card);
     });
@@ -2285,6 +2632,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (event.target.closest('[data-community-modal-close]')) {
         modal.hidden = true;
       }
+      const editBtn = event.target.closest('[data-community-edit]');
+      if (editBtn) {
+        event.preventDefault();
+        openEditCommunityPost(editBtn.getAttribute('data-community-edit') || '');
+        return;
+      }
+      const deleteBtn = event.target.closest('[data-community-delete]');
+      if (deleteBtn) {
+        event.preventDefault();
+        deleteCommunityPost(deleteBtn.getAttribute('data-community-delete') || '');
+        return;
+      }
       const likeBtn = event.target.closest('.gallery-card__like-btn');
       if (likeBtn) {
         const card = likeBtn.closest('.gallery-card');
@@ -2328,6 +2687,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const post = communityPostFromCard(sourceCard);
     const settingsHtml = sourceCard.querySelector('.gallery-card__settings')?.innerHTML || '';
     const baseLikes = sourceCard.querySelector('.gallery-card__like-btn')?.dataset.baseLikes || '0';
+    const ownerActions = canManageCommunityPost(post.postId)
+      ? buildCommunityOwnerActionsHtml(post.postId)
+      : '';
     body.innerHTML = `
       <div class="gallery-card card" data-community-post-id="${escapeAttr(post.postId)}">
         <div class="gallery-card__img">
@@ -2353,6 +2715,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <button type="submit">등록</button>
             </form>
           </div>
+          ${ownerActions}
         </div>
       </div>
     `;
@@ -2362,6 +2725,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   communityGalleryGrid?.addEventListener('click', (event) => {
+    const editBtn = event.target.closest('[data-community-edit]');
+    if (editBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      openEditCommunityPost(editBtn.getAttribute('data-community-edit') || '');
+      return;
+    }
+    const deleteBtn = event.target.closest('[data-community-delete]');
+    if (deleteBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      deleteCommunityPost(deleteBtn.getAttribute('data-community-delete') || '');
+      return;
+    }
     const likeBtn = event.target.closest('.gallery-card__like-btn');
     if (likeBtn) {
       event.preventDefault();
@@ -2377,7 +2754,14 @@ document.addEventListener('DOMContentLoaded', () => {
   communityGalleryGrid?.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     const card = event.target.closest('.gallery-card');
-    if (!card || event.target.closest('.gallery-card__like-btn, .gallery-card__camera-tag')) return;
+    if (
+      !card ||
+      event.target.closest(
+        '.gallery-card__like-btn, .gallery-card__camera-tag, .gallery-card__owner-actions, [data-community-edit], [data-community-delete]',
+      )
+    ) {
+      return;
+    }
     event.preventDefault();
     openCommunityPostModal(card);
   });

@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const bookmarkCompareEl = document.getElementById('mypageBookmarkCompare');
   const bookmarkCompareChoicesEl = document.getElementById('mypageBookmarkCompareChoices');
   const bookmarkCompareResultEl = document.getElementById('mypageBookmarkCompareResult');
-  const bookmarkCompareBtn = document.getElementById('mypageBookmarkCompareBtn');
   const archiveGridEl = document.getElementById('mypageArchiveGrid');
   const archiveCountEl = document.getElementById('mypageArchiveCount');
   const archivePanel = document.querySelector('[data-mypage-panel="archive"]');
@@ -60,6 +59,22 @@ document.addEventListener('DOMContentLoaded', () => {
     야경: 'night',
     음식: 'food',
   };
+
+  function showFormInputError(input) {
+    if (!input) return;
+    input.classList.add('form-input--error');
+    input.setAttribute('aria-invalid', 'true');
+    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    window.setTimeout(() => input.focus({ preventScroll: true }), 260);
+  }
+
+  function clearFormInputError(input) {
+    if (!input) return;
+    input.classList.remove('form-input--error');
+    input.removeAttribute('aria-invalid');
+  }
+
+  archiveModelInput?.addEventListener('input', () => clearFormInputError(archiveModelInput));
   const ARCHIVE_DEFAULT_CATEGORIES = ['일상', '인물', '풍경', '야경', '음식'];
   const archiveCustomCategoriesKey = 'picoryArchiveCustomCategories';
   const ARCHIVE_CATEGORY_MAX_LEN = 16;
@@ -716,16 +731,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const href = escapeHtml(item.href || `price.html?q=${encodeURIComponent(item.name || '')}`);
         return `
           <article class="mypage-bookmark-card card">
-            <div>
+            <a class="mypage-bookmark-card__link" href="${href}">
               <strong>${name}</strong>
               <p>${lens}${price ? ` · ${price}` : ''}</p>
-            </div>
-            <div class="mypage-bookmark-card__actions">
-              <a class="btn btn--outline btn--xs" href="${href}">시세 보기</a>
-              <button type="button" class="mypage-bookmark-card__remove" data-bookmark-remove="${index}" aria-label="${name} 북마크 해제">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-              </button>
-            </div>
+            </a>
+            <button type="button" class="mypage-bookmark-card__remove" data-bookmark-remove="${index}" aria-label="${name} 북마크 해제">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
           </article>
         `;
       })
@@ -740,15 +752,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const target = event.target;
     if (!(target instanceof Element)) return;
     const removeBtn = target.closest('[data-bookmark-remove]');
-    if (!removeBtn) return;
-    const index = Number(removeBtn.dataset.bookmarkRemove);
-    const bmItems = readBookmarks();
-    if (!Number.isInteger(index) || !bmItems[index]) return;
+    if (removeBtn) {
+      const index = Number(removeBtn.dataset.bookmarkRemove);
+      const bmItems = readBookmarks();
+      if (!Number.isInteger(index) || !bmItems[index]) return;
 
-    bmItems.splice(index, 1);
-    localStorage.setItem(bookmarkStorageKey, JSON.stringify(bmItems));
-    renderBookmarks();
-    window.syncPicoryBookmarks?.();
+      bmItems.splice(index, 1);
+      localStorage.setItem(bookmarkStorageKey, JSON.stringify(bmItems));
+      renderBookmarks();
+      window.syncPicoryBookmarks?.();
+    }
   });
 
   function buildCompareItem(bookmark) {
@@ -815,7 +828,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  bookmarkCompareBtn?.addEventListener('click', renderBookmarkComparison);
   bookmarkCompareChoicesEl?.addEventListener('change', (event) => {
     const checkedInputs = Array.from(bookmarkCompareChoicesEl.querySelectorAll('input:checked'));
     if (checkedInputs.length > 4) {
@@ -1076,6 +1088,8 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.appendChild(fileInput);
 
     const zone = overlay.querySelector('#archiveEditUploadZone');
+    const editModelInput = overlay.querySelector('#archiveEditModelInput');
+    editModelInput?.addEventListener('input', () => clearFormInputError(editModelInput));
     zone?.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => {
       const f = fileInput.files?.[0];
@@ -1097,6 +1111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       archiveEditingId = '';
       archiveEditImageDataUrl = '';
       fileInput.value = '';
+      clearFormInputError(editModelInput);
     };
 
     overlay.addEventListener('click', (e) => {
@@ -1110,10 +1125,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const catSelect = overlay.querySelector('#archiveEditCategorySelect');
       const cameraModel = String(modelInput?.value || '').trim();
       if (!cameraModel) {
-        alert('카메라 기종을 입력해 주세요.');
-        modelInput?.focus();
+        showFormInputError(modelInput);
         return;
       }
+      clearFormInputError(modelInput);
       const categoryLabel = String(catSelect?.value || '일상').trim() || '일상';
 
       const archiveList = readArchiveList();
@@ -1287,6 +1302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (archiveDropZone) archiveDropZone.classList.remove('is-over');
     if (archiveFileInput) archiveFileInput.value = '';
     if (archiveModelInput) archiveModelInput.value = '';
+    clearFormInputError(archiveModelInput);
     archiveCategoryDropdown?.setValue('일상');
     if (archiveShareCommunity) archiveShareCommunity.checked = false;
   }
@@ -1317,18 +1333,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const cameraModel = archiveModelInput?.value?.trim();
     if (!cameraModel) {
-      alert('카메라 기종을 입력해 주세요.');
-      archiveModelInput?.focus();
+      showFormInputError(archiveModelInput);
       return;
     }
+    clearFormInputError(archiveModelInput);
 
     const categoryLabel = archiveCategorySelect?.value?.trim() || '일상';
     const categoryKey = labelToCommunityKey(categoryLabel);
     let authorHandle = '@게스트';
+    let authorId = 'guest';
     try {
       const raw = localStorage.getItem(sessionStorageKey);
       const session = raw ? JSON.parse(raw) : null;
       if (session?.nickname) authorHandle = `@${String(session.nickname).trim() || '게스트'}`;
+      if (session?.id || session?.nickname) {
+        authorId = String(session.id || session.nickname || 'member');
+      }
     } catch (_) {
       /* noop */
     }
@@ -1368,6 +1388,7 @@ document.addEventListener('DOMContentLoaded', () => {
           iso: '-',
           focalLength: '-',
           authorHandle,
+          authorId,
           createdAt,
         };
         if (!store) archiveItem.imageDataUrl = item.dataUrl;
@@ -1376,6 +1397,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (shouldShareToCommunity) {
           communityItems.push({
             ...archiveItem,
+            id: archiveId,
+            imageKey: archiveId,
             communityTags: `${categoryKey} daily`,
             likes: Math.floor(Math.random() * 60) + 1,
           });
@@ -1406,7 +1429,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     resetArchiveUploadForm();
     setArchiveUploadBusy(false);
-    alert(
+    window.PicoryToast?.show?.(
       shouldShareToCommunity
         ? `아카이브에 ${count}장 저장하고 커뮤니티에도 업로드했어요.`
         : `아카이브에 ${count}장 저장했어요.`,

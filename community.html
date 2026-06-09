@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -9,14 +9,14 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="site-grid.css">
   <link rel="stylesheet" href="cards-grids.css">
-  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('picory-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
 <body class="page-community">
   <nav class="nav">
     <div class="nav__inner">
       <a href="index.html" class="nav__logo">
-        <img class="nav__logo-image brand-logo-mark" src="images/pictory-logo-mark.png" alt="Pictory">
+        <img class="nav__logo-image" src="images/pictory-logo-mark.png" alt="Pictory">
       </a>
       <ul class="nav__menu">
         <li><a href="products.html" class="nav__link">상품</a></li>
@@ -28,7 +28,7 @@
         <input type="search" placeholder="상품, 브랜드 검색">
       </label>
       <div class="nav__actions">
-        <button class="btn btn--ghost btn--sm" id="bookmarkBtn">
+        <button class="btn btn--ghost btn--sm" id="bookmarkBtn" type="button">
           <span class="pictory-icon pictory-icon--sm" data-pictory-icon="favorite" aria-hidden="true"></span>
           북마크
         </button>
@@ -60,8 +60,8 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           사진 업로드
         </button>
-        <button class="btn btn--ghost btn--sm" id="savedCollectionsBtn" type="button">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <button class="btn btn--saved-collections" id="savedCollectionsBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
           저장됨
         </button>
       </div>
@@ -186,8 +186,10 @@
   <div class="modal-overlay hidden" id="uploadModal">
     <div class="modal modal--wide">
       <div class="modal__header">
-        <h3>사진 업로드</h3>
-        <span class="modal__header-hint">사진 여러 장에 동일한 설정을 한 번에 적용할 수 있어요.</span>
+        <div class="modal__header-title">
+          <h3>사진 업로드</h3>
+          <span class="modal__header-hint">사진 여러 장에 동일한 설정을 한 번에 적용할 수 있어요.</span>
+        </div>
         <button class="modal__close" id="closeUploadModal" aria-label="닫기" type="button">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -312,6 +314,30 @@
     </button>
   </div>
 
+  <div class="collection-prompt" id="collectionPrompt" hidden role="dialog" aria-modal="true" aria-labelledby="collectionPromptTitle">
+    <div class="collection-prompt__backdrop" data-collection-prompt-cancel></div>
+    <div class="collection-prompt__card">
+      <div class="collection-prompt__header">
+        <div>
+          <h3 class="collection-prompt__title" id="collectionPromptTitle">새 컬렉션 만들기</h3>
+          <p class="collection-prompt__desc">저장할 게시물을 담을 컬렉션 이름을 입력하세요.</p>
+        </div>
+        <button type="button" class="collection-prompt__close" aria-label="닫기" data-collection-prompt-cancel>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <label class="collection-prompt__field">
+        <span class="collection-prompt__label">컬렉션 이름</span>
+        <input type="text" class="form-input collection-prompt__input" id="collectionPromptInput" placeholder="예: 여행 카메라" maxlength="20">
+      </label>
+      <p class="collection-prompt__error" id="collectionPromptError" hidden>컬렉션 이름을 입력해 주세요.</p>
+      <div class="collection-prompt__actions">
+        <button type="button" class="btn btn--ghost btn--sm" data-collection-prompt-cancel>취소</button>
+        <button type="button" class="btn btn--primary btn--sm" id="collectionPromptSave">만들기</button>
+      </div>
+    </div>
+  </div>
+
   <aside class="bookmark-sidebar" id="bookmarkSidebar">
     <div class="bookmark-sidebar__header">
       <h3>내 북마크</h3>
@@ -349,11 +375,6 @@
           <a href="#">이용약관</a>
           <a href="#">개인정보처리방침</a>
           <a href="#">고객센터</a>
-        </div>
-        <div class="footer__theme" role="group" aria-label="화면 테마">
-          <span class="footer__theme-label">테마</span>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
         </div>
         <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
       </div>
@@ -505,7 +526,40 @@
     const savePopover = document.getElementById('saveToCollection');
     const saveList    = document.getElementById('saveToCollectionList');
     const saveNewBtn  = document.getElementById('saveToCollectionNew');
+    const collectionPrompt = document.getElementById('collectionPrompt');
+    const collectionPromptInput = document.getElementById('collectionPromptInput');
+    const collectionPromptSave = document.getElementById('collectionPromptSave');
+    const collectionPromptError = document.getElementById('collectionPromptError');
     let currentPostData = null;
+
+    function openCollectionPrompt() {
+      if (!currentPostData) return;
+      savePopover.hidden = true;
+      collectionPrompt.hidden = false;
+      collectionPromptInput.value = '';
+      collectionPromptError.hidden = true;
+      requestAnimationFrame(() => collectionPromptInput.focus());
+    }
+
+    function closeCollectionPrompt() {
+      collectionPrompt.hidden = true;
+      collectionPromptError.hidden = true;
+    }
+
+    function createCollectionFromPrompt() {
+      const name = collectionPromptInput.value.trim();
+      if (!name) {
+        collectionPromptError.hidden = false;
+        collectionPromptInput.focus();
+        return;
+      }
+
+      const newCol = { id: 'c' + Date.now(), name, posts: [currentPostData.id] };
+      collections.push(newCol);
+      saveCollections(collections);
+      closeCollectionPrompt();
+      document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`)?.classList.add('is-saved');
+    }
 
     document.querySelectorAll('.gallery-card__save-btn').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -549,14 +603,17 @@
       savePopover.hidden = false;
     }
 
-    saveNewBtn.addEventListener('click', () => {
-      const name = prompt('새 컬렉션 이름을 입력하세요');
-      if (!name?.trim()) return;
-      const newCol = { id: 'c' + Date.now(), name: name.trim(), posts: [currentPostData.id] };
-      collections.push(newCol);
-      saveCollections(collections);
-      savePopover.hidden = true;
-      document.querySelector(`.gallery-card__save-btn[data-post-id="${currentPostData.id}"]`)?.classList.add('is-saved');
+    saveNewBtn.addEventListener('click', openCollectionPrompt);
+    collectionPromptSave.addEventListener('click', createCollectionFromPrompt);
+    collectionPrompt.querySelectorAll('[data-collection-prompt-cancel]').forEach(btn => {
+      btn.addEventListener('click', closeCollectionPrompt);
+    });
+    collectionPromptInput.addEventListener('input', () => {
+      collectionPromptError.hidden = true;
+    });
+    collectionPromptInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') createCollectionFromPrompt();
+      if (e.key === 'Escape') closeCollectionPrompt();
     });
 
     document.addEventListener('click', e => {

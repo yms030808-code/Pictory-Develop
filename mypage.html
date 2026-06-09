@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="site-grid.css">
   <link rel="stylesheet" href="cards-grids.css">
-  <script>try{var t=localStorage.getItem('picory-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}</script>
+  <script>try{document.documentElement.setAttribute('data-theme','dark');localStorage.setItem('picory-theme','dark');}catch(e){}</script>
   <script src="picory-nav-badges-pre.js"></script>
 </head>
 <body class="page-mypage">
@@ -167,7 +167,6 @@
                     <h3>북마크한 카메라 비교</h3>
                     <p class="mypage-muted">북마크한 카메라를 선택해서 가격, 특징, 추천 용도를 한눈에 비교해보세요.</p>
                   </div>
-                  <button type="button" class="btn btn--primary btn--sm" id="mypageBookmarkCompareBtn">선택 항목 비교</button>
                 </div>
                 <div class="mypage-bookmark-compare__choices" id="mypageBookmarkCompareChoices"></div>
                 <div class="mypage-bookmark-compare__result" id="mypageBookmarkCompareResult">
@@ -440,11 +439,6 @@
         </div>
         <div class="footer__links">
           <a href="m/index.html">모바일 버전</a>
-        </div>
-        <div class="footer__theme" role="group" aria-label="화면 테마">
-          <span class="footer__theme-label">테마</span>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="light" aria-pressed="true">라이트</button>
-          <button type="button" class="footer__theme-btn" data-theme-toggle="dark" aria-pressed="false">다크</button>
         </div>
         <p class="footer__copy">&copy; 2026 Pictory. UX Design Project.</p>
       </div>

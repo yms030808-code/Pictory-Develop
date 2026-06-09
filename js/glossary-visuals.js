@@ -60,7 +60,7 @@
     return { slider, output, stage, onInput };
   }
 
-  const CAT_IMAGE_URL = 'icons/glossary%20cat.png';
+  const CAT_IMAGE_URL = 'icons/glossary%20cat.png?v=3';
 
   function subjectCat(extraStyle = '') {
     const styleAttr = extraStyle ? ` style="${extraStyle}"` : '';

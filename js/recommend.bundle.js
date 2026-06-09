@@ -14,7 +14,7 @@
       /** 정렬용: 대략 최저가(원), 인기순 가중치 */
       priceKrw: 219e4,
       popularity: 98,
-      description: "\uACE0\uC815 \uB80C\uC988\uC640 \uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158\uC73C\uB85C \uC2A4\uB0C5\xB7\uC77C\uC0C1 \uAE30\uB85D\uC5D0 \uAC15\uD55C \uD480\uD504\uB808\uC784\uAE09 \uC778\uAE30 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      description: "\uD544\uB984 \uAC10\uC131\uACFC \uACE0\uAE09 AF\uB97C \uB2F4\uC740 \uC77C\uC0C1\uC6A9 \uACE0\uC815\uB80C\uC988 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 2,190,000\uC6D0\uB300 \xB7 \uC815\uAC00 \uAE30\uC900",
       platform: "\uB124\uC774\uBC84 \uC1FC\uD551 \xB7 \uCFE0\uD321 \xB7 \uACF5\uC2DD\uBAB0",
       thumbnail: "/images/cameras/fujifilm-x100vi.png",
@@ -26,7 +26,7 @@
       model: "EOS R10",
       priceKrw: 92e4,
       popularity: 82,
-      description: "\uAC00\uBCBC\uC6B4 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uC870\uC791\uC774 \uB2E8\uC21C\uD574 \uC785\uBB38\uC6A9 \uBC14\uB514\uB85C \uB9CE\uC774 \uC120\uD0DD\uB429\uB2C8\uB2E4.",
+      description: "\uAC00\uBCCD\uACE0 \uBE60\uB978 AF\uB85C \uC2DC\uC791\uD558\uAE30 \uC88B\uC740 APS-C \uBBF8\uB7EC\uB9AC\uC2A4",
       priceSummary: "\uC57D 920,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0\uB098\uB77C",
       thumbnail: "/images/cameras/canon-eos-r10.png",
@@ -38,7 +38,7 @@
       model: "ZV-E10 II",
       priceKrw: 128e4,
       popularity: 92,
-      description: "\uBE0C\uC774\uB85C\uADF8\uC5D0 \uB9DE\uCD98 \uC790\uB3D9 \uBAA8\uB4DC\uC640 \uB9C8\uC774\uD06C \uB2E8\uC790 \uAD6C\uC131\uC774 \uAC15\uC810\uC778 APS-C \uAE30\uC885\uC785\uB2C8\uB2E4.",
+      description: "\uBE0C\uC774\uB85C\uADF8 \uCD2C\uC601\uC5D0 \uB9DE\uCD98 \uAC00\uBCBC\uC6B4 APS-C \uBC14\uB514",
       priceSummary: "\uC57D 1,280,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uACF5\uC2DD \uC2A4\uD1A0\uC5B4 \xB7 \uC628\uB77C\uC778 \uBA74\uC138",
       thumbnail: "/images/cameras/sony-zv-e10-ii.png",
@@ -50,7 +50,7 @@
       model: "GR IIIx",
       priceKrw: 159e4,
       popularity: 88,
-      description: "40mm \uD654\uAC01\uC758 \uC2A4\uB0C5 \uD2B9\uD654 \uCEF4\uD329\uD2B8\uB85C \uC8FC\uBA38\uB2C8\uC5D0 \uB123\uACE0 \uB2E4\uB2C8\uAE30 \uC88B\uC2B5\uB2C8\uB2E4.",
+      description: "40mm \uD654\uAC01\uC758 \uC2A4\uD2B8\uB9AC\uD2B8\xB7\uC5EC\uD589\uC6A9 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 1,590,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uC628\uB77C\uC778 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/ricoh-gr-iiix.png",
@@ -62,7 +62,7 @@
       model: "A7C II",
       priceKrw: 239e4,
       popularity: 96,
-      description: "\uD480\uD504\uB808\uC784 \uC13C\uC11C\uB97C \uC791\uC740 \uBC14\uB514\uC5D0 \uB2F4\uC544 \uC778\uBB3C\xB7\uC5EC\uD589\xB7\uBE0C\uC774\uB85C\uADF8\uAE4C\uC9C0 \uADE0\uD615\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      description: "\uC791\uC740 \uBC14\uB514\uC5D0 \uD480\uD504\uB808\uC784 \uC13C\uC11C\uB97C \uB2F4\uC740 \uC62C\uB77C\uC6B4\uB354",
       priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
       platform: "\uB2E4\uB098\uC640 \xB7 \uCFE0\uD321 \xB7 \uC624\uD504\uB77C\uC778 \uB300\uB9AC\uC810",
       thumbnail: "/images/cameras/sony-a7c-ii.png",
@@ -74,7 +74,7 @@
       model: "Z fc",
       priceKrw: 119e4,
       popularity: 80,
-      description: "\uD544\uB984 SLR \uAC10\uC131\uC758 \uB2E4\uC774\uC5BC \uC870\uC791\uACFC vari-angle LCD\uAC00 \uB9E4\uB825\uC778 APS-C \uBC14\uB514\uC785\uB2C8\uB2E4.",
+      description: "\uB808\uD2B8\uB85C \uB2E4\uC774\uC5BC\uACFC \uD604\uB300\uC801 \uC131\uB2A5\uC758 APS-C \uBC14\uB514",
       priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uACF5\uC2DD\uBAB0 \xB7 \uC911\uACE0\uB098\uB77C",
       thumbnail: "/images/cameras/nikon-z-fc.png",
@@ -86,7 +86,7 @@
       model: "PowerShot G7 X Mark III",
       priceKrw: 95e4,
       popularity: 90,
-      description: "1\uC778\uCE58 \uC13C\uC11C \uCEF4\uD329\uD2B8\uB85C 4K \uC601\uC0C1\uACFC \uC218\uC9C1 \uCD2C\uC601\uC5D0 \uC801\uD569\uD55C \uD734\uB300\uD615 \uAE30\uC885\uC785\uB2C8\uB2E4.",
+      description: "4K \uC601\uC0C1\uACFC vlog\uC5D0 \uAC15\uD55C \uD734\uB300\uD615 1\uC778\uCE58 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 950,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uC628\uB77C\uC778 \uBA74\uC138 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/canon-g7x-mark-iii.png",
@@ -98,7 +98,7 @@
       model: "Osmo Pocket 3",
       priceKrw: 649e3,
       popularity: 91,
-      description: "3\uCD95 \uC9D0\uBC8C \uC77C\uCCB4\uD615 \uD3EC\uCF13 \uCEA0\uC73C\uB85C \uC190\uB5A8\uB9BC \uBCF4\uC815\uC774 \uAC15\uD55C \uC601\uC0C1 \uAE30\uAE30\uC785\uB2C8\uB2E4.",
+      description: "1\uC778\uCE58 \uC13C\uC11C\uC640 \uC9D0\uBC8C\uC774 \uC77C\uCCB4\uD615\uC778 \uD3EC\uCF13 \uCEA0",
       priceSummary: "\uC57D 649,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD \uC2A4\uD1A0\uC5B4 \xB7 \uCFE0\uD321 \xB7 \uBA74\uC138",
       thumbnail: "/images/cameras/dji-osmo-pocket-3.png",
@@ -110,7 +110,7 @@
       model: "A6700",
       priceKrw: 152e4,
       popularity: 94,
-      description: "\uCD5C\uC2E0 APS-C AF \uC131\uB2A5\uACFC 4K 120p(\uD06C\uB86D) \uB4F1 \uC601\uC0C1 \uC635\uC158\uC774 \uD48D\uBD80\uD55C \uC62C\uB77C\uC6B4\uB354\uC785\uB2C8\uB2E4.",
+      description: "\uC601\uC0C1\xB7\uC0AC\uC9C4 \uBAA8\uB450 \uC7A1\uB294 \uC0C1\uC704 APS-C \uBBF8\uB7EC\uB9AC\uC2A4",
       priceSummary: "\uC57D 1,520,000\uC6D0\uB300 ~",
       platform: "\uB2E4\uB098\uC640 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/sony-a6700.png",
@@ -122,7 +122,7 @@
       model: "EOS R50",
       priceKrw: 98e4,
       popularity: 93,
-      description: "\uAC00\uBCCD\uACE0 \uAC00\uACA9 \uBD80\uB2F4\uC774 \uC801\uC5B4 \uCCAB \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uBB34\uB09C\uD55C \uC785\uBB38 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      description: "\uAC00\uBCBC\uC6B4 \uBC14\uB514\uB85C \uCCAB \uBBF8\uB7EC\uB9AC\uC2A4 \uC785\uBB38\uC5D0 \uC801\uD569",
       priceSummary: "\uC57D 980,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uC628\uB77C\uC778 \xB7 \uC911\uACE0\uB098\uB77C",
       thumbnail: "/images/cameras/canon-eos-r50.png",
@@ -134,7 +134,7 @@
       model: "X-S20",
       priceKrw: 178e4,
       popularity: 87,
-      description: "\uC190\uB5A8\uB9BC \uBCF4\uC815\uACFC \uBC30\uD130\uB9AC \uC6A9\uB7C9\uC774 \uC88B\uC544 \uC0AC\uC9C4\xB7\uC601\uC0C1 \uACB8\uC6A9\uC73C\uB85C \uC778\uAE30\uC785\uB2C8\uB2E4.",
+      description: "\uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158\uACFC \uC601\uC0C1\uAE4C\uC9C0 \uB418\uB294 X \uC2DC\uB9AC\uC988",
       priceSummary: "\uC57D 1,780,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/fujifilm-x-s20.png",
@@ -146,7 +146,7 @@
       model: "EOS R50 V",
       priceKrw: 118e4,
       popularity: 79,
-      description: "\uC138\uB85C \uC601\uC0C1\xB7\uB77C\uC774\uBE0C\uC5D0 \uB9DE\uCD98 UI\uC640 \uC785\uBB38\uD615 \uC870\uC791\uC774 \uAC15\uC810\uC778 V \uC2DC\uB9AC\uC988\uC785\uB2C8\uB2E4.",
+      description: "\uC138\uB85C \uC601\uC0C1\xB7\uB77C\uC774\uBE0C \uCD2C\uC601\uC5D0 \uB9DE\uCD98 \uC785\uBB38\uD615 \uBC14\uB514",
       priceSummary: "\uC57D 1,180,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uCFE0\uD321 \xB7 \uACF5\uC2DD",
       thumbnail: "/images/cameras/canon-eos-r50-v.png",
@@ -158,7 +158,7 @@
       model: "Z50II",
       priceKrw: 129e4,
       popularity: 89,
-      description: "EXPEED 7\uACFC \uD53C\uC0AC\uCCB4 \uC778\uC2DD AF\uB97C \uAC16\uCD98 APS-C \uBBF8\uB7EC\uB9AC\uC2A4\uB85C \uAC00\uC871\xB7\uC5EC\uD589\xB7\uC601\uC0C1\uAE4C\uC9C0 \uADE0\uD615\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      description: "\uAC00\uC871\xB7\uC5EC\uD589\xB7\uC601\uC0C1\uAE4C\uC9C0 \uB450\uB8E8 \uC4F0\uAE30 \uC88B\uC740 \uC62C\uB77C\uC6B4\uB354",
       priceSummary: "\uC57D 1,290,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uC911\uACE0\uB098\uB77C \xB7 \uACF5\uC2DD\uBAB0",
       thumbnail: "/images/cameras/nikon-z50ii.png",
@@ -170,7 +170,7 @@
       model: "EOS R8",
       priceKrw: 189e4,
       popularity: 86,
-      description: "\uAC00\uBCBC\uC6B4 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 4K 60p\uB97C \uB2F4\uC544 \uC778\uBB3C\xB7\uC5EC\uD589\uC6A9\uC73C\uB85C \uC811\uADFC\uC131\uC774 \uC88B\uC2B5\uB2C8\uB2E4.",
+      description: "\uAC00\uBCBC\uC6B4 \uBB34\uAC8C\uC758 \uD480\uD504\uB808\uC784 \uC785\uBB38\xB7\uC5EC\uD589\uC6A9",
       priceSummary: "\uC57D 1,890,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uB2E4\uB098\uC640",
       thumbnail: "/images/cameras/canon-eos-r8.png",
@@ -182,7 +182,7 @@
       model: "RX100 VII",
       priceKrw: 149e4,
       popularity: 84,
-      description: "\uC791\uC740 \uBC14\uB514\uC5D0 \uBE60\uB978 AF\uC640 \uACE0\uBC30\uC728 \uC90C\uC744 \uB2F4\uC740 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC5EC\uD589 \uAE30\uB85D\uC5D0 \uAC15\uD569\uB2C8\uB2E4.",
+      description: "24-200mm \uC90C\uC744 \uB2F4\uC740 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 1,490,000\uC6D0\uB300 ~",
       platform: "\uB124\uC774\uBC84 \xB7 \uCFE0\uD321 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/sony-rx100-vii.png",
@@ -194,7 +194,7 @@
       model: "Lumix S9",
       priceKrw: 199e4,
       popularity: 83,
-      description: "LUT \uAE30\uBC18 \uCEEC\uB7EC \uC6CC\uD06C\uD50C\uB85C\uC640 \uC791\uC740 \uD480\uD504\uB808\uC784 \uBC14\uB514\uB85C \uC601\uC0C1\xB7\uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC5B4\uC6B8\uB9BD\uB2C8\uB2E4.",
+      description: "\uC601\uC0C1 \uCEEC\uB7EC \uC6CC\uD06C\uD50C\uB85C\uC5D0 \uD2B9\uD654\uB41C \uD480\uD504\uB808\uC784 \uBC14\uB514",
       priceSummary: "\uC57D 1,990,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/panasonic-lumix-s9.png",
@@ -206,7 +206,7 @@
       model: "Lumix GH7",
       priceKrw: 279e4,
       popularity: 85,
-      description: "\uB9C8\uC774\uD06C\uB85C\uD3EC\uC11C\uC988 \uC601\uC0C1 \uD50C\uB798\uADF8\uC2ED\uC73C\uB85C \uACE0\uAE09 \uCF54\uB371\uACFC \uC190\uB5A8\uB9BC \uBCF4\uC815, \uAE34 \uCD2C\uC601 \uC548\uC815\uC131\uC774 \uAC15\uC810\uC785\uB2C8\uB2E4.",
+      description: "\uD504\uB85C \uC601\uC0C1 \uCD2C\uC601\uC6A9 M4/3 \uD50C\uB798\uADF8\uC2ED \uBC14\uB514",
       priceSummary: "\uC57D 2,790,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uB124\uC774\uBC84",
       thumbnail: "/images/cameras/panasonic-lumix-gh7.png",
@@ -218,7 +218,7 @@
       model: "OM-3",
       priceKrw: 239e4,
       popularity: 81,
-      description: "\uD074\uB798\uC2DD\uD55C \uB514\uC790\uC778\uC5D0 \uBC29\uC9C4\uBC29\uC801\uACFC \uAC15\uB825\uD55C \uC190\uB5A8\uB9BC \uBCF4\uC815\uC744 \uB354\uD55C \uC5EC\uD589\xB7\uC544\uC6C3\uB3C4\uC5B4\uD615 \uBBF8\uB7EC\uB9AC\uC2A4\uC785\uB2C8\uB2E4.",
+      description: "\uBC29\uC9C4\xB7\uC5EC\uD589\xB7\uC544\uC6C3\uB3C4\uC5B4\uC5D0 \uAC15\uD55C \uD074\uB798\uC2DD \uBC14\uB514",
       priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/om-system-om-3.png",
@@ -230,7 +230,7 @@
       model: "X-M5",
       priceKrw: 119e4,
       popularity: 88,
-      description: "\uC791\uC740 \uBC14\uB514\uC640 \uD544\uB984 \uC2DC\uBBAC\uB808\uC774\uC158, \uC601\uC0C1 \uCE5C\uD654 UI\uB97C \uAC16\uCD98 \uC785\uBB38\xB7\uBE0C\uC774\uB85C\uADF8\uC6A9 X \uC2DC\uB9AC\uC988\uC785\uB2C8\uB2E4.",
+      description: "\uC785\uBB38\uACFC \uBE0C\uC774\uB85C\uADF8\uB97C \uACA8\uB0E5\uD55C \uAC00\uBCBC\uC6B4 X \uC2DC\uB9AC\uC988",
       priceSummary: "\uC57D 1,190,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uCFE0\uD321 \xB7 \uB124\uC774\uBC84",
       thumbnail: "/images/cameras/fujifilm-x-m5.png",
@@ -242,7 +242,7 @@
       model: "D-Lux 8",
       priceKrw: 239e4,
       popularity: 77,
-      description: "\uBC1D\uC740 \uC90C\uB80C\uC988\uC640 \uD074\uB798\uC2DD\uD55C \uC870\uC791\uACC4\uB97C \uAC16\uCD98 \uD504\uB9AC\uBBF8\uC5C4 \uCEF4\uD329\uD2B8\uB85C \uC77C\uC0C1 \uC2A4\uB0C5\uC5D0 \uC798 \uB9DE\uC2B5\uB2C8\uB2E4.",
+      description: "Leica \uAC10\uC131\uC758 \uD504\uB9AC\uBBF8\uC5C4 \uC77C\uC0C1 \uC2A4\uB0C5 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 2,390,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/leica-d-lux-8.png",
@@ -254,7 +254,7 @@
       model: "fp L",
       priceKrw: 299e4,
       popularity: 72,
-      description: "\uCD08\uC18C\uD615 \uD480\uD504\uB808\uC784 \uBC14\uB514\uC640 61MP \uC13C\uC11C\uAC00 \uD2B9\uC9D5\uC778 \uBAA8\uB4C8\uD615 \uCE74\uBA54\uB77C\uB85C \uC0AC\uC9C4\xB7\uC2DC\uB124\uB9C8 \uC791\uC5C5\uC5D0 \uB3C5\uD2B9\uD569\uB2C8\uB2E4.",
+      description: "\uCD08\uC18C\uD615 \uBAA8\uB4C8\uD615 \uD480\uD504\uB808\uC784 \uC601\uC0C1\xB7\uC0AC\uC9C4 \uBC14\uB514",
       priceSummary: "\uC57D 2,990,000\uC6D0\uB300 ~",
       platform: "\uACF5\uC2DD\uBAB0 \xB7 \uB2E4\uB098\uC640 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/sigma-fp-l.png",
@@ -266,7 +266,7 @@
       model: "Pixpro FZ55",
       priceKrw: 23e4,
       popularity: 74,
-      description: "\uAC00\uBCCD\uACE0 \uC800\uB834\uD55C CCD \uAC10\uC131 \uCEF4\uD329\uD2B8\uB85C \uD734\uB300\uD3F0\uACFC \uB2E4\uB978 \uC0C9\uAC10\uC758 \uC77C\uC0C1 \uAE30\uB85D\uC6A9\uC73C\uB85C \uCC3E\uB294 \uBAA8\uB378\uC785\uB2C8\uB2E4.",
+      description: "\uC800\uB834\uD55C CCD \uAC10\uC131 \uCEF4\uD329\uD2B8",
       priceSummary: "\uC57D 230,000\uC6D0\uB300 ~",
       platform: "\uCFE0\uD321 \xB7 \uB124\uC774\uBC84 \xB7 \uC911\uACE0",
       thumbnail: "/images/cameras/kodak-pixpro-fz55.png",
@@ -275,17 +275,39 @@
   ];
 
   // js/recommend/cameraThumbnails.js
-  var EXTRA_THUMBNAILS = {
-    "Fujifilm X-T5": "/images/cameras/fujifilm-x-s20.png"
+  var PRICE_DETAIL_IMAGES = {
+    "Fujifilm X100VI": "images/cameras/fujifilm-x100vi.png",
+    "Canon EOS R10": "images/cameras/canon-eos-r10.png",
+    "Sony ZV-E10 II": "images/cameras/sony-zv-e10-ii.png",
+    "Ricoh GR IIIx": "images/cameras/ricoh-gr-iiix.png",
+    "Sony A7C II": "images/cameras/sony-a7c-ii.png",
+    "Nikon Z fc": "images/cameras/nikon-z-fc.png",
+    "Canon PowerShot G7 X Mark III": "images/cameras/canon-g7x-mark-iii.png",
+    "DJI Osmo Pocket 3": "images/cameras/dji-osmo-pocket-3.png",
+    "Sony A6700": "images/cameras/sony-a6700.png",
+    "Canon EOS R50": "images/cameras/canon-eos-r50.png",
+    "Fujifilm X-S20": "images/cameras/fujifilm-x-s20.png",
+    "Canon EOS R50 V": "images/cameras/canon-eos-r50-v.png",
+    "Fujifilm X-T5": "images/cameras/fujifilm-x-s20.png"
   };
+  var EXTRA_THUMBNAILS = {
+    "Fujifilm X-T5": "images/cameras/fujifilm-x-s20.png"
+  };
+  function normalizeImagePath(path) {
+    return String(path || "").replace(/^\/images\//, "images/");
+  }
   function getThumbnailForRecommendModel(displayName) {
     const n2 = (displayName || "").trim();
+    if (PRICE_DETAIL_IMAGES[n2]) return PRICE_DETAIL_IMAGES[n2];
     if (EXTRA_THUMBNAILS[n2]) return EXTRA_THUMBNAILS[n2];
     const hit = PICORY_PRODUCT_MOCK.find(
       (p2) => `${p2.brand} ${p2.model}` === n2 || p2.model === n2
     );
-    if (hit?.thumbnail) return hit.thumbnail;
-    return "/images/cameras/default-camera.png";
+    if (hit) {
+      const detailKey = `${hit.brand} ${hit.model}`;
+      return PRICE_DETAIL_IMAGES[detailKey] || normalizeImagePath(hit.thumbnail);
+    }
+    return "images/cameras/default-camera.png";
   }
 
   // js/recommend/picoryAnalysis.mjs
